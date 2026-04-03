@@ -8,6 +8,7 @@ import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { Card } from '@/shared/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -72,7 +73,7 @@ export function CargosPage() {
       <div className="flex items-center justify-end">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -83,24 +84,24 @@ export function CargosPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label>Название</Label>
-                <Input {...register('name')} placeholder="Бензин АИ-92" />
+                <Input {...register('name')} placeholder="Бензин АИ-92" className="bg-white" />
                 {errors.name && <p className="text-sm text-danger">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ТУ (необязательно)</Label>
-                <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" />
+                <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" className="bg-white" />
               </div>
               <div className="space-y-2">
                 <Label>UN код (необязательно)</Label>
-                <Input {...register('unCode')} placeholder="1203" />
+                <Input {...register('unCode')} placeholder="1203" className="bg-white" />
               </div>
               <div className="space-y-2">
                 <Label>Класс опасности (необязательно)</Label>
-                <Input {...register('hazardClass')} placeholder="3" />
+                <Input {...register('hazardClass')} placeholder="3" className="bg-white" />
               </div>
               <div className="space-y-2">
                 <Label>Упаковка (необязательно)</Label>
-                <Input {...register('packagingMethod')} placeholder="Цистерна" />
+                <Input {...register('packagingMethod')} placeholder="Цистерна" className="bg-white" />
               </div>
               <Button type="submit" className="w-full" disabled={createCargo.isPending}>
                 {createCargo.isPending ? 'Создание...' : 'Создать'}
@@ -113,35 +114,37 @@ export function CargosPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Название</TableHead>
-              <TableHead>ТУ</TableHead>
-              <TableHead>UN код</TableHead>
-              <TableHead>Класс опасности</TableHead>
-              <TableHead>Упаковка</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {cargos?.map((c) => (
-              <TableRow key={c.id}>
-                <TableCell>{c.name}</TableCell>
-                <TableCell>{c.technicalSpec ?? '—'}</TableCell>
-                <TableCell>{c.unCode ?? '—'}</TableCell>
-                <TableCell>{c.hazardClass ?? '—'}</TableCell>
-                <TableCell>{c.packagingMethod ?? '—'}</TableCell>
+        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Название</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ТУ</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">UN код</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Класс опасности</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Упаковка</TableHead>
               </TableRow>
-            ))}
-            {cargos?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {cargos?.map((c) => (
+                <TableRow key={c.id} className="hover:bg-secondary-50/50">
+                  <TableCell>{c.name}</TableCell>
+                  <TableCell>{c.technicalSpec ?? '—'}</TableCell>
+                  <TableCell>{c.unCode ?? '—'}</TableCell>
+                  <TableCell>{c.hazardClass ?? '—'}</TableCell>
+                  <TableCell>{c.packagingMethod ?? '—'}</TableCell>
+                </TableRow>
+              ))}
+              {cargos?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                    Нет данных
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
       )}
     </div>
   );

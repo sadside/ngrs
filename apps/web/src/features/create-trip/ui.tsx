@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useCreateTrip } from '@/entities/trip/api';
 import { useRoutes } from '@/entities/route/api';
@@ -15,6 +15,13 @@ import {
 } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { Label } from '@/shared/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 
 interface CreateTripForm {
   routeId: string;
@@ -34,9 +41,9 @@ export function CreateTripDialog() {
   const createTrip = useCreateTrip();
 
   const {
-    register,
     handleSubmit,
     reset,
+    control,
     formState: { isSubmitting },
   } = useForm<CreateTripForm>();
 
@@ -54,7 +61,7 @@ export function CreateTripDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Создать рейс</Button>
+        <Button className="bg-primary-500 hover:bg-primary-600 text-white">Создать рейс</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -64,74 +71,94 @@ export function CreateTripDialog() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label>Маршрут</Label>
-            <select
-              {...register('routeId', { required: true })}
-              className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Выберите маршрут
-              </option>
-              {routes?.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.senderContractor.name} → {r.receiverContractor.name}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="routeId"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Выберите маршрут" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {routes?.map((r) => (
+                      <SelectItem key={r.id} value={r.id}>
+                        {r.senderContractor.name} → {r.receiverContractor.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
           <div className="space-y-2">
             <Label>Водитель</Label>
-            <select
-              {...register('driverId', { required: true })}
-              className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Выберите водителя
-              </option>
-              {drivers?.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.fullName}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="driverId"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Выберите водителя" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {drivers?.map((d) => (
+                      <SelectItem key={d.id} value={d.id}>
+                        {d.fullName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
           <div className="space-y-2">
             <Label>Транспортное средство</Label>
-            <select
-              {...register('vehicleId', { required: true })}
-              className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Выберите ТС
-              </option>
-              {vehicles?.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.brand} {v.licensePlate}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="vehicleId"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Выберите ТС" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vehicles?.map((v) => (
+                      <SelectItem key={v.id} value={v.id}>
+                        {v.brand} {v.licensePlate}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
           <div className="space-y-2">
             <Label>Груз</Label>
-            <select
-              {...register('cargoId', { required: true })}
-              className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-sm focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Выберите груз
-              </option>
-              {cargos?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="cargoId"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue placeholder="Выберите груз" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cargos?.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -9,6 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Badge } from '@/shared/ui/badge';
+import { Card } from '@/shared/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 import { ROLE_LABELS, USER_STATUS_LABELS } from '@/shared/config/constants';
 import { useUsers, useCreateUser, useUpdateUser } from '@/entities/user/api';
 import { RoleBadge } from '@/entities/session/ui';
@@ -48,6 +56,7 @@ export function UsersPage() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
@@ -93,7 +102,7 @@ export function UsersPage() {
       <div className="flex items-center justify-end">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -104,34 +113,41 @@ export function UsersPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label>Логин</Label>
-                <Input {...register('login')} placeholder="ivanov" />
+                <Input {...register('login')} placeholder="ivanov" className="bg-white" />
                 {errors.login && <p className="text-sm text-danger">{errors.login.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Пароль</Label>
-                <Input type="password" {...register('password')} placeholder="Минимум 6 символов" />
+                <Input type="password" {...register('password')} placeholder="Минимум 6 символов" className="bg-white" />
                 {errors.password && <p className="text-sm text-danger">{errors.password.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ФИО</Label>
-                <Input {...register('fullName')} placeholder="Иванов Иван Иванович" />
+                <Input {...register('fullName')} placeholder="Иванов Иван Иванович" className="bg-white" />
                 {errors.fullName && <p className="text-sm text-danger">{errors.fullName.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Телефон (необязательно)</Label>
-                <Input {...register('phone')} placeholder="+7..." />
+                <Input {...register('phone')} placeholder="+7..." className="bg-white" />
               </div>
               <div className="space-y-2">
                 <Label>Роль</Label>
-                <select
-                  {...register('role')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Выберите...</option>
-                  {Object.entries(ROLE_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
+                <Controller
+                  name="role"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(ROLE_LABELS).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.role && <p className="text-sm text-danger">{errors.role.message}</p>}
               </div>
               <Button type="submit" className="w-full" disabled={createUser.isPending}>
@@ -145,68 +161,70 @@ export function UsersPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Логин</TableHead>
-              <TableHead>ФИО</TableHead>
-              <TableHead>Роль</TableHead>
-              <TableHead>Статус</TableHead>
-              <TableHead>Телефон</TableHead>
-              <TableHead>Дата создания</TableHead>
-              <TableHead>Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users?.map((u) => (
-              <TableRow key={u.id}>
-                <TableCell>{u.login}</TableCell>
-                <TableCell>{u.fullName}</TableCell>
-                <TableCell>
-                  <RoleBadge role={u.role} />
-                </TableCell>
-                <TableCell>
-                  <Badge className={statusColors[u.status] ?? ''}>
-                    {USER_STATUS_LABELS[u.status] ?? u.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>{u.phone ?? '—'}</TableCell>
-                <TableCell>{new Date(u.createdAt).toLocaleDateString('ru-RU')}</TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    {u.status !== 'ACTIVE' && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleApprove(u.id)}
-                        title="Активировать"
-                      >
-                        <Check size={16} className="text-green-600" />
-                      </Button>
-                    )}
-                    {u.status !== 'BLOCKED' && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleBlock(u.id)}
-                        title="Заблокировать"
-                      >
-                        <X size={16} className="text-red-600" />
-                      </Button>
-                    )}
-                  </div>
-                </TableCell>
+        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Логин</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ФИО</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Роль</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Статус</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Телефон</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Дата создания</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Действия</TableHead>
               </TableRow>
-            ))}
-            {users?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {users?.map((u) => (
+                <TableRow key={u.id} className="hover:bg-secondary-50/50">
+                  <TableCell>{u.login}</TableCell>
+                  <TableCell>{u.fullName}</TableCell>
+                  <TableCell>
+                    <RoleBadge role={u.role} />
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={statusColors[u.status] ?? ''}>
+                      {USER_STATUS_LABELS[u.status] ?? u.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{u.phone ?? '—'}</TableCell>
+                  <TableCell>{new Date(u.createdAt).toLocaleDateString('ru-RU')}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {u.status !== 'ACTIVE' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleApprove(u.id)}
+                          title="Активировать"
+                        >
+                          <Check size={16} className="text-green-600" />
+                        </Button>
+                      )}
+                      {u.status !== 'BLOCKED' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleBlock(u.id)}
+                          title="Заблокировать"
+                        >
+                          <X size={16} className="text-red-600" />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {users?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
+                    Нет данных
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
       )}
     </div>
   );

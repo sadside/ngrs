@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -8,6 +8,7 @@ import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { Card } from '@/shared/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 import { Badge } from '@/shared/ui/badge';
 import { OWNERSHIP_LABELS } from '@/shared/config/constants';
 import { useVehicles, useCreateVehicle } from '@/entities/vehicle/api';
@@ -52,6 +60,7 @@ export function VehiclesPage() {
     register,
     handleSubmit,
     reset,
+    control,
     setValue,
     watch,
     formState: { errors },
@@ -93,7 +102,7 @@ export function VehiclesPage() {
       <div className="flex items-center justify-end">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -104,47 +113,62 @@ export function VehiclesPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label>Марка</Label>
-                <Input {...register('brand')} placeholder="КАМАЗ" />
+                <Input {...register('brand')} placeholder="КАМАЗ" className="bg-white" />
                 {errors.brand && <p className="text-sm text-danger">{errors.brand.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Модель</Label>
-                <Input {...register('model')} placeholder="65115" />
+                <Input {...register('model')} placeholder="65115" className="bg-white" />
                 {errors.model && <p className="text-sm text-danger">{errors.model.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Госномер</Label>
-                <Input {...register('licensePlate')} placeholder="А123БВ777" />
+                <Input {...register('licensePlate')} placeholder="А123БВ777" className="bg-white" />
                 {errors.licensePlate && <p className="text-sm text-danger">{errors.licensePlate.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Прицеп (необязательно)</Label>
-                <Input {...register('trailerPlate')} placeholder="АА1234 77" />
+                <Input {...register('trailerPlate')} placeholder="АА1234 77" className="bg-white" />
               </div>
               <div className="space-y-2">
                 <Label>Тип владения</Label>
-                <select
-                  {...register('ownershipType')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Выберите...</option>
-                  {Object.entries(OWNERSHIP_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
+                <Controller
+                  name="ownershipType"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(OWNERSHIP_LABELS).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.ownershipType && <p className="text-sm text-danger">{errors.ownershipType.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Водитель (необязательно)</Label>
-                <select
-                  {...register('assignedDriverId')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Не назначен</option>
-                  {drivers?.map((d) => (
-                    <option key={d.id} value={d.id}>{d.fullName}</option>
-                  ))}
-                </select>
+                <Controller
+                  name="assignedDriverId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value ?? ''} onValueChange={(val) => field.onChange(val === '__none__' ? '' : val)}>
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder="Не назначен" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__none__">Не назначен</SelectItem>
+                        {drivers?.map((d) => (
+                          <SelectItem key={d.id} value={d.id}>{d.fullName}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
               <div className="space-y-2">
                 <Label>Разрешённые грузы</Label>
@@ -173,39 +197,41 @@ export function VehiclesPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Марка/Модель</TableHead>
-              <TableHead>Госномер</TableHead>
-              <TableHead>Прицеп</TableHead>
-              <TableHead>Водитель</TableHead>
-              <TableHead>Тип владения</TableHead>
-              <TableHead>Статус</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {vehicles?.map((v) => (
-              <TableRow key={v.id}>
-                <TableCell>{v.brand} {v.model}</TableCell>
-                <TableCell>{v.licensePlate}</TableCell>
-                <TableCell>{v.trailerPlate ?? '—'}</TableCell>
-                <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
-                <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
-                <TableCell>
-                  <Badge variant="secondary">{v.status}</Badge>
-                </TableCell>
+        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Марка/Модель</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Госномер</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Прицеп</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Водитель</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Тип владения</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Статус</TableHead>
               </TableRow>
-            ))}
-            {vehicles?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {vehicles?.map((v) => (
+                <TableRow key={v.id} className="hover:bg-secondary-50/50">
+                  <TableCell>{v.brand} {v.model}</TableCell>
+                  <TableCell>{v.licensePlate}</TableCell>
+                  <TableCell>{v.trailerPlate ?? '—'}</TableCell>
+                  <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
+                  <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{v.status}</Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {vehicles?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    Нет данных
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
       )}
     </div>
   );

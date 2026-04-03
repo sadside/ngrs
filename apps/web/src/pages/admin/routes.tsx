@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
@@ -9,6 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
+import { Card } from '@/shared/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 import { useRoutes, useCreateRoute } from '@/entities/route/api';
 import { useContractors } from '@/entities/contractor/api';
 
@@ -47,6 +55,7 @@ export function RoutesPage() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<RouteFormValues>({
     resolver: zodResolver(routeSchema),
@@ -72,7 +81,7 @@ export function RoutesPage() {
       <div className="flex items-center justify-end">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -83,44 +92,58 @@ export function RoutesPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label>Отправитель</Label>
-                <select
-                  {...register('senderContractorId')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Выберите...</option>
-                  {contractors?.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
+                <Controller
+                  name="senderContractorId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {contractors?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.senderContractorId && (
                   <p className="text-sm text-danger">{errors.senderContractorId.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Получатель</Label>
-                <select
-                  {...register('receiverContractorId')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Выберите...</option>
-                  {contractors?.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
+                <Controller
+                  name="receiverContractorId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {contractors?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 {errors.receiverContractorId && (
                   <p className="text-sm text-danger">{errors.receiverContractorId.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Адрес погрузки</Label>
-                <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." />
+                <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." className="bg-white" />
                 {errors.loadingAddress && (
                   <p className="text-sm text-danger">{errors.loadingAddress.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Адрес выгрузки</Label>
-                <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." />
+                <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." className="bg-white" />
                 {errors.unloadingAddress && (
                   <p className="text-sm text-danger">{errors.unloadingAddress.message}</p>
                 )}
@@ -140,35 +163,37 @@ export function RoutesPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Отправитель</TableHead>
-              <TableHead>Получатель</TableHead>
-              <TableHead>Адрес погрузки</TableHead>
-              <TableHead>Адрес выгрузки</TableHead>
-              <TableHead>Описание</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {routes?.map((r) => (
-              <TableRow key={r.id}>
-                <TableCell>{r.senderContractor.name}</TableCell>
-                <TableCell>{r.receiverContractor.name}</TableCell>
-                <TableCell>{r.loadingAddress}</TableCell>
-                <TableCell>{r.unloadingAddress}</TableCell>
-                <TableCell>{r.description ?? '—'}</TableCell>
+        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Отправитель</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Получатель</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Адрес погрузки</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Адрес выгрузки</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Описание</TableHead>
               </TableRow>
-            ))}
-            {routes?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {routes?.map((r) => (
+                <TableRow key={r.id} className="hover:bg-secondary-50/50">
+                  <TableCell>{r.senderContractor.name}</TableCell>
+                  <TableCell>{r.receiverContractor.name}</TableCell>
+                  <TableCell>{r.loadingAddress}</TableCell>
+                  <TableCell>{r.unloadingAddress}</TableCell>
+                  <TableCell>{r.description ?? '—'}</TableCell>
+                </TableRow>
+              ))}
+              {routes?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                    Нет данных
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Card>
       )}
     </div>
   );
