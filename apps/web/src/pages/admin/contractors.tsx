@@ -8,7 +8,7 @@ import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Card } from '@/shared/ui/card';
+
 import {
   Dialog,
   DialogContent,
@@ -155,37 +155,35 @@ export function ContractorsPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Название</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ИНН</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Тип</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Телефон</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Контактное лицо</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Название</TableHead>
+              <TableHead>ИНН</TableHead>
+              <TableHead>Тип</TableHead>
+              <TableHead>Телефон</TableHead>
+              <TableHead>Контактное лицо</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {contractors?.map((c) => (
+              <TableRow key={c.id}>
+                <TableCell>{c.name}</TableCell>
+                <TableCell>{c.inn ?? '—'}</TableCell>
+                <TableCell>{CONTRACTOR_TYPE_LABELS[c.type] ?? c.type}</TableCell>
+                <TableCell>{c.contactPhone ?? '—'}</TableCell>
+                <TableCell>{c.contactPerson ?? '—'}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {contractors?.map((c) => (
-                <TableRow key={c.id} className="hover:bg-secondary-50/50">
-                  <TableCell>{c.name}</TableCell>
-                  <TableCell>{c.inn ?? '—'}</TableCell>
-                  <TableCell>{CONTRACTOR_TYPE_LABELS[c.type] ?? c.type}</TableCell>
-                  <TableCell>{c.contactPhone ?? '—'}</TableCell>
-                  <TableCell>{c.contactPerson ?? '—'}</TableCell>
-                </TableRow>
-              ))}
-              {contractors?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
-                    Нет данных
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+            ))}
+            {contractors?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
     </div>
   );

@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
-import { Card } from '@/shared/ui/card';
+
 import {
   Dialog,
   DialogContent,
@@ -163,37 +163,35 @@ export function RoutesPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Отправитель</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Получатель</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Адрес погрузки</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Адрес выгрузки</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Описание</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Отправитель</TableHead>
+              <TableHead>Получатель</TableHead>
+              <TableHead>Адрес погрузки</TableHead>
+              <TableHead>Адрес выгрузки</TableHead>
+              <TableHead>Описание</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {routes?.map((r) => (
+              <TableRow key={r.id}>
+                <TableCell>{r.senderContractor.name}</TableCell>
+                <TableCell>{r.receiverContractor.name}</TableCell>
+                <TableCell>{r.loadingAddress}</TableCell>
+                <TableCell>{r.unloadingAddress}</TableCell>
+                <TableCell>{r.description ?? '—'}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {routes?.map((r) => (
-                <TableRow key={r.id} className="hover:bg-secondary-50/50">
-                  <TableCell>{r.senderContractor.name}</TableCell>
-                  <TableCell>{r.receiverContractor.name}</TableCell>
-                  <TableCell>{r.loadingAddress}</TableCell>
-                  <TableCell>{r.unloadingAddress}</TableCell>
-                  <TableCell>{r.description ?? '—'}</TableCell>
-                </TableRow>
-              ))}
-              {routes?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
-                    Нет данных
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+            ))}
+            {routes?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
     </div>
   );

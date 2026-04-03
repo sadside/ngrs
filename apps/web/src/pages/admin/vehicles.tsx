@@ -8,7 +8,7 @@ import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Card } from '@/shared/ui/card';
+
 import {
   Dialog,
   DialogContent,
@@ -197,41 +197,39 @@ export function VehiclesPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Марка/Модель</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Госномер</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Прицеп</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Водитель</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Тип владения</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Статус</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Марка/Модель</TableHead>
+              <TableHead>Госномер</TableHead>
+              <TableHead>Прицеп</TableHead>
+              <TableHead>Водитель</TableHead>
+              <TableHead>Тип владения</TableHead>
+              <TableHead>Статус</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {vehicles?.map((v) => (
+              <TableRow key={v.id}>
+                <TableCell>{v.brand} {v.model}</TableCell>
+                <TableCell>{v.licensePlate}</TableCell>
+                <TableCell>{v.trailerPlate ?? '—'}</TableCell>
+                <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
+                <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{v.status}</Badge>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vehicles?.map((v) => (
-                <TableRow key={v.id} className="hover:bg-secondary-50/50">
-                  <TableCell>{v.brand} {v.model}</TableCell>
-                  <TableCell>{v.licensePlate}</TableCell>
-                  <TableCell>{v.trailerPlate ?? '—'}</TableCell>
-                  <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
-                  <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{v.status}</Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {vehicles?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
-                    Нет данных
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+            ))}
+            {vehicles?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import { Badge } from '@/shared/ui/badge';
-import { Card } from '@/shared/ui/card';
+
 import {
   Table,
   TableBody,
@@ -33,39 +33,37 @@ export function DriversPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ФИО</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Телефон</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Привязанное ТС</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Статус</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ФИО</TableHead>
+              <TableHead>Телефон</TableHead>
+              <TableHead>Привязанное ТС</TableHead>
+              <TableHead>Статус</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {drivers?.map((d) => (
+              <TableRow key={d.id}>
+                <TableCell>{d.fullName}</TableCell>
+                <TableCell>{d.phone ?? '—'}</TableCell>
+                <TableCell>{vehicleByDriver.get(d.id) ?? '—'}</TableCell>
+                <TableCell>
+                  <Badge className={statusColors[d.status] ?? ''}>
+                    {USER_STATUS_LABELS[d.status] ?? d.status}
+                  </Badge>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {drivers?.map((d) => (
-                <TableRow key={d.id} className="hover:bg-secondary-50/50">
-                  <TableCell>{d.fullName}</TableCell>
-                  <TableCell>{d.phone ?? '—'}</TableCell>
-                  <TableCell>{vehicleByDriver.get(d.id) ?? '—'}</TableCell>
-                  <TableCell>
-                    <Badge className={statusColors[d.status] ?? ''}>
-                      {USER_STATUS_LABELS[d.status] ?? d.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {drivers?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
-                    Нет данных
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+            ))}
+            {drivers?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
     </div>
   );

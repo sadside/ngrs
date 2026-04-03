@@ -8,7 +8,7 @@ import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Card } from '@/shared/ui/card';
+
 import {
   Dialog,
   DialogContent,
@@ -114,37 +114,35 @@ export function CargosPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Название</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ТУ</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">UN код</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Класс опасности</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Упаковка</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Название</TableHead>
+              <TableHead>ТУ</TableHead>
+              <TableHead>UN код</TableHead>
+              <TableHead>Класс опасности</TableHead>
+              <TableHead>Упаковка</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {cargos?.map((c) => (
+              <TableRow key={c.id}>
+                <TableCell>{c.name}</TableCell>
+                <TableCell>{c.technicalSpec ?? '—'}</TableCell>
+                <TableCell>{c.unCode ?? '—'}</TableCell>
+                <TableCell>{c.hazardClass ?? '—'}</TableCell>
+                <TableCell>{c.packagingMethod ?? '—'}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {cargos?.map((c) => (
-                <TableRow key={c.id} className="hover:bg-secondary-50/50">
-                  <TableCell>{c.name}</TableCell>
-                  <TableCell>{c.technicalSpec ?? '—'}</TableCell>
-                  <TableCell>{c.unCode ?? '—'}</TableCell>
-                  <TableCell>{c.hazardClass ?? '—'}</TableCell>
-                  <TableCell>{c.packagingMethod ?? '—'}</TableCell>
-                </TableRow>
-              ))}
-              {cargos?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
-                    Нет данных
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+            ))}
+            {cargos?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
     </div>
   );

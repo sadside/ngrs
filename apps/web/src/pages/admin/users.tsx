@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Badge } from '@/shared/ui/badge';
-import { Card } from '@/shared/ui/card';
+
 import {
   Dialog,
   DialogContent,
@@ -161,70 +161,68 @@ export function UsersPage() {
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
-        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Логин</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ФИО</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Роль</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Статус</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Телефон</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Дата создания</TableHead>
-                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Действия</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Логин</TableHead>
+              <TableHead>ФИО</TableHead>
+              <TableHead>Роль</TableHead>
+              <TableHead>Статус</TableHead>
+              <TableHead>Телефон</TableHead>
+              <TableHead>Дата создания</TableHead>
+              <TableHead>Действия</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users?.map((u) => (
+              <TableRow key={u.id}>
+                <TableCell>{u.login}</TableCell>
+                <TableCell>{u.fullName}</TableCell>
+                <TableCell>
+                  <RoleBadge role={u.role} />
+                </TableCell>
+                <TableCell>
+                  <Badge className={statusColors[u.status] ?? ''}>
+                    {USER_STATUS_LABELS[u.status] ?? u.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>{u.phone ?? '—'}</TableCell>
+                <TableCell>{new Date(u.createdAt).toLocaleDateString('ru-RU')}</TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    {u.status !== 'ACTIVE' && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleApprove(u.id)}
+                        title="Активировать"
+                      >
+                        <Check size={16} className="text-green-600" />
+                      </Button>
+                    )}
+                    {u.status !== 'BLOCKED' && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleBlock(u.id)}
+                        title="Заблокировать"
+                      >
+                        <X size={16} className="text-red-600" />
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users?.map((u) => (
-                <TableRow key={u.id} className="hover:bg-secondary-50/50">
-                  <TableCell>{u.login}</TableCell>
-                  <TableCell>{u.fullName}</TableCell>
-                  <TableCell>
-                    <RoleBadge role={u.role} />
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={statusColors[u.status] ?? ''}>
-                      {USER_STATUS_LABELS[u.status] ?? u.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{u.phone ?? '—'}</TableCell>
-                  <TableCell>{new Date(u.createdAt).toLocaleDateString('ru-RU')}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
-                      {u.status !== 'ACTIVE' && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleApprove(u.id)}
-                          title="Активировать"
-                        >
-                          <Check size={16} className="text-green-600" />
-                        </Button>
-                      )}
-                      {u.status !== 'BLOCKED' && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleBlock(u.id)}
-                          title="Заблокировать"
-                        >
-                          <X size={16} className="text-red-600" />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {users?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
-                    Нет данных
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+            ))}
+            {users?.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  Нет данных
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
     </div>
   );
