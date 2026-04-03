@@ -3,6 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
+import { ContractorsModule } from './contractors/contractors.module';
+import { CargosModule } from './cargos/cargos.module';
+import { RoutesModule } from './routes/routes.module';
 
 @Module({
   imports: [
@@ -10,6 +14,10 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    VehiclesModule,
+    ContractorsModule,
+    CargosModule,
+    RoutesModule,
   ],
 })
 export class AppModule {}
