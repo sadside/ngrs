@@ -44,14 +44,14 @@ export function RegisterForm() {
   });
 
   return (
-    <Card className="w-full max-w-md border-0 bg-white shadow-xl rounded-2xl">
+    <Card className="w-full max-w-lg border-0 bg-white shadow-xl rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Регистрация</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-0">
         <form
           onSubmit={handleSubmit((data) => mutation.mutate(data))}
-          className="space-y-5"
+          className="space-y-4"
         >
           <div className="space-y-2">
             <Label htmlFor="fullName">ФИО</Label>
@@ -59,6 +59,7 @@ export function RegisterForm() {
               id="fullName"
               {...register('fullName')}
               placeholder="Иванов Иван Иванович"
+              className={errors.fullName ? 'border-danger' : ''}
             />
             {errors.fullName && (
               <p className="text-sm text-danger">{errors.fullName.message}</p>
@@ -70,6 +71,7 @@ export function RegisterForm() {
               id="login"
               {...register('login')}
               placeholder="Придумайте логин"
+              className={errors.login ? 'border-danger' : ''}
             />
             {errors.login && (
               <p className="text-sm text-danger">{errors.login.message}</p>
@@ -82,6 +84,7 @@ export function RegisterForm() {
               type="password"
               {...register('password')}
               placeholder="Минимум 6 символов"
+              className={errors.password ? 'border-danger' : ''}
             />
             {errors.password && (
               <p className="text-sm text-danger">{errors.password.message}</p>

@@ -54,14 +54,14 @@ export function LoginForm() {
   });
 
   return (
-    <Card className="w-full max-w-md border-0 bg-white shadow-xl rounded-2xl">
+    <Card className="w-full max-w-lg border-0 bg-white shadow-xl rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Вход</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-0">
         <form
           onSubmit={handleSubmit((data) => mutation.mutate(data))}
-          className="space-y-5"
+          className="space-y-4"
         >
           <div className="space-y-2">
             <Label htmlFor="login">Логин</Label>
@@ -69,6 +69,7 @@ export function LoginForm() {
               id="login"
               {...register('login')}
               placeholder="Введите логин"
+              className={errors.login ? 'border-danger' : ''}
             />
             {errors.login && (
               <p className="text-sm text-danger">{errors.login.message}</p>
@@ -81,6 +82,7 @@ export function LoginForm() {
               type="password"
               {...register('password')}
               placeholder="Введите пароль"
+              className={errors.password ? 'border-danger' : ''}
             />
             {errors.password && (
               <p className="text-sm text-danger">{errors.password.message}</p>
