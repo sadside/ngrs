@@ -3,17 +3,16 @@ import {
   MapPin,
   Truck,
   Package,
-  ArrowRight,
   ClipboardText,
-  Path,
 } from '@phosphor-icons/react';
 import { TripStatusBadge } from '@/entities/trip/ui';
-import { getTripStatusColor } from '@/entities/trip/lib';
+import { Button } from '@/shared/ui/button';
 import type { Trip } from '@/entities/trip/api';
 import { cn } from '@/shared/lib/utils';
 
 interface DriverTripCardProps {
   trip: Trip;
+  className?: string;
 }
 
 const STATUS_ICON: Record<string, typeof Truck> = {
@@ -25,31 +24,42 @@ const STATUS_ICON: Record<string, typeof Truck> = {
   COMPLETED: ClipboardText,
 };
 
-const STATUS_ICON_BG: Record<string, string> = {
-  ASSIGNED: 'bg-secondary-100',
-  EN_ROUTE_TO_LOADING: 'bg-accent-50',
-  LOADING: 'bg-primary-50',
-  EN_ROUTE_TO_UNLOADING: 'bg-accent-50',
-  UNLOADING: 'bg-primary-50',
-  COMPLETED: 'bg-green-50',
-};
+function getMainAction(trip: Trip) {
+  switch (trip.status) {
+    case 'ASSIGNED':
+      return <Button size="sm" className="cursor-pointer">Начать рейс</Button>;
+    case 'EN_ROUTE_TO_LOADING':
+    case 'LOADING':
+      return trip.waybill ? (
+        <Button size="sm" variant="outline" className="cursor-pointer">Подробнее</Button>
+      ) : (
+        <Button size="sm" className="cursor-pointer">Отправить накладную</Button>
+      );
+    case 'EN_ROUTE_TO_UNLOADING':
+    case 'UNLOADING':
+      return trip.waybill ? (
+        <Button size="sm" variant="outline" className="cursor-pointer">Подробнее</Button>
+      ) : (
+        <Button size="sm" variant="outline" className="cursor-pointer">Завершить</Button>
+      );
+    case 'COMPLETED':
+      return <span className="text-xs text-green-600">Завершён</span>;
+    case 'CANCELLED':
+      return <span className="text-xs text-red-500">Отменён</span>;
+    default:
+      return null;
+  }
+}
 
-const STATUS_ICON_COLOR: Record<string, string> = {
-  ASSIGNED: 'text-secondary-500',
-  EN_ROUTE_TO_LOADING: 'text-accent-500',
-  LOADING: 'text-primary-500',
-  EN_ROUTE_TO_UNLOADING: 'text-accent-500',
-  UNLOADING: 'text-primary-500',
-  COMPLETED: 'text-green-600',
-};
-
-export function DriverTripCard({ trip }: DriverTripCardProps) {
+export function DriverTripCard({ trip, className }: DriverTripCardProps) {
   const navigate = useNavigate();
-  const Icon = STATUS_ICON[trip.status] ?? Truck;
 
   return (
     <div
-      className="bg-white rounded-xl border border-border shadow-sm cursor-pointer active:scale-[0.98] transition-all hover:shadow-md overflow-hidden"
+      className={cn(
+        'bg-white rounded-xl border border-border shadow-sm cursor-pointer active:scale-[0.98] transition-all hover:shadow-md overflow-hidden',
+        className,
+      )}
       onClick={() =>
         navigate({
           to: '/driver/trip/$tripId',
@@ -104,7 +114,7 @@ export function DriverTripCard({ trip }: DriverTripCardProps) {
         <span className="text-xs text-secondary-400">
           {new Date(trip.assignedAt).toLocaleDateString('ru-RU')}
         </span>
-        <ArrowRight size={16} className="text-secondary-300" />
+        {getMainAction(trip)}
       </div>
     </div>
   );

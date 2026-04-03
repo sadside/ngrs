@@ -17,6 +17,7 @@ const handleEventFx = createEffect((msg: MessageEvent) => {
     if (event.type === 'waybill-submitted') {
       queryClient.invalidateQueries({ queryKey: ['waybills'] });
       queryClient.invalidateQueries({ queryKey: ['trips'] });
+      queryClient.invalidateQueries({ queryKey: ['trips', 'my'] });
       toast.info(
         `Накладная ТТН ${event.data?.ttnNumber} от ${event.data?.driverName}`,
       );
@@ -24,6 +25,7 @@ const handleEventFx = createEffect((msg: MessageEvent) => {
 
     if (event.type === 'trip-status-changed') {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
+      queryClient.invalidateQueries({ queryKey: ['trips', 'my'] });
     }
   } catch {
     // ignore parse errors

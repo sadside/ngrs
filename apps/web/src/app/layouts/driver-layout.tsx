@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { Button } from '@/shared/ui/button';
 import { $user, sessionSet, sessionCleared } from '@/entities/session/model';
 import { getMeFn } from '@/entities/session/api';
+import { sseModel } from '@/features/sse-notifications/model';
 
 export function DriverLayout() {
   const user = useUnit($user);
@@ -20,6 +21,11 @@ export function DriverLayout() {
   useEffect(() => {
     if (data) sessionSet(data);
   }, [data]);
+
+  useEffect(() => {
+    sseModel.connect();
+    return () => sseModel.disconnect();
+  }, []);
 
   return (
     <div className="min-h-screen bg-secondary-50">

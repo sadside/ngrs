@@ -33,8 +33,7 @@ export function ActiveTripPage() {
   }
 
   const showWaybillForm =
-    !trip.waybill &&
-    (trip.status === 'LOADING' || trip.status === 'EN_ROUTE_TO_LOADING');
+    !trip.waybill && trip.status !== 'COMPLETED' && trip.status !== 'CANCELLED';
 
   return (
     <div className="space-y-4">
