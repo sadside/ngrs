@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  LOGIST
+  DRIVER
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  BLOCKED
+}
+
+enum TripStatus {
+  ASSIGNED
+  EN_ROUTE_TO_LOADING
+  LOADING
+  EN_ROUTE_TO_UNLOADING
+  UNLOADING
+  COMPLETED
+  CANCELLED
+}
+
+enum VehicleOwnershipType {
+  OWNED
+  JOINT
+  LEASED
+  RENTED
+  GRATUITOUS
+}
+
+enum ContractorType {
+  SENDER
+  RECEIVER
+  BOTH
+}
+
+enum VehicleStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id        String     @id @default(uuid())
+  login     String     @unique
+  password  String
+  fullName  String
+  phone     String?
+  role      UserRole
+  status    UserStatus @default(PENDING)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  assignedVehicle Vehicle? @relation("AssignedDriver")
+  trips           Trip[]
+  waybills        Waybill[]
+
+  @@map("users")
+}
+
+model Vehicle {
+  id              String               @id @default(uuid())
+  brand           String
+  model           String
+  licensePlate    String               @unique
+  trailerPlate    String?
+  capacity        Decimal?             @db.Decimal(10, 3)
+  volumeCapacity  Decimal?             @db.Decimal(10, 3)
+  ownershipType   VehicleOwnershipType @default(OWNED)
+  status          VehicleStatus        @default(ACTIVE)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  assignedDriverId String? @unique
+  assignedDriver   User?   @relation("AssignedDriver", fields: [assignedDriverId], references: [id])
+
+  allowedCargos VehicleCargo[]
+  trips         Trip[]
+
+  @@map("vehicles")
+}
+
+model VehicleCargo {
+  vehicleId String
+  cargoId   String
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  cargo   Cargo   @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+
+  @@id([vehicleId, cargoId])
+  @@map("vehicle_cargos")
+}
+
+model Contractor {
+  id            String         @id @default(uuid())
+  name          String
+  inn           String?
+  legalAddress  String?
+  actualAddress String?
+  type          ContractorType
+  contactPhone  String?
+  contactPerson String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  senderRoutes   Route[] @relation("Sender")
+  receiverRoutes Route[] @relation("Receiver")
+
+  @@map("contractors")
+}
+
+model Cargo {
+  id              String   @id @default(uuid())
+  name            String
+  technicalSpec   String?
+  unCode          String?
+  hazardClass     String?
+  packagingMethod String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  vehicles VehicleCargo[]
+  trips    Trip[]
+
+  @@map("cargos")
+}
+
+model Route {
+  id               String   @id @default(uuid())
+  loadingAddress   String
+  unloadingAddress String
+  description      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  senderContractorId   String
+  senderContractor     Contractor @relation("Sender", fields: [senderContractorId], references: [id])
+  receiverContractorId String
+  receiverContractor   Contractor @relation("Receiver", fields: [receiverContractorId], references: [id])
+
+  trips Trip[]
+
+  @@map("routes")
+}
+
+model Trip {
+  id          String     @id @default(uuid())
+  status      TripStatus @default(ASSIGNED)
+  assignedAt  DateTime   @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  routeId   String
+  route     Route   @relation(fields: [routeId], references: [id])
+  driverId  String
+  driver    User    @relation(fields: [driverId], references: [id])
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  cargoId   String
+  cargo     Cargo   @relation(fields: [cargoId], references: [id])
+
+  waybill Waybill?
+
+  @@map("trips")
+}
+
+model Waybill {
+  id               String   @id @default(uuid())
+  ttnNumber        String
+  weight           Decimal  @db.Decimal(10, 3)
+  loadWeight       Decimal  @db.Decimal(10, 3)
+  driverFullName   String
+  photoUrl         String?
+  submittedAt      DateTime @default(now())
+  submittedOffline Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  tripId String @unique
+  trip   Trip   @relation(fields: [tripId], references: [id])
+
+  driverId String
+  driver   User @relation(fields: [driverId], references: [id])
+
+  @@map("waybills")
+}
