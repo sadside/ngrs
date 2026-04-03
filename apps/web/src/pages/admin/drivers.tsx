@@ -29,10 +29,6 @@ export function DriversPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Водители</h1>
-      </div>
-
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (

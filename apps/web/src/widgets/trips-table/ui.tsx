@@ -17,6 +17,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/shared/ui/select';
+import { Card } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 
 export function TripsTable() {
@@ -46,7 +47,7 @@ export function TripsTable() {
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value === '__all__' ? '' : value)}
         >
-          <SelectTrigger className="w-[220px]">
+          <SelectTrigger className="w-[220px] bg-white">
             <SelectValue placeholder="Все статусы" />
           </SelectTrigger>
           <SelectContent>
@@ -63,7 +64,7 @@ export function TripsTable() {
           placeholder="Поиск..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs"
+          className="max-w-xs bg-white"
         />
       </div>
 
@@ -72,40 +73,42 @@ export function TripsTable() {
       ) : !filtered?.length ? (
         <p className="text-muted-foreground py-8 text-center text-sm">Рейсы не найдены</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">#</TableHead>
-              <TableHead>Статус</TableHead>
-              <TableHead>Водитель</TableHead>
-              <TableHead>Маршрут</TableHead>
-              <TableHead>ТС</TableHead>
-              <TableHead>Груз</TableHead>
-              <TableHead>ТТН</TableHead>
-              <TableHead>Дата</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.map((trip, i) => (
-              <TableRow key={trip.id}>
-                <TableCell>{i + 1}</TableCell>
-                <TableCell>
-                  <TripStatusBadge status={trip.status} />
-                </TableCell>
-                <TableCell>{trip.driver.fullName}</TableCell>
-                <TableCell>
-                  {trip.route.senderContractor.name} → {trip.route.receiverContractor.name}
-                </TableCell>
-                <TableCell>{trip.vehicle.licensePlate}</TableCell>
-                <TableCell>{trip.cargo.name}</TableCell>
-                <TableCell>{trip.waybill?.ttnNumber ?? '—'}</TableCell>
-                <TableCell>
-                  {new Date(trip.assignedAt).toLocaleDateString('ru-RU')}
-                </TableCell>
+        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary-50 hover:bg-secondary-50">
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider w-12">#</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Статус</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Водитель</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Маршрут</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ТС</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Груз</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">ТТН</TableHead>
+                <TableHead className="text-secondary-500 font-medium text-xs uppercase tracking-wider">Дата</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((trip, i) => (
+                <TableRow key={trip.id} className="hover:bg-secondary-50/50">
+                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>
+                    <TripStatusBadge status={trip.status} />
+                  </TableCell>
+                  <TableCell>{trip.driver.fullName}</TableCell>
+                  <TableCell>
+                    {trip.route.senderContractor.name} → {trip.route.receiverContractor.name}
+                  </TableCell>
+                  <TableCell>{trip.vehicle.licensePlate}</TableCell>
+                  <TableCell>{trip.cargo.name}</TableCell>
+                  <TableCell>{trip.waybill?.ttnNumber ?? '—'}</TableCell>
+                  <TableCell>
+                    {new Date(trip.assignedAt).toLocaleDateString('ru-RU')}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
       )}
     </div>
   );

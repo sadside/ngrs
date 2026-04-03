@@ -13,6 +13,7 @@ import {
 import { useUnit } from 'effector-react';
 
 import { cn } from '@/shared/lib/utils';
+import { Separator } from '@/shared/ui/separator';
 import { $isAdmin } from '@/entities/session/model';
 
 const NAV_ITEMS = [
@@ -42,7 +43,8 @@ export function AdminSidebar() {
         <h1 className="text-2xl font-bold text-primary-500">Iridium</h1>
         <p className="text-xs text-muted mt-1">Управление перевозками</p>
       </div>
-      <nav className="flex-1 px-3 space-y-1">
+      <Separator className="mx-3" />
+      <nav className="flex-1 px-3 pt-3 space-y-1">
         {items.map((item) => {
           const isActive =
             item.to === '/'
@@ -55,16 +57,20 @@ export function AdminSidebar() {
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900',
+                  ? 'bg-primary-500 text-white'
+                  : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900',
               )}
             >
-              <item.icon size={20} weight={isActive ? 'fill' : 'regular'} />
+              <item.icon size={22} weight={isActive ? 'fill' : 'regular'} />
               {item.label}
             </Link>
           );
         })}
       </nav>
+      <div className="px-6 py-4">
+        <Separator className="mb-3" />
+        <p className="text-xs text-secondary-400">v0.0.1</p>
+      </div>
     </aside>
   );
 }
