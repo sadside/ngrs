@@ -64,7 +64,9 @@
   --color-popover-foreground: #040316;
   --color-muted: #f4f5f6;
   --color-muted-foreground: #5c6573;
+  --color-accent: #f0f5fb;
   --color-accent-foreground: #1f3b61;
+  --color-secondary: #f4f5f6;
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
   --color-primary: #ffa600;
