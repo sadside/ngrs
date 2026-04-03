@@ -4,17 +4,20 @@ import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { loginFn, getMeFn } from '@/entities/session/api';
 import { sessionSet } from '@/entities/session/model';
 import { setTokens } from '@/shared/lib/auth';
+import { cn } from '@/shared/lib/utils';
 
 interface LoginValues {
   login: string;
   password: string;
 }
+
+const inputClass =
+  'flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-base outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-primary-300';
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -62,14 +65,14 @@ export function LoginForm() {
         >
           <div className="space-y-2">
             <Label htmlFor="login">Логин</Label>
-            <Input
+            <input
               id="login"
               {...register('login', {
                 required: 'Введите логин',
                 minLength: { value: 3, message: 'Минимум 3 символа' },
               })}
               placeholder="Введите логин"
-              className={errors.login ? 'border-danger' : ''}
+              className={cn(inputClass, errors.login && 'border-danger')}
             />
             {errors.login && (
               <p className="text-sm text-danger">{errors.login.message}</p>
@@ -77,7 +80,7 @@ export function LoginForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Пароль</Label>
-            <Input
+            <input
               id="password"
               type="password"
               {...register('password', {
@@ -85,7 +88,7 @@ export function LoginForm() {
                 minLength: { value: 6, message: 'Минимум 6 символов' },
               })}
               placeholder="Введите пароль"
-              className={errors.password ? 'border-danger' : ''}
+              className={cn(inputClass, errors.password && 'border-danger')}
             />
             {errors.password && (
               <p className="text-sm text-danger">{errors.password.message}</p>

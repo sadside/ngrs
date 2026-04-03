@@ -5,10 +5,10 @@ import { toast } from 'sonner';
 import { IMaskInput } from 'react-imask';
 
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { registerFn } from '@/entities/session/api';
+import { cn } from '@/shared/lib/utils';
 
 interface RegisterValues {
   fullName: string;
@@ -16,6 +16,9 @@ interface RegisterValues {
   password: string;
   phone: string;
 }
+
+const inputClass =
+  'flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-base outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-primary-300';
 
 export function RegisterForm() {
   const navigate = useNavigate();
@@ -52,14 +55,14 @@ export function RegisterForm() {
         >
           <div className="space-y-2">
             <Label htmlFor="fullName">ФИО</Label>
-            <Input
+            <input
               id="fullName"
               {...register('fullName', {
                 required: 'Введите ФИО',
                 minLength: { value: 2, message: 'Минимум 2 символа' },
               })}
               placeholder="Иванов Иван Иванович"
-              className={errors.fullName ? 'border-danger' : ''}
+              className={cn(inputClass, errors.fullName && 'border-danger')}
             />
             {errors.fullName && (
               <p className="text-sm text-danger">{errors.fullName.message}</p>
@@ -67,14 +70,14 @@ export function RegisterForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="login">Логин</Label>
-            <Input
+            <input
               id="login"
               {...register('login', {
                 required: 'Введите логин',
                 minLength: { value: 3, message: 'Минимум 3 символа' },
               })}
               placeholder="Придумайте логин"
-              className={errors.login ? 'border-danger' : ''}
+              className={cn(inputClass, errors.login && 'border-danger')}
             />
             {errors.login && (
               <p className="text-sm text-danger">{errors.login.message}</p>
@@ -82,7 +85,7 @@ export function RegisterForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Пароль</Label>
-            <Input
+            <input
               id="password"
               type="password"
               {...register('password', {
@@ -90,7 +93,7 @@ export function RegisterForm() {
                 minLength: { value: 6, message: 'Минимум 6 символов' },
               })}
               placeholder="Минимум 6 символов"
-              className={errors.password ? 'border-danger' : ''}
+              className={cn(inputClass, errors.password && 'border-danger')}
             />
             {errors.password && (
               <p className="text-sm text-danger">{errors.password.message}</p>
@@ -108,7 +111,7 @@ export function RegisterForm() {
                   onAccept={(value: string) => field.onChange(value)}
                   placeholder="+7 (___) ___-__-__"
                   id="phone"
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm"
+                  className={inputClass}
                 />
               )}
             />
