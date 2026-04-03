@@ -6,6 +6,8 @@
     "api:build": "pnpm --filter @iridium/api run build",
     "db:migrate": "pnpm --filter @iridium/api run db:migrate",
     "db:seed": "pnpm --filter @iridium/api run db:seed",
-    "db:studio": "pnpm --filter @iridium/api run db:studio"
+    "db:studio": "pnpm --filter @iridium/api run db:studio",
+    "web:dev": "pnpm --filter @iridium/web run dev",
+    "web:build": "pnpm --filter @iridium/web run build"
   }
 }
