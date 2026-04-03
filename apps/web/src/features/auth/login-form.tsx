@@ -28,6 +28,10 @@ export function LoginForm() {
     formState: { errors },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      login: '',
+      password: '',
+    },
   });
 
   const mutation = useMutation({
@@ -54,7 +58,7 @@ export function LoginForm() {
   });
 
   return (
-    <Card className="w-full max-w-lg border-0 bg-white shadow-xl rounded-2xl">
+    <Card className="w-[520px] border-0 bg-white shadow-xl rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Вход</CardTitle>
       </CardHeader>
