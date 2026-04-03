@@ -19,11 +19,12 @@ export function ActiveTripPage() {
     return (
       <div className="space-y-4">
         <Button
-          variant="ghost"
-          className="gap-2 cursor-pointer"
+          variant="outline"
+          size="sm"
+          className="gap-2 cursor-pointer bg-white"
           onClick={() => navigate({ to: '/driver' })}
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} />
           Назад
         </Button>
         <p className="py-12 text-center text-muted-foreground">Рейс не найден</p>
@@ -40,11 +41,12 @@ export function ActiveTripPage() {
       {/* Back + Status */}
       <div className="flex items-center justify-between">
         <Button
-          variant="ghost"
-          className="gap-2 cursor-pointer -ml-2"
+          variant="outline"
+          size="sm"
+          className="gap-2 cursor-pointer bg-white"
           onClick={() => navigate({ to: '/driver' })}
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} />
           Назад
         </Button>
         <TripStatusBadge status={trip.status} />

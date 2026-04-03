@@ -58,29 +58,21 @@ export function DriverTripCard({ trip }: DriverTripCardProps) {
       }
     >
       {/* Header */}
-      <div className="px-4 py-3 flex items-center gap-3 border-b border-border">
-        <div
-          className={cn(
-            'p-2 rounded-lg shrink-0',
-            STATUS_ICON_BG[trip.status],
-          )}
-        >
-          <Icon
-            size={22}
-            weight="duotone"
-            className={STATUS_ICON_COLOR[trip.status]}
-          />
+      <div className="px-4 py-3 border-b border-border">
+        <div className="flex items-start justify-between gap-3 mb-1">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-secondary-400">Откуда</p>
+            <p className="font-semibold text-secondary-900">{trip.route.senderContractor.name}</p>
+          </div>
+          <TripStatusBadge status={trip.status} />
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-secondary-900 truncate">
-            {trip.route.senderContractor.name} &rarr;{' '}
-            {trip.route.receiverContractor.name}
-          </p>
-          <p className="text-sm text-secondary-400">
-            {trip.cargo.name} &middot; {trip.vehicle.licensePlate}
-          </p>
+        <div>
+          <p className="text-sm text-secondary-400">Куда</p>
+          <p className="font-semibold text-secondary-900">{trip.route.receiverContractor.name}</p>
         </div>
-        <TripStatusBadge status={trip.status} />
+        <p className="text-xs text-secondary-400 mt-1.5">
+          {trip.cargo.name} &middot; {trip.vehicle.licensePlate}
+        </p>
       </div>
 
       {/* Body */}
