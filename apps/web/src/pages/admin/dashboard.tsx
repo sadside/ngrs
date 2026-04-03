@@ -65,8 +65,14 @@ export function DashboardPage() {
             <h2 className="font-semibold text-secondary-900">Активные рейсы</h2>
           </div>
           {activeTrips.length === 0 ? (
-            <div className="px-4 py-10 text-center">
-              <p className="text-sm text-secondary-400">Нет активных рейсов</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-12">
+              <div className="p-3 rounded-2xl bg-primary-50">
+                <Truck size={32} weight="light" className="text-primary-400" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium text-secondary-900">Нет активных рейсов</p>
+                <p className="text-xs text-secondary-400 mt-0.5">Создайте рейс в разделе «Рейсы»</p>
+              </div>
             </div>
           ) : (
             <div className="divide-y divide-secondary-100 max-h-[400px] overflow-y-auto">
@@ -108,7 +114,15 @@ export function DashboardPage() {
           </div>
           <div className="divide-y divide-secondary-100 max-h-[400px] overflow-y-auto">
             {recentWaybills.length === 0 && (
-              <p className="text-sm text-secondary-400 px-5 py-3">Нет накладных</p>
+              <div className="flex flex-col items-center justify-center gap-3 py-12">
+                <div className="p-3 rounded-2xl bg-accent-50">
+                  <FileText size={32} weight="light" className="text-accent-400" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-medium text-secondary-900">Нет накладных</p>
+                  <p className="text-xs text-secondary-400 mt-0.5">Накладные появятся после отправки водителями</p>
+                </div>
+              </div>
             )}
             {recentWaybills.map((wb) => (
               <div key={wb.id} className="flex items-center gap-3 px-4 py-3">
