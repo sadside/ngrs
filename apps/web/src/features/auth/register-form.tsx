@@ -50,6 +50,7 @@ export function RegisterForm() {
       </CardHeader>
       <CardContent className="p-8 pt-0">
         <form
+          noValidate
           onSubmit={handleSubmit((data) => mutation.mutate(data))}
           className="space-y-4"
         >
