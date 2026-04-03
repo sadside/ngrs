@@ -1,0 +1,100 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
+
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { loginFn, getMeFn } from '@/entities/session/api';
+import { sessionSet } from '@/entities/session/model';
+import { setTokens } from '@/shared/lib/auth';
+
+const loginSchema = z.object({
+  login: z.string().min(3, 'Минимум 3 символа'),
+  password: z.string().min(6, 'Минимум 6 символов'),
+});
+
+type LoginValues = z.infer<typeof loginSchema>;
+
+export function LoginForm() {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const mutation = useMutation({
+    mutationFn: loginFn,
+    onSuccess: async (data) => {
+      if (data.status === 'PENDING') {
+        navigate({ to: '/pending' });
+        return;
+      }
+      if (data.accessToken && data.refreshToken) {
+        setTokens(data.accessToken, data.refreshToken);
+        const user = await getMeFn();
+        sessionSet(user);
+        if (user.role === 'DRIVER') {
+          navigate({ to: '/driver' });
+        } else {
+          navigate({ to: '/' });
+        }
+      }
+    },
+    onError: () => {
+      toast.error('Неверный логин или пароль');
+    },
+  });
+
+  return (
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl text-center">Вход</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form
+          onSubmit={handleSubmit((data) => mutation.mutate(data))}
+          className="space-y-4"
+        >
+          <div className="space-y-2">
+            <Label htmlFor="login">Логин</Label>
+            <Input
+              id="login"
+              {...register('login')}
+              placeholder="Введите логин"
+            />
+            {errors.login && (
+              <p className="text-sm text-danger">{errors.login.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Пароль</Label>
+            <Input
+              id="password"
+              type="password"
+              {...register('password')}
+              placeholder="Введите пароль"
+            />
+            {errors.password && (
+              <p className="text-sm text-danger">{errors.password.message}</p>
+            )}
+          </div>
+          <Button
+            type="submit"
+            className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? 'Вход...' : 'Войти'}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
