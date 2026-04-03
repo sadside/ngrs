@@ -4,7 +4,7 @@ import { TripStatusBadge } from '@/entities/trip/ui';
 import { DashboardStats } from '@/widgets/dashboard-stats/ui';
 import { Card } from '@/shared/ui/card';
 import { cn } from '@/shared/lib/utils';
-import { ClipboardText, Package, Truck } from '@phosphor-icons/react';
+import { ClipboardText, FileText, Package, Truck } from '@phosphor-icons/react';
 
 const TRIP_STATUS_CONFIG = {
   ASSIGNED: {
@@ -61,16 +61,16 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active trips — left 2/3 */}
         <Card className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-secondary-100">
-          <div className="px-5 py-3">
+          <div className="px-3 py-4">
             <h2 className="font-semibold text-secondary-900">Активные рейсы</h2>
           </div>
           {activeTrips.length === 0 ? (
-            <div className="px-5 py-10 text-center">
+            <div className="px-4 py-10 text-center">
               <p className="text-sm text-secondary-400">Нет активных рейсов</p>
             </div>
           ) : (
-            <div className="divide-y divide-secondary-100">
-              {activeTrips.map((trip) => {
+            <div className="divide-y divide-secondary-100 max-h-[400px] overflow-y-auto">
+              {[...activeTrips, ...activeTrips, ...activeTrips, ...activeTrips].map((trip) => {
                 const config = TRIP_STATUS_CONFIG[trip.status as keyof typeof TRIP_STATUS_CONFIG];
                 const StatusIcon = config?.icon ?? Truck;
                 const statusIconBg = config?.iconBg ?? 'bg-secondary-100';
@@ -79,7 +79,7 @@ export function DashboardPage() {
                 return (
                   <div
                     key={trip.id}
-                    className="flex items-center gap-4 px-5 py-3 hover:bg-secondary-50/50 transition-colors"
+                    className="flex items-center gap-4 px-4 py-3 hover:bg-secondary-50/50 transition-colors"
                   >
                     <div className={cn('p-2.5 rounded-lg', statusIconBg)}>
                       <StatusIcon size={20} className={statusIconColor} weight="duotone" />
@@ -106,17 +106,20 @@ export function DashboardPage() {
           <div className="px-5 py-3">
             <h2 className="font-semibold text-secondary-900">Последние накладные</h2>
           </div>
-          <div className="divide-y divide-secondary-100">
+          <div className="divide-y divide-secondary-100 max-h-[400px] overflow-y-auto">
             {recentWaybills.length === 0 && (
               <p className="text-sm text-secondary-400 px-5 py-3">Нет накладных</p>
             )}
             {recentWaybills.map((wb) => (
-              <div key={wb.id} className="px-5 py-3 flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-secondary-900">ТТН {wb.ttnNumber}</p>
-                  <p className="text-sm text-secondary-400">{wb.driverFullName}</p>
+              <div key={wb.id} className="flex items-center gap-3 px-4 py-3">
+                <div className="p-2 rounded-lg bg-primary-50">
+                  <FileText size={18} className="text-primary-500" weight="duotone" />
                 </div>
-                <span className="text-sm text-secondary-400">
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-secondary-900">ТТН {wb.ttnNumber}</p>
+                  <p className="text-xs text-secondary-500">{wb.driverFullName}</p>
+                </div>
+                <span className="text-xs text-secondary-400 whitespace-nowrap">
                   {new Date(wb.submittedAt).toLocaleTimeString('ru-RU', {
                     hour: '2-digit',
                     minute: '2-digit',
