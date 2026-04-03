@@ -150,7 +150,7 @@ export function UsersPage() {
                 />
                 {errors.role && <p className="text-sm text-danger">{errors.role.message}</p>}
               </div>
-              <Button type="submit" className="w-full" disabled={createUser.isPending}>
+              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createUser.isPending}>
                 {createUser.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>

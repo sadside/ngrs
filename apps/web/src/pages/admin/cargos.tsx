@@ -103,7 +103,7 @@ export function CargosPage() {
                 <Label>Упаковка (необязательно)</Label>
                 <Input {...register('packagingMethod')} placeholder="Цистерна" className="bg-white" />
               </div>
-              <Button type="submit" className="w-full" disabled={createCargo.isPending}>
+              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createCargo.isPending}>
                 {createCargo.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>

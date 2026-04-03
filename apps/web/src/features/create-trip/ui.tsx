@@ -165,7 +165,7 @@ export function CreateTripDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Отмена
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={isSubmitting}>
               {isSubmitting ? 'Создание...' : 'Создать'}
             </Button>
           </div>

@@ -150,9 +150,9 @@ export function RoutesPage() {
               </div>
               <div className="space-y-2">
                 <Label>Описание (необязательно)</Label>
-                <Textarea {...register('description')} placeholder="Дополнительная информация..." />
+                <Textarea {...register('description')} placeholder="Дополнительная информация..." className="bg-white" />
               </div>
-              <Button type="submit" className="w-full" disabled={createRoute.isPending}>
+              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createRoute.isPending}>
                 {createRoute.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>

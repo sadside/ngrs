@@ -186,7 +186,7 @@ export function VehiclesPage() {
                   ))}
                 </div>
               </div>
-              <Button type="submit" className="w-full" disabled={createVehicle.isPending}>
+              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createVehicle.isPending}>
                 {createVehicle.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>

@@ -144,7 +144,7 @@ export function ContractorsPage() {
                 <Label>Контактное лицо (необязательно)</Label>
                 <Input {...register('contactPerson')} className="bg-white" />
               </div>
-              <Button type="submit" className="w-full" disabled={createContractor.isPending}>
+              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createContractor.isPending}>
                 {createContractor.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>
