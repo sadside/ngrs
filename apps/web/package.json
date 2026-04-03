@@ -18,6 +18,8 @@
     "axios": "^1.7.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.6",
     "effector": "^23.2.0",
     "effector-react": "^23.2.0",
     "imask": "^7.6.1",
