@@ -32,6 +32,17 @@ export const TRIP_STATUS_COLORS: Record<string, string> = {
   CANCELLED: 'bg-red-100 text-red-800',
 };
 
+export const VEHICLE_STATUS_LABELS: Record<string, string> = {
+  ACTIVE: 'Активен',
+  INACTIVE: 'Неактивен',
+};
+
+export const CONTRACTOR_TYPE_LABELS: Record<string, string> = {
+  SENDER: 'Грузоотправитель',
+  RECEIVER: 'Грузополучатель',
+  BOTH: 'Грузоотправитель/получатель',
+};
+
 export const OWNERSHIP_LABELS: Record<string, string> = {
   OWNED: 'Собственность',
   JOINT: 'Совместная',

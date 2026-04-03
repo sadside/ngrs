@@ -42,7 +42,7 @@ export function TripsTable() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col flex-1 gap-4">
       <div className="flex items-center gap-3">
         <Select
           value={statusFilter}

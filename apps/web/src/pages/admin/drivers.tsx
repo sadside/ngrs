@@ -29,7 +29,7 @@ export function DriversPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col flex-1 gap-4">
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (

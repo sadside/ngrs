@@ -33,11 +33,7 @@ import {
 } from '@/shared/ui/select';
 import { useContractors, useCreateContractor } from '@/entities/contractor/api';
 
-const CONTRACTOR_TYPE_LABELS: Record<string, string> = {
-  SENDER: 'Грузоотправитель',
-  RECEIVER: 'Грузополучатель',
-  BOTH: 'Оба',
-};
+import { CONTRACTOR_TYPE_LABELS } from '@/shared/config/constants';
 
 const contractorSchema = z.object({
   name: z.string().min(1, 'Обязательное поле'),
@@ -87,7 +83,7 @@ export function ContractorsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col flex-1 gap-4">
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

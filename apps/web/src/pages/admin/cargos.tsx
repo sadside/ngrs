@@ -70,7 +70,7 @@ export function CargosPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col flex-1 gap-4">
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

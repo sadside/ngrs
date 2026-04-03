@@ -32,7 +32,7 @@ export function WaybillsTable() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col flex-1 gap-4">
       <Input
         placeholder="Поиск по № ТТН..."
         value={search}

@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from '@/shared/ui/select';
 import { Badge } from '@/shared/ui/badge';
-import { OWNERSHIP_LABELS } from '@/shared/config/constants';
+import { OWNERSHIP_LABELS, VEHICLE_STATUS_LABELS } from '@/shared/config/constants';
 import { useVehicles, useCreateVehicle } from '@/entities/vehicle/api';
 import { useUsers } from '@/entities/user/api';
 import { useCargos } from '@/entities/cargo/api';
@@ -99,7 +99,7 @@ export function VehiclesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col flex-1 gap-4">
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -220,7 +220,7 @@ export function VehiclesPage() {
                 <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
                 <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{v.status}</Badge>
+                  <Badge variant="secondary">{VEHICLE_STATUS_LABELS[v.status] ?? v.status}</Badge>
                 </TableCell>
                 <TableCell>
                   <Button
