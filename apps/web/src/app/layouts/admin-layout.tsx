@@ -1,17 +1,31 @@
 import { Outlet } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+
+import { AdminSidebar } from '@/widgets/admin-sidebar/ui';
+import { AdminHeader } from '@/widgets/admin-header/ui';
+import { getMeFn } from '@/entities/session/api';
+import { sessionSet } from '@/entities/session/model';
 
 export function AdminLayout() {
+  const { data: user } = useQuery({
+    queryKey: ['session', 'me'],
+    queryFn: getMeFn,
+  });
+
+  useEffect(() => {
+    if (user) sessionSet(user);
+  }, [user]);
+
   return (
     <div className="flex h-screen bg-background">
-      <aside className="w-64 border-r border-secondary-100 bg-white p-4">
-        <div className="text-xl font-bold text-primary-500 mb-8">Iridium</div>
-        <nav className="text-sm text-secondary-700">
-          <p className="py-2">Sidebar placeholder</p>
-        </nav>
-      </aside>
-      <main className="flex-1 overflow-auto p-6">
-        <Outlet />
-      </main>
+      <AdminSidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminHeader />
+        <main className="flex-1 overflow-auto p-6">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
