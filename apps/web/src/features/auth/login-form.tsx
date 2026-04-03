@@ -54,14 +54,14 @@ export function LoginForm() {
   });
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-md border-0 bg-white shadow-xl rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Вход</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-8 pt-0">
         <form
           onSubmit={handleSubmit((data) => mutation.mutate(data))}
-          className="space-y-4"
+          className="space-y-5"
         >
           <div className="space-y-2">
             <Label htmlFor="login">Логин</Label>
@@ -88,7 +88,7 @@ export function LoginForm() {
           </div>
           <Button
             type="submit"
-            className="w-full bg-primary-500 hover:bg-primary-600 text-white"
+            className="w-full h-11 bg-primary-500 hover:bg-primary-600 text-white"
             disabled={mutation.isPending}
           >
             {mutation.isPending ? 'Вход...' : 'Войти'}
