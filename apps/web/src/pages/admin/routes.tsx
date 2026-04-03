@@ -50,6 +50,7 @@ export function RoutesPage() {
   const { data: contractors } = useContractors();
   const createRoute = useCreateRoute();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{id: string; name: string} | null>(null);
 
   const {
     register,
@@ -78,10 +79,11 @@ export function RoutesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center gap-3">
+        <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -171,6 +173,7 @@ export function RoutesPage() {
               <TableHead>Адрес погрузки</TableHead>
               <TableHead>Адрес выгрузки</TableHead>
               <TableHead>Описание</TableHead>
+              <TableHead>Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -181,11 +184,21 @@ export function RoutesPage() {
                 <TableCell>{r.loadingAddress}</TableCell>
                 <TableCell>{r.unloadingAddress}</TableCell>
                 <TableCell>{r.description ?? '—'}</TableCell>
+                <TableCell>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="cursor-pointer"
+                    onClick={() => setDeleteTarget({ id: r.id, name: `${r.senderContractor.name} → ${r.receiverContractor.name}` })}
+                  >
+                    Удалить
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
             {routes?.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                <TableCell colSpan={6} className="text-center text-muted-foreground">
                   Нет данных
                 </TableCell>
               </TableRow>
@@ -193,6 +206,32 @@ export function RoutesPage() {
           </TableBody>
         </Table>
       )}
+
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Подтверждение удаления</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground py-4">
+            Вы действительно хотите удалить <span className="font-medium text-foreground">{deleteTarget?.name}</span>?
+          </p>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="cursor-pointer">
+              Отмена
+            </Button>
+            <Button
+              variant="destructive"
+              className="cursor-pointer"
+              onClick={() => {
+                toast.info('Функция удаления будет добавлена позже');
+                setDeleteTarget(null);
+              }}
+            >
+              Удалить
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

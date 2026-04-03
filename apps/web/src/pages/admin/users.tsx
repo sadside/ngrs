@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Plus, Check, X } from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -99,10 +99,11 @@ export function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center gap-3">
+        <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -189,25 +190,25 @@ export function UsersPage() {
                 <TableCell>{u.phone ?? '—'}</TableCell>
                 <TableCell>{new Date(u.createdAt).toLocaleDateString('ru-RU')}</TableCell>
                 <TableCell>
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     {u.status !== 'ACTIVE' && (
                       <Button
                         size="sm"
-                        variant="ghost"
+                        variant="outline"
+                        className="cursor-pointer"
                         onClick={() => handleApprove(u.id)}
-                        title="Активировать"
                       >
-                        <Check size={16} className="text-green-600" />
+                        Активировать
                       </Button>
                     )}
                     {u.status !== 'BLOCKED' && (
                       <Button
                         size="sm"
-                        variant="ghost"
+                        variant="destructive"
+                        className="cursor-pointer"
                         onClick={() => handleBlock(u.id)}
-                        title="Заблокировать"
                       >
-                        <X size={16} className="text-red-600" />
+                        Заблокировать
                       </Button>
                     )}
                   </div>

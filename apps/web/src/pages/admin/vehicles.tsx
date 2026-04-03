@@ -55,6 +55,7 @@ export function VehiclesPage() {
   const { data: cargos } = useCargos();
   const createVehicle = useCreateVehicle();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{id: string; name: string} | null>(null);
 
   const {
     register,
@@ -99,10 +100,11 @@ export function VehiclesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center gap-3">
+        <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+            <Button className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer">
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -206,6 +208,7 @@ export function VehiclesPage() {
               <TableHead>Водитель</TableHead>
               <TableHead>Тип владения</TableHead>
               <TableHead>Статус</TableHead>
+              <TableHead>Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -219,11 +222,21 @@ export function VehiclesPage() {
                 <TableCell>
                   <Badge variant="secondary">{v.status}</Badge>
                 </TableCell>
+                <TableCell>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="cursor-pointer"
+                    onClick={() => setDeleteTarget({ id: v.id, name: `${v.brand} ${v.model} (${v.licensePlate})` })}
+                  >
+                    Удалить
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
             {vehicles?.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   Нет данных
                 </TableCell>
               </TableRow>
@@ -231,6 +244,32 @@ export function VehiclesPage() {
           </TableBody>
         </Table>
       )}
+
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Подтверждение удаления</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground py-4">
+            Вы действительно хотите удалить <span className="font-medium text-foreground">{deleteTarget?.name}</span>?
+          </p>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="cursor-pointer">
+              Отмена
+            </Button>
+            <Button
+              variant="destructive"
+              className="cursor-pointer"
+              onClick={() => {
+                toast.info('Функция удаления будет добавлена позже');
+                setDeleteTarget(null);
+              }}
+            >
+              Удалить
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
