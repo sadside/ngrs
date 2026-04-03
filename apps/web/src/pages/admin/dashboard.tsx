@@ -105,6 +105,13 @@ export function DashboardPage() {
       ),
     [last7],
   );
+  const dayFullDates = useMemo(
+    () =>
+      last7.map((d) =>
+        new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
+      ),
+    [last7],
+  );
   const tripsPerDay = useMemo(
     () =>
       last7.map(
@@ -149,7 +156,14 @@ export function DashboardPage() {
 
   const tripsChartOption = useMemo(
     () => ({
-      tooltip: { trigger: 'axis' as const },
+      tooltip: {
+        trigger: 'axis' as const,
+        formatter: (params: any) => {
+          const idx = params[0]?.dataIndex ?? 0;
+          const val = params[0]?.value ?? 0;
+          return `<b>${dayFullDates[idx]}</b><br/>Рейсов: ${val}`;
+        },
+      },
       grid: { left: 40, right: 20, top: 10, bottom: 30 },
       xAxis: {
         type: 'category' as const,
@@ -174,12 +188,19 @@ export function DashboardPage() {
         },
       ],
     }),
-    [dayLabels, tripsPerDay],
+    [dayLabels, dayFullDates, tripsPerDay],
   );
 
   const weightChartOption = useMemo(
     () => ({
-      tooltip: { trigger: 'axis' as const },
+      tooltip: {
+        trigger: 'axis' as const,
+        formatter: (params: any) => {
+          const idx = params[0]?.dataIndex ?? 0;
+          const val = params[0]?.value ?? 0;
+          return `<b>${dayFullDates[idx]}</b><br/>Вес: ${val} тн`;
+        },
+      },
       grid: { left: 50, right: 20, top: 10, bottom: 30 },
       xAxis: {
         type: 'category' as const,
@@ -211,7 +232,7 @@ export function DashboardPage() {
         },
       ],
     }),
-    [dayLabels, weightPerDay],
+    [dayLabels, dayFullDates, weightPerDay],
   );
 
   return (
@@ -225,26 +246,31 @@ export function DashboardPage() {
           trendUp={trendPercent >= 0}
           icon={Truck}
           dark
+          index={0}
         />
         <StatCard
           label="В пути"
           value={activeTrips.length}
           icon={Path}
+          index={1}
         />
         <StatCard
           label="Завершено"
           value={completedToday.length}
           icon={CheckCircle}
+          index={2}
         />
         <StatCard
           label="Накладных"
           value={waybillsToday.length}
           icon={FileText}
+          index={3}
         />
         <StatCard
           label="Водителей"
           value={activeDrivers}
           icon={Users}
+          index={4}
         />
       </div>
 
