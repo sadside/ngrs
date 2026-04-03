@@ -110,25 +110,25 @@ export function VehiclesPage() {
             <DialogHeader>
               <DialogTitle>Новое транспортное средство</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
               <div className="space-y-2">
                 <Label>Марка</Label>
-                <Input {...register('brand')} placeholder="КАМАЗ" className="bg-white" />
+                <Input {...register('brand')} placeholder="КАМАЗ" />
                 {errors.brand && <p className="text-sm text-danger">{errors.brand.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Модель</Label>
-                <Input {...register('model')} placeholder="65115" className="bg-white" />
+                <Input {...register('model')} placeholder="65115" />
                 {errors.model && <p className="text-sm text-danger">{errors.model.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Госномер</Label>
-                <Input {...register('licensePlate')} placeholder="А123БВ777" className="bg-white" />
+                <Input {...register('licensePlate')} placeholder="А123БВ777" />
                 {errors.licensePlate && <p className="text-sm text-danger">{errors.licensePlate.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Прицеп (необязательно)</Label>
-                <Input {...register('trailerPlate')} placeholder="АА1234 77" className="bg-white" />
+                <Input {...register('trailerPlate')} placeholder="АА1234 77" />
               </div>
               <div className="space-y-2">
                 <Label>Тип владения</Label>
@@ -137,7 +137,7 @@ export function VehiclesPage() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Выберите..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -157,7 +157,7 @@ export function VehiclesPage() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value ?? ''} onValueChange={(val) => field.onChange(val === '__none__' ? '' : val)}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Не назначен" />
                       </SelectTrigger>
                       <SelectContent>

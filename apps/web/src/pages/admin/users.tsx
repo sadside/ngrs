@@ -110,25 +110,25 @@ export function UsersPage() {
             <DialogHeader>
               <DialogTitle>Новый пользователь</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
               <div className="space-y-2">
                 <Label>Логин</Label>
-                <Input {...register('login')} placeholder="ivanov" className="bg-white" />
+                <Input {...register('login')} placeholder="ivanov" />
                 {errors.login && <p className="text-sm text-danger">{errors.login.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Пароль</Label>
-                <Input type="password" {...register('password')} placeholder="Минимум 6 символов" className="bg-white" />
+                <Input type="password" {...register('password')} placeholder="Минимум 6 символов" />
                 {errors.password && <p className="text-sm text-danger">{errors.password.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ФИО</Label>
-                <Input {...register('fullName')} placeholder="Иванов Иван Иванович" className="bg-white" />
+                <Input {...register('fullName')} placeholder="Иванов Иван Иванович" />
                 {errors.fullName && <p className="text-sm text-danger">{errors.fullName.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Телефон (необязательно)</Label>
-                <Input {...register('phone')} placeholder="+7..." className="bg-white" />
+                <Input {...register('phone')} placeholder="+7..." />
               </div>
               <div className="space-y-2">
                 <Label>Роль</Label>
@@ -137,7 +137,7 @@ export function UsersPage() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Выберите..." />
                       </SelectTrigger>
                       <SelectContent>

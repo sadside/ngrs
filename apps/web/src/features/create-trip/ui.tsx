@@ -44,7 +44,7 @@ export function CreateTripDialog() {
     handleSubmit,
     reset,
     control,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<CreateTripForm>();
 
   const onSubmit = async (data: CreateTripForm) => {
@@ -68,16 +68,16 @@ export function CreateTripDialog() {
           <DialogTitle>Новый рейс</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
           <div className="space-y-2">
             <Label>Маршрут</Label>
             <Controller
               name="routeId"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: 'Обязательное поле' }}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Выберите маршрут" />
                   </SelectTrigger>
                   <SelectContent>
@@ -90,6 +90,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
+            {errors.routeId && <p className="text-sm text-danger">{errors.routeId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -97,10 +98,10 @@ export function CreateTripDialog() {
             <Controller
               name="driverId"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: 'Обязательное поле' }}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Выберите водителя" />
                   </SelectTrigger>
                   <SelectContent>
@@ -113,6 +114,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
+            {errors.driverId && <p className="text-sm text-danger">{errors.driverId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -120,10 +122,10 @@ export function CreateTripDialog() {
             <Controller
               name="vehicleId"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: 'Обязательное поле' }}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Выберите ТС" />
                   </SelectTrigger>
                   <SelectContent>
@@ -136,6 +138,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
+            {errors.vehicleId && <p className="text-sm text-danger">{errors.vehicleId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -143,10 +146,10 @@ export function CreateTripDialog() {
             <Controller
               name="cargoId"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: 'Обязательное поле' }}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full bg-white">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Выберите груз" />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,6 +162,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
+            {errors.cargoId && <p className="text-sm text-danger">{errors.cargoId.message}</p>}
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

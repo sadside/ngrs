@@ -81,27 +81,27 @@ export function CargosPage() {
             <DialogHeader>
               <DialogTitle>Новый груз</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
               <div className="space-y-2">
                 <Label>Название</Label>
-                <Input {...register('name')} placeholder="Бензин АИ-92" className="bg-white" />
+                <Input {...register('name')} placeholder="Бензин АИ-92" />
                 {errors.name && <p className="text-sm text-danger">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ТУ (необязательно)</Label>
-                <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" className="bg-white" />
+                <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" />
               </div>
               <div className="space-y-2">
                 <Label>UN код (необязательно)</Label>
-                <Input {...register('unCode')} placeholder="1203" className="bg-white" />
+                <Input {...register('unCode')} placeholder="1203" />
               </div>
               <div className="space-y-2">
                 <Label>Класс опасности (необязательно)</Label>
-                <Input {...register('hazardClass')} placeholder="3" className="bg-white" />
+                <Input {...register('hazardClass')} placeholder="3" />
               </div>
               <div className="space-y-2">
                 <Label>Упаковка (необязательно)</Label>
-                <Input {...register('packagingMethod')} placeholder="Цистерна" className="bg-white" />
+                <Input {...register('packagingMethod')} placeholder="Цистерна" />
               </div>
               <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createCargo.isPending}>
                 {createCargo.isPending ? 'Создание...' : 'Создать'}

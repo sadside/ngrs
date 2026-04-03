@@ -37,7 +37,7 @@ export function WaybillsTable() {
         placeholder="Поиск по № ТТН..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="max-w-sm bg-white"
+        className="max-w-sm"
       />
 
       <Table>

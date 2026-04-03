@@ -89,7 +89,7 @@ export function RoutesPage() {
             <DialogHeader>
               <DialogTitle>Новый маршрут</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
               <div className="space-y-2">
                 <Label>Отправитель</Label>
                 <Controller
@@ -97,7 +97,7 @@ export function RoutesPage() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Выберите..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -119,7 +119,7 @@ export function RoutesPage() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Выберите..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -136,21 +136,21 @@ export function RoutesPage() {
               </div>
               <div className="space-y-2">
                 <Label>Адрес погрузки</Label>
-                <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." className="bg-white" />
+                <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." />
                 {errors.loadingAddress && (
                   <p className="text-sm text-danger">{errors.loadingAddress.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Адрес выгрузки</Label>
-                <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." className="bg-white" />
+                <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." />
                 {errors.unloadingAddress && (
                   <p className="text-sm text-danger">{errors.unloadingAddress.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Описание (необязательно)</Label>
-                <Textarea {...register('description')} placeholder="Дополнительная информация..." className="bg-white" />
+                <Textarea {...register('description')} placeholder="Дополнительная информация..." />
               </div>
               <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createRoute.isPending}>
                 {createRoute.isPending ? 'Создание...' : 'Создать'}

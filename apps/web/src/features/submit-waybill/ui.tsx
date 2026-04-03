@@ -56,7 +56,7 @@ export function SubmitWaybillForm({ tripId, driverFullName }: SubmitWaybillFormP
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       <h3 className="text-lg font-semibold">Накладная</h3>
 
       <div className="space-y-1.5">

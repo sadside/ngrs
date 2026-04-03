@@ -98,15 +98,15 @@ export function ContractorsPage() {
             <DialogHeader>
               <DialogTitle>Новый контрагент</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
               <div className="space-y-2">
                 <Label>Название</Label>
-                <Input {...register('name')} placeholder="ООО Компания" className="bg-white" />
+                <Input {...register('name')} placeholder="ООО Компания" />
                 {errors.name && <p className="text-sm text-danger">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ИНН (необязательно)</Label>
-                <Input {...register('inn')} placeholder="1234567890" className="bg-white" />
+                <Input {...register('inn')} placeholder="1234567890" />
               </div>
               <div className="space-y-2">
                 <Label>Тип</Label>
@@ -115,7 +115,7 @@ export function ContractorsPage() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Выберите..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -130,19 +130,19 @@ export function ContractorsPage() {
               </div>
               <div className="space-y-2">
                 <Label>Юридический адрес (необязательно)</Label>
-                <Input {...register('legalAddress')} className="bg-white" />
+                <Input {...register('legalAddress')} />
               </div>
               <div className="space-y-2">
                 <Label>Фактический адрес (необязательно)</Label>
-                <Input {...register('actualAddress')} className="bg-white" />
+                <Input {...register('actualAddress')} />
               </div>
               <div className="space-y-2">
                 <Label>Телефон (необязательно)</Label>
-                <Input {...register('contactPhone')} placeholder="+7..." className="bg-white" />
+                <Input {...register('contactPhone')} placeholder="+7..." />
               </div>
               <div className="space-y-2">
                 <Label>Контактное лицо (необязательно)</Label>
-                <Input {...register('contactPerson')} className="bg-white" />
+                <Input {...register('contactPerson')} />
               </div>
               <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createContractor.isPending}>
                 {createContractor.isPending ? 'Создание...' : 'Создать'}

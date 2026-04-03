@@ -19,6 +19,7 @@ import {
 } from '@/shared/ui/select';
 
 import { Input } from '@/shared/ui/input';
+import { CreateTripDialog } from '@/features/create-trip/ui';
 
 export function TripsTable() {
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -47,7 +48,7 @@ export function TripsTable() {
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value === '__all__' ? '' : value)}
         >
-          <SelectTrigger className="w-[220px] bg-white">
+          <SelectTrigger className="w-[220px]">
             <SelectValue placeholder="Все статусы" />
           </SelectTrigger>
           <SelectContent>
@@ -64,8 +65,12 @@ export function TripsTable() {
           placeholder="Поиск..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs bg-white"
+          className="max-w-xs"
         />
+
+        <div className="flex-1" />
+
+        <CreateTripDialog />
       </div>
 
       {isLoading ? (
