@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router';
-import { ArrowLeft, MapPin, Truck, Package } from '@phosphor-icons/react';
+import { ArrowLeft, MapPin, Truck, Package, FileText, CheckCircle } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
 import { TripStatusBadge } from '@/entities/trip/ui';
 import { useTrip } from '@/entities/trip/api';
 import { StatusButtons } from '@/features/update-trip-status/ui';
@@ -13,11 +12,7 @@ export function ActiveTripPage() {
   const { data: trip, isLoading } = useTrip(tripId);
 
   if (isLoading) {
-    return (
-      <p className="py-12 text-center text-lg text-muted-foreground">
-        Загрузка...
-      </p>
-    );
+    return <p className="py-12 text-center text-muted-foreground">Загрузка...</p>;
   }
 
   if (!trip) {
@@ -25,15 +20,13 @@ export function ActiveTripPage() {
       <div className="space-y-4">
         <Button
           variant="ghost"
-          className="gap-2 text-base"
+          className="gap-2 cursor-pointer"
           onClick={() => navigate({ to: '/driver' })}
         >
-          <ArrowLeft size={22} />
+          <ArrowLeft size={18} />
           Назад
         </Button>
-        <p className="py-12 text-center text-lg text-muted-foreground">
-          Рейс не найден
-        </p>
+        <p className="py-12 text-center text-muted-foreground">Рейс не найден</p>
       </div>
     );
   }
@@ -43,99 +36,93 @@ export function ActiveTripPage() {
     (trip.status === 'LOADING' || trip.status === 'EN_ROUTE_TO_LOADING');
 
   return (
-    <div className="space-y-5">
-      <Button
-        variant="ghost"
-        className="gap-2 text-base"
-        onClick={() => navigate({ to: '/driver' })}
-      >
-        <ArrowLeft size={22} />
-        Назад
-      </Button>
+    <div className="space-y-4">
+      {/* Back + Status */}
+      <div className="flex items-center justify-between">
+        <Button
+          variant="ghost"
+          className="gap-2 cursor-pointer -ml-2"
+          onClick={() => navigate({ to: '/driver' })}
+        >
+          <ArrowLeft size={18} />
+          Назад
+        </Button>
+        <TripStatusBadge status={trip.status} />
+      </div>
 
-      {/* Trip info */}
-      <Card>
-        <CardContent className="space-y-4">
-          <div className="flex items-start justify-between gap-2">
-            <h2 className="text-xl font-bold leading-tight">
-              {trip.route.senderContractor.name} &rarr;{' '}
-              {trip.route.receiverContractor.name}
-            </h2>
-            <TripStatusBadge status={trip.status} />
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <MapPin size={22} weight="fill" className="mt-0.5 shrink-0 text-green-600" />
-              <div>
-                <span className="text-sm text-muted-foreground">Погрузка</span>
-                <p className="text-lg leading-snug">{trip.route.loadingAddress}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <MapPin size={22} weight="fill" className="mt-0.5 shrink-0 text-red-600" />
-              <div>
-                <span className="text-sm text-muted-foreground">Выгрузка</span>
-                <p className="text-lg leading-snug">{trip.route.unloadingAddress}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Package size={22} className="mt-0.5 shrink-0 text-muted-foreground" />
-              <p className="text-lg">{trip.cargo.name}</p>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Truck size={22} className="mt-0.5 shrink-0 text-muted-foreground" />
-              <p className="text-lg">{trip.vehicle.licensePlate}</p>
+      {/* Route card */}
+      <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
+          <p className="font-semibold text-secondary-900">
+            {trip.route.senderContractor.name} &rarr; {trip.route.receiverContractor.name}
+          </p>
+          <p className="text-sm text-secondary-400 mt-0.5">
+            {trip.cargo.name} &middot; {trip.vehicle.licensePlate}
+          </p>
+        </div>
+        <div className="px-4 py-3 space-y-2.5">
+          <div className="flex items-start gap-2.5">
+            <MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-green-500" />
+            <div>
+              <p className="text-xs text-secondary-400">Погрузка</p>
+              <p className="text-sm text-secondary-700">{trip.route.loadingAddress}</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-start gap-2.5">
+            <MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-red-400" />
+            <div>
+              <p className="text-xs text-secondary-400">Выгрузка</p>
+              <p className="text-sm text-secondary-700">{trip.route.unloadingAddress}</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Status actions */}
-      {trip.status !== 'LOADING' && (
+      {trip.status !== 'LOADING' && trip.status !== 'COMPLETED' && (
         <StatusButtons tripId={trip.id} status={trip.status} />
       )}
 
       {/* Waybill form */}
       {showWaybillForm && (
-        <Card>
-          <CardContent>
-            <SubmitWaybillForm
-              tripId={trip.id}
-              driverFullName={trip.driver.fullName}
-            />
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-xl border border-border shadow-sm p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <FileText size={20} className="text-primary-500" weight="duotone" />
+            <h3 className="font-semibold text-secondary-900">Данные накладной</h3>
+          </div>
+          <SubmitWaybillForm
+            tripId={trip.id}
+            driverFullName={trip.driver.fullName}
+          />
+        </div>
       )}
 
       {/* Waybill summary */}
       {trip.waybill && (
-        <Card>
-          <CardContent className="space-y-2">
-            <h3 className="text-lg font-semibold">Накладная</h3>
-            <div className="space-y-1 text-base">
-              <p>
-                <span className="text-muted-foreground">ТТН:</span>{' '}
-                {trip.waybill.ttnNumber}
-              </p>
-              <p>
-                <span className="text-muted-foreground">ФИО:</span>{' '}
-                {trip.waybill.driverFullName}
-              </p>
-              <p>
-                <span className="text-muted-foreground">Вес:</span>{' '}
-                {trip.waybill.weight} тн
-              </p>
-              <p>
-                <span className="text-muted-foreground">Вес налива:</span>{' '}
-                {trip.waybill.loadWeight} тн
-              </p>
+        <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+          <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+            <CheckCircle size={20} className="text-green-500" weight="duotone" />
+            <h3 className="font-semibold text-secondary-900">Накладная отправлена</h3>
+          </div>
+          <div className="px-4 py-3 grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-xs text-secondary-400">ТТН</p>
+              <p className="font-medium text-secondary-900">{trip.waybill.ttnNumber}</p>
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xs text-secondary-400">ФИО</p>
+              <p className="font-medium text-secondary-900">{trip.waybill.driverFullName}</p>
+            </div>
+            <div>
+              <p className="text-xs text-secondary-400">Вес</p>
+              <p className="font-medium text-secondary-900">{trip.waybill.weight} тн</p>
+            </div>
+            <div>
+              <p className="text-xs text-secondary-400">Вес налива</p>
+              <p className="font-medium text-secondary-900">{trip.waybill.loadWeight} тн</p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

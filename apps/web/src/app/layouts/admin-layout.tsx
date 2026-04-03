@@ -22,7 +22,7 @@ export function AdminLayout() {
       <AdminSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader />
-        <main className="flex-1 overflow-auto p-6 bg-secondary-50">
+        <main className="flex-1 flex flex-col overflow-auto p-6 bg-secondary-50">
           <Outlet />
         </main>
       </div>

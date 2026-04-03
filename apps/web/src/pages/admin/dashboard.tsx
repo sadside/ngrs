@@ -70,7 +70,7 @@ export function DashboardPage() {
             </div>
           ) : (
             <div className="divide-y divide-secondary-100 max-h-[400px] overflow-y-auto">
-              {[...activeTrips, ...activeTrips, ...activeTrips, ...activeTrips].map((trip) => {
+              {activeTrips.map((trip) => {
                 const config = TRIP_STATUS_CONFIG[trip.status as keyof typeof TRIP_STATUS_CONFIG];
                 const StatusIcon = config?.icon ?? Truck;
                 const statusIconBg = config?.iconBg ?? 'bg-secondary-100';
