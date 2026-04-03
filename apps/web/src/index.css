@@ -3,9 +3,13 @@
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --radius: 0.5rem;
 
+  /* Base palette */
   --color-text: #040316;
   --color-background: #fbfbfe;
+
+  /* Primary (amber) */
   --color-primary-50: #fff8eb;
   --color-primary-100: #ffecc6;
   --color-primary-200: #ffd688;
@@ -17,6 +21,8 @@
   --color-primary-800: #955000;
   --color-primary-900: #7a4200;
   --color-primary-950: #462200;
+
+  /* Secondary (dark gray-blue) */
   --color-secondary-50: #f4f5f6;
   --color-secondary-100: #e3e5e8;
   --color-secondary-200: #c9cdd4;
@@ -28,6 +34,8 @@
   --color-secondary-800: #3c4048;
   --color-secondary-900: #2c303a;
   --color-secondary-950: #1e2028;
+
+  /* Accent (deep blue) */
   --color-accent-50: #f0f5fb;
   --color-accent-100: #dce8f5;
   --color-accent-200: #c1d6ee;
@@ -40,68 +48,60 @@
   --color-accent-900: #1f3b61;
   --color-accent-950: #152640;
 
+  /* Semantic colors */
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
-  --color-muted: #64748b;
+
+  /* shadcn semantic tokens — MUST be in @theme for Tailwind v4 */
+  --color-border: #e3e5e8;
+  --color-input: #e3e5e8;
+  --color-ring: #ffb020;
+  --color-foreground: #040316;
+  --color-card: #ffffff;
+  --color-card-foreground: #040316;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #040316;
+  --color-muted: #f4f5f6;
+  --color-muted-foreground: #5c6573;
+  --color-accent-foreground: #1f3b61;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-primary: #ffa600;
+  --color-primary-foreground: #ffffff;
+  --color-secondary-foreground: #2c303a;
+
+  /* Sidebar */
+  --color-sidebar-background: #ffffff;
+  --color-sidebar-foreground: #040316;
+  --color-sidebar-primary: #ffa600;
+  --color-sidebar-primary-foreground: #ffffff;
+  --color-sidebar-accent: #dce8f5;
+  --color-sidebar-accent-foreground: #1f3b61;
+  --color-sidebar-border: #e3e5e8;
+  --color-sidebar-ring: #ffb020;
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 200ms ease-out;
+  --animate-accordion-up: accordion-up 200ms ease-in;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
 }
 
-:root {
-  --radius: 0.5rem;
-  --background: var(--color-background);
-  --foreground: var(--color-text);
-  --card: #ffffff;
-  --card-foreground: var(--color-text);
-  --popover: #ffffff;
-  --popover-foreground: var(--color-text);
-  --primary: var(--color-primary-500);
-  --primary-foreground: #ffffff;
-  --secondary: var(--color-secondary-100);
-  --secondary-foreground: var(--color-secondary-900);
-  --muted: var(--color-secondary-100);
-  --muted-foreground: var(--color-secondary-500);
-  --accent: var(--color-accent-100);
-  --accent-foreground: var(--color-accent-900);
-  --destructive: var(--color-danger);
-  --destructive-foreground: #ffffff;
-  --border: var(--color-secondary-200);
-  --input: var(--color-secondary-200);
-  --ring: var(--color-primary-400);
-  --chart-1: var(--color-primary-500);
-  --chart-2: var(--color-accent-500);
-  --chart-3: var(--color-secondary-500);
-  --chart-4: var(--color-success);
-  --chart-5: var(--color-warning);
-  --sidebar-background: #ffffff;
-  --sidebar-foreground: var(--color-text);
-  --sidebar-primary: var(--color-primary-500);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--color-accent-100);
-  --sidebar-accent-foreground: var(--color-accent-900);
-  --sidebar-border: var(--color-secondary-200);
-  --sidebar-ring: var(--color-primary-400);
-}
-
-body {
-  font-family: var(--font-sans);
-  color: var(--color-text);
-  background-color: var(--color-background);
-}
-
-/* Dialog animations (tailwindcss-animate replacements for Tailwind v4) */
+/* Animation utilities for shadcn (tailwindcss-animate replacement) */
 @keyframes enter {
   from {
     opacity: var(--tw-enter-opacity, 1);
-    transform: translate3d(
-        var(--tw-enter-translate-x, 0),
-        var(--tw-enter-translate-y, 0),
-        0
-      )
-      scale3d(
-        var(--tw-enter-scale, 1),
-        var(--tw-enter-scale, 1),
-        var(--tw-enter-scale, 1)
-      )
+    transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0)
+      scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1))
       rotate(var(--tw-enter-rotate, 0));
   }
 }
@@ -109,16 +109,8 @@ body {
 @keyframes exit {
   to {
     opacity: var(--tw-exit-opacity, 1);
-    transform: translate3d(
-        var(--tw-exit-translate-x, 0),
-        var(--tw-exit-translate-y, 0),
-        0
-      )
-      scale3d(
-        var(--tw-exit-scale, 1),
-        var(--tw-exit-scale, 1),
-        var(--tw-exit-scale, 1)
-      )
+    transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0)
+      scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1))
       rotate(var(--tw-exit-rotate, 0));
   }
 }
@@ -126,6 +118,7 @@ body {
 .animate-in {
   animation-name: enter;
   animation-duration: 150ms;
+  animation-fill-mode: both;
   --tw-enter-opacity: initial;
   --tw-enter-scale: initial;
   --tw-enter-translate-x: initial;
@@ -136,6 +129,7 @@ body {
 .animate-out {
   animation-name: exit;
   animation-duration: 150ms;
+  animation-fill-mode: both;
   --tw-exit-opacity: initial;
   --tw-exit-scale: initial;
   --tw-exit-translate-x: initial;
@@ -143,18 +137,21 @@ body {
   --tw-exit-rotate: initial;
 }
 
-.fade-in-0 {
-  --tw-enter-opacity: 0;
-}
+.fade-in-0 { --tw-enter-opacity: 0; }
+.fade-out-0 { --tw-exit-opacity: 0; }
+.zoom-in-95 { --tw-enter-scale: 0.95; }
+.zoom-out-95 { --tw-exit-scale: 0.95; }
+.slide-in-from-top-2 { --tw-enter-translate-y: -0.5rem; }
+.slide-in-from-bottom-2 { --tw-enter-translate-y: 0.5rem; }
+.slide-in-from-left-2 { --tw-enter-translate-x: -0.5rem; }
+.slide-in-from-right-2 { --tw-enter-translate-x: 0.5rem; }
+.slide-in-from-left-full { --tw-enter-translate-x: -100%; }
+.slide-in-from-right-full { --tw-enter-translate-x: 100%; }
+.slide-out-to-left-full { --tw-exit-translate-x: -100%; }
+.slide-out-to-right-full { --tw-exit-translate-x: 100%; }
 
-.fade-out-0 {
-  --tw-exit-opacity: 0;
-}
-
-.zoom-in-95 {
-  --tw-enter-scale: 0.95;
-}
-
-.zoom-out-95 {
-  --tw-exit-scale: 0.95;
+body {
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  background-color: var(--color-background);
 }
