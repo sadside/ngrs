@@ -1,6 +1,4 @@
 import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
@@ -12,14 +10,12 @@ import { Label } from '@/shared/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { registerFn } from '@/entities/session/api';
 
-const registerSchema = z.object({
-  login: z.string().min(3, 'Минимум 3 символа'),
-  password: z.string().min(6, 'Минимум 6 символов'),
-  fullName: z.string().min(2, 'Введите ФИО'),
-  phone: z.string().optional(),
-});
-
-type RegisterValues = z.infer<typeof registerSchema>;
+interface RegisterValues {
+  fullName: string;
+  login: string;
+  password: string;
+  phone: string;
+}
 
 export function RegisterForm() {
   const navigate = useNavigate();
@@ -29,13 +25,7 @@ export function RegisterForm() {
     control,
     formState: { errors },
   } = useForm<RegisterValues>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      login: '',
-      password: '',
-      fullName: '',
-      phone: '',
-    },
+    defaultValues: { fullName: '', login: '', password: '', phone: '' },
   });
 
   const mutation = useMutation({
@@ -64,7 +54,10 @@ export function RegisterForm() {
             <Label htmlFor="fullName">ФИО</Label>
             <Input
               id="fullName"
-              {...register('fullName')}
+              {...register('fullName', {
+                required: 'Введите ФИО',
+                minLength: { value: 2, message: 'Минимум 2 символа' },
+              })}
               placeholder="Иванов Иван Иванович"
               className={errors.fullName ? 'border-danger' : ''}
             />
@@ -76,7 +69,10 @@ export function RegisterForm() {
             <Label htmlFor="login">Логин</Label>
             <Input
               id="login"
-              {...register('login')}
+              {...register('login', {
+                required: 'Введите логин',
+                minLength: { value: 3, message: 'Минимум 3 символа' },
+              })}
               placeholder="Придумайте логин"
               className={errors.login ? 'border-danger' : ''}
             />
@@ -89,7 +85,10 @@ export function RegisterForm() {
             <Input
               id="password"
               type="password"
-              {...register('password')}
+              {...register('password', {
+                required: 'Введите пароль',
+                minLength: { value: 6, message: 'Минимум 6 символов' },
+              })}
               placeholder="Минимум 6 символов"
               className={errors.password ? 'border-danger' : ''}
             />
@@ -109,14 +108,14 @@ export function RegisterForm() {
                   onAccept={(value: string) => field.onChange(value)}
                   placeholder="+7 (___) ___-__-__"
                   id="phone"
-                  className="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm"
                 />
               )}
             />
           </div>
           <Button
             type="submit"
-            className="w-full h-11 bg-primary-500 hover:bg-primary-600 text-white"
+            className="w-full h-11 bg-primary-500 hover:bg-primary-600 text-white cursor-pointer"
             disabled={mutation.isPending}
           >
             {mutation.isPending ? 'Отправка...' : 'Зарегистрироваться'}

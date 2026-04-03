@@ -1,6 +1,4 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
@@ -13,12 +11,10 @@ import { loginFn, getMeFn } from '@/entities/session/api';
 import { sessionSet } from '@/entities/session/model';
 import { setTokens } from '@/shared/lib/auth';
 
-const loginSchema = z.object({
-  login: z.string().min(3, 'Минимум 3 символа'),
-  password: z.string().min(6, 'Минимум 6 символов'),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
+interface LoginValues {
+  login: string;
+  password: string;
+}
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -27,11 +23,7 @@ export function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      login: '',
-      password: '',
-    },
+    defaultValues: { login: '', password: '' },
   });
 
   const mutation = useMutation({
@@ -72,7 +64,10 @@ export function LoginForm() {
             <Label htmlFor="login">Логин</Label>
             <Input
               id="login"
-              {...register('login')}
+              {...register('login', {
+                required: 'Введите логин',
+                minLength: { value: 3, message: 'Минимум 3 символа' },
+              })}
               placeholder="Введите логин"
               className={errors.login ? 'border-danger' : ''}
             />
@@ -85,7 +80,10 @@ export function LoginForm() {
             <Input
               id="password"
               type="password"
-              {...register('password')}
+              {...register('password', {
+                required: 'Введите пароль',
+                minLength: { value: 6, message: 'Минимум 6 символов' },
+              })}
               placeholder="Введите пароль"
               className={errors.password ? 'border-danger' : ''}
             />
@@ -95,7 +93,7 @@ export function LoginForm() {
           </div>
           <Button
             type="submit"
-            className="w-full h-11 bg-primary-500 hover:bg-primary-600 text-white"
+            className="w-full h-11 bg-primary-500 hover:bg-primary-600 text-white cursor-pointer"
             disabled={mutation.isPending}
           >
             {mutation.isPending ? 'Вход...' : 'Войти'}
