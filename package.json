@@ -1,0 +1,11 @@
+{
+  "name": "iridium",
+  "private": true,
+  "scripts": {
+    "api:dev": "pnpm --filter @iridium/api run start:dev",
+    "api:build": "pnpm --filter @iridium/api run build",
+    "db:migrate": "pnpm --filter @iridium/api run db:migrate",
+    "db:seed": "pnpm --filter @iridium/api run db:seed",
+    "db:studio": "pnpm --filter @iridium/api run db:studio"
+  }
+}
