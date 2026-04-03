@@ -61,7 +61,6 @@ model User {
 
   assignedVehicle Vehicle? @relation("AssignedDriver")
   trips           Trip[]
-  waybills        Waybill[]
 
   @@map("users")
 }
@@ -188,9 +187,6 @@ model Waybill {
 
   tripId String @unique
   trip   Trip   @relation(fields: [tripId], references: [id])
-
-  driverId String
-  driver   User @relation(fields: [driverId], references: [id])
 
   @@map("waybills")
 }
