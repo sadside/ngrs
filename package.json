@@ -9,5 +9,20 @@
     "db:studio": "pnpm --filter @iridium/api run db:studio",
     "web:dev": "pnpm --filter @iridium/web run dev",
     "web:build": "pnpm --filter @iridium/web run build"
+  },
+  "pnpm": {
+    "overrides": {
+      "zod": "3.23.8"
+    },
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "bcrypt",
+      "esbuild",
+      "prisma",
+      "@scarf/scarf",
+      "core-js-pure"
+    ]
   }
 }

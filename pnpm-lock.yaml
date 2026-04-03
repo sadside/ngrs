@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  zod: 3.23.8
+
 importers:
 
   .: {}
@@ -4470,9 +4473,6 @@ packages:
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
 snapshots:
 
   '@angular-devkit/core@19.2.22(chokidar@4.0.3)':
@@ -6207,7 +6207,7 @@ snapshots:
     dependencies:
       '@scalar/openapi-types': 0.1.9
       '@unhead/schema': 1.11.20
-      zod: 3.25.76
+      zod: 3.23.8
 
   '@scarf/scarf@1.4.0': {}
 
@@ -9047,5 +9047,3 @@ snapshots:
   zhead@2.2.4: {}
 
   zod@3.23.8: {}
-
-  zod@3.25.76: {}
