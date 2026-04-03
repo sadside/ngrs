@@ -2,7 +2,7 @@ import { useTrips } from '@/entities/trip/api';
 import { useWaybills } from '@/entities/waybill/api';
 import { TripStatusBadge } from '@/entities/trip/ui';
 import { DashboardStats } from '@/widgets/dashboard-stats/ui';
-import { Card, CardHeader, CardTitle, CardContent } from '@/shared/ui/card';
+import { Card } from '@/shared/ui/card';
 
 const ACTIVE_STATUSES = ['EN_ROUTE_TO_LOADING', 'LOADING', 'EN_ROUTE_TO_UNLOADING', 'UNLOADING'];
 
@@ -30,55 +30,57 @@ export function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active trips — left 2/3 */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Активные рейсы</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <Card className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-secondary-100">
+          <div className="p-5 border-b border-secondary-100">
+            <h2 className="font-semibold text-secondary-900">Активные рейсы</h2>
+          </div>
+          <div className="p-5 space-y-3">
             {activeTrips.length === 0 && (
-              <p className="text-sm text-muted-foreground">Нет активных рейсов</p>
+              <p className="text-sm text-secondary-400">Нет активных рейсов</p>
             )}
             {activeTrips.map((trip) => (
               <div
                 key={trip.id}
-                className="flex items-center justify-between rounded-lg border p-3"
+                className="flex items-center justify-between rounded-lg border border-secondary-100 p-3"
               >
                 <div className="space-y-1">
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-medium text-secondary-900">
                     {trip.route.loadingAddress} &rarr; {trip.route.unloadingAddress}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-secondary-400">
                     {trip.driver.fullName} &middot; {trip.vehicle.licensePlate}
                   </p>
                 </div>
                 <TripStatusBadge status={trip.status} />
               </div>
             ))}
-          </CardContent>
+          </div>
         </Card>
 
         {/* Recent waybills — right 1/3 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Последние накладные</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <Card className="bg-white rounded-xl shadow-sm border border-secondary-100">
+          <div className="p-5 border-b border-secondary-100">
+            <h2 className="font-semibold text-secondary-900">Последние накладные</h2>
+          </div>
+          <div className="divide-y divide-secondary-100">
             {recentWaybills.length === 0 && (
-              <p className="text-sm text-muted-foreground">Нет накладных</p>
+              <p className="text-sm text-secondary-400 px-5 py-3">Нет накладных</p>
             )}
             {recentWaybills.map((wb) => (
-              <div key={wb.id} className="space-y-1 rounded-lg border p-3">
-                <p className="text-sm font-medium">{wb.ttnNumber}</p>
-                <p className="text-xs text-muted-foreground">
-                  {wb.driverFullName} &middot;{' '}
+              <div key={wb.id} className="px-5 py-3 flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-secondary-900">ТТН {wb.ttnNumber}</p>
+                  <p className="text-sm text-secondary-400">{wb.driverFullName}</p>
+                </div>
+                <span className="text-sm text-secondary-400">
                   {new Date(wb.submittedAt).toLocaleTimeString('ru-RU', {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
-                </p>
+                </span>
               </div>
             ))}
-          </CardContent>
+          </div>
         </Card>
       </div>
     </div>
