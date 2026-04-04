@@ -13,6 +13,16 @@ export function DriverLayout() {
   const user = useUnit($user);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.documentElement.classList.add('light');
+    return () => {
+      const stored = localStorage.getItem('iridium-theme');
+      if (stored !== 'light') {
+        document.documentElement.classList.remove('light');
+      }
+    };
+  }, []);
+
   const { data } = useQuery({
     queryKey: ['session', 'me'],
     queryFn: getMeFn,
