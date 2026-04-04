@@ -352,9 +352,9 @@ export function DashboardPage() {
         </div>
       </div>
 
-      {/* Row 3: Recent trips + Recent waybills */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent trips table */}
+      {/* Row 3: Recent trips + Donut + Alerts */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Recent trips — 2 cols */}
         <div className="lg:col-span-2 bg-card rounded-xl border border-border">
           <div className="px-5 py-3 flex items-center justify-between border-b border-border">
             <div>
@@ -425,61 +425,104 @@ export function DashboardPage() {
           )}
         </div>
 
-        {/* Recent waybills */}
+        {/* Donut chart — 1 col */}
+        <div className="bg-card rounded-xl border border-border p-5">
+          <h3 className="font-semibold text-foreground mb-2">Статусы рейсов</h3>
+          <ReactEChartsCore echarts={echarts} option={donutOption} style={{ height: 200 }} />
+        </div>
+
+        {/* Alerts — 1 col */}
         <div className="bg-card rounded-xl border border-border">
-          <div className="px-5 py-3 border-b border-border">
-            <h3 className="font-semibold text-foreground">
-              Последние накладные
-            </h3>
+          <div className="px-5 py-3 border-b border-border flex items-center gap-2">
+            <Warning size={18} className="text-warning" weight="duotone" />
+            <h3 className="font-semibold text-foreground">Внимание</h3>
+            {alertTrips.length > 0 && (
+              <Badge variant="warning" size="sm">{alertTrips.length}</Badge>
+            )}
           </div>
-          {recentWaybills.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-12">
+          {alertTrips.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-8">
               <div className="p-3 rounded-2xl bg-accent/10">
-                <FileText
-                  size={32}
-                  weight="light"
-                  className="text-accent"
-                />
+                <CheckCircle size={28} weight="light" className="text-accent" />
               </div>
-              <div className="text-center">
-                <p className="text-sm font-medium text-foreground">
-                  Нет накладных
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Накладные появятся после отправки водителями
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground">Все накладные отправлены вовремя</p>
             </div>
           ) : (
-            <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
-              {recentWaybills.map((wb) => (
-                <div key={wb.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <FileText
-                      size={18}
-                      className="text-primary"
-                      weight="duotone"
-                    />
+            <div className="divide-y divide-border max-h-[300px] overflow-y-auto">
+              {alertTrips.map(trip => (
+                <div key={trip.id} className="px-4 py-3 flex items-start gap-3">
+                  <div className="p-1.5 rounded-lg bg-warning/10 mt-0.5">
+                    <Warning size={16} className="text-warning" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-foreground">
-                      ТТН {wb.ttnNumber}
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {trip.route.senderContractor.name} → {trip.route.receiverContractor.name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {wb.driverFullName}
+                      {trip.driver.fullName} · {Math.round((Date.now() - new Date(trip.assignedAt).getTime()) / 3600000)}ч назад
                     </p>
                   </div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {new Date(wb.submittedAt).toLocaleTimeString('ru-RU', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
                 </div>
               ))}
             </div>
           )}
         </div>
+      </div>
+
+      {/* Row 4: Recent waybills */}
+      <div className="bg-card rounded-xl border border-border">
+        <div className="px-5 py-3 border-b border-border">
+          <h3 className="font-semibold text-foreground">
+            Последние накладные
+          </h3>
+        </div>
+        {recentWaybills.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-12">
+            <div className="p-3 rounded-2xl bg-accent/10">
+              <FileText
+                size={32}
+                weight="light"
+                className="text-accent"
+              />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-foreground">
+                Нет накладных
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Накладные появятся после отправки водителями
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
+            {recentWaybills.map((wb) => (
+              <div key={wb.id} className="flex items-center gap-3 px-4 py-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <FileText
+                    size={18}
+                    className="text-primary"
+                    weight="duotone"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-foreground">
+                    ТТН {wb.ttnNumber}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {wb.driverFullName}
+                  </p>
+                </div>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  {new Date(wb.submittedAt).toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
