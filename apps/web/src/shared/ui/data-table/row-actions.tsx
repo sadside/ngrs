@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { DotsThreeVertical, Eye, PencilSimple, Trash } from '@phosphor-icons/react';
-import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib/utils';
 
 interface RowActionsProps {
@@ -13,108 +12,76 @@ interface RowActionsProps {
 
 export function RowActions({ onView, onEdit, onDelete, children }: RowActionsProps) {
   const [open, setOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
 
-  const updatePosition = useCallback(() => {
-    if (!triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    setPos({
-      top: rect.bottom + 4,
-      left: rect.right,
-    });
-  }, []);
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setCoords({ x: rect.right, y: rect.bottom + 4 });
+    }
+    setOpen((v) => !v);
+  };
 
   useEffect(() => {
     if (!open) return;
-    updatePosition();
-
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        menuRef.current && !menuRef.current.contains(e.target as Node) &&
-        triggerRef.current && !triggerRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-
-    function handleScroll() {
-      setOpen(false);
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    window.addEventListener('scroll', handleScroll, true);
+    const close = () => setOpen(false);
+    const timer = setTimeout(() => {
+      document.addEventListener('click', close);
+    }, 0);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('scroll', handleScroll, true);
+      clearTimeout(timer);
+      document.removeEventListener('click', close);
     };
-  }, [open, updatePosition]);
-
-  const menu = open
-    ? createPortal(
-        <div
-          ref={menuRef}
-          className="fixed z-[100] min-w-[160px] bg-popover border border-border rounded-xl shadow-lg p-1"
-          style={{ top: pos.top, left: pos.left, transform: 'translateX(-100%)' }}
-        >
-          {children ? (
-            children
-          ) : (
-            <>
-              {onView && (
-                <button
-                  onClick={() => { onView(); setOpen(false); }}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
-                >
-                  <Eye size={16} />
-                  Просмотр
-                </button>
-              )}
-              {onEdit && (
-                <button
-                  onClick={() => { onEdit(); setOpen(false); }}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors cursor-pointer"
-                >
-                  <PencilSimple size={16} />
-                  Редактировать
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={() => { onDelete(); setOpen(false); }}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
-                >
-                  <Trash size={16} />
-                  Удалить
-                </button>
-              )}
-            </>
-          )}
-        </div>,
-        document.body,
-      )
-    : null;
+  }, [open]);
 
   return (
     <>
-      <Button
-        ref={triggerRef}
-        variant="ghost"
-        size="icon-sm"
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(!open);
-        }}
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={handleClick}
+        className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
       >
-        <DotsThreeVertical size={18} />
-      </Button>
-      {menu}
+        <DotsThreeVertical size={18} weight="bold" />
+      </button>
+
+      {open &&
+        createPortal(
+          <div
+            style={{
+              position: 'fixed',
+              top: coords.y,
+              left: coords.x,
+              transform: 'translateX(-100%)',
+              zIndex: 9999,
+            }}
+            className="min-w-[160px] bg-popover border border-border rounded-xl shadow-2xl p-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {children ?? (
+              <>
+                {onView && (
+                  <ActionBtn onClick={() => { onView(); setOpen(false); }} icon={Eye} label="Просмотр" />
+                )}
+                {onEdit && (
+                  <ActionBtn onClick={() => { onEdit(); setOpen(false); }} icon={PencilSimple} label="Редактировать" />
+                )}
+                {onDelete && (
+                  <ActionBtn onClick={() => { onDelete(); setOpen(false); }} icon={Trash} label="Удалить" variant="destructive" />
+                )}
+              </>
+            )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
 
-export function RowActionItem({
+function ActionBtn({
   onClick,
   icon: Icon,
   label,
@@ -127,7 +94,8 @@ export function RowActionItem({
 }) {
   return (
     <button
-      onClick={onClick}
+      type="button"
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
       className={cn(
         'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer',
         variant === 'destructive'
@@ -140,3 +108,5 @@ export function RowActionItem({
     </button>
   );
 }
+
+export { ActionBtn as RowActionItem };
