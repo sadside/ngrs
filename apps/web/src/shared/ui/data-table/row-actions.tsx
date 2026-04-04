@@ -1,4 +1,4 @@
-import { Eye, PencilSimple, Trash, DotsThreeVertical } from '@phosphor-icons/react';
+import { DotsThreeVertical, Eye, PencilSimple, Trash } from '@phosphor-icons/react';
 import { Button } from '@/shared/ui/button';
 import {
   DropdownMenu,
@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
-import { cn } from '@/shared/lib/utils';
 
 interface RowActionsProps {
   onView?: () => void;
@@ -68,10 +67,7 @@ export function RowActionItem({
   variant?: 'default' | 'destructive';
 }) {
   return (
-    <DropdownMenuItem
-      onClick={onClick}
-      variant={variant}
-    >
+    <DropdownMenuItem onClick={onClick} variant={variant}>
       <Icon size={16} className="mr-2" />
       {label}
     </DropdownMenuItem>
