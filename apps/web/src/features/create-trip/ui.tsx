@@ -30,8 +30,15 @@ interface CreateTripForm {
   cargoId: string;
 }
 
-export function CreateTripDialog() {
-  const [open, setOpen] = useState(false);
+interface CreateTripDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function CreateTripDialog({ open: controlledOpen, onOpenChange }: CreateTripDialogProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   const { data: routes } = useRoutes();
   const { data: drivers } = useUsers({ role: 'DRIVER', status: 'ACTIVE' });
@@ -60,9 +67,11 @@ export function CreateTripDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Создать рейс</Button>
-      </DialogTrigger>
+      {controlledOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button>Создать рейс</Button>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Новый рейс</DialogTitle>
