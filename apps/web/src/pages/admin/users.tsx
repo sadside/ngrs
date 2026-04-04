@@ -11,14 +11,8 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/shared/ui/dropdown-menu';
-import { DotsThreeVertical, CheckCircle, Prohibit, UserMinus } from '@phosphor-icons/react';
+import { RowActions, RowActionItem } from '@/shared/ui/data-table/row-actions';
+import { CheckCircle, Prohibit, UserMinus } from '@phosphor-icons/react';
 
 import {
   Dialog,
@@ -128,35 +122,20 @@ export function UsersPage() {
       cell: ({ row }) => {
         const user = row.original;
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon-sm">
-                <DotsThreeVertical size={18} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {user.status === 'PENDING' && (
-                <DropdownMenuItem onClick={() => handleApprove(user.id)}>
-                  <CheckCircle size={16} className="mr-2 text-accent" />
-                  Активировать
-                </DropdownMenuItem>
-              )}
-              {user.status === 'ACTIVE' && (
-                <DropdownMenuItem onClick={() => handleBlock(user.id)}>
-                  <Prohibit size={16} className="mr-2 text-warning" />
-                  Заблокировать
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => toast.info('Увольнение будет добавлено позже')}
-                className="text-destructive focus:text-destructive"
-              >
-                <UserMinus size={16} className="mr-2" />
-                Уволить
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <RowActions>
+            {user.status === 'PENDING' && (
+              <RowActionItem onClick={() => handleApprove(user.id)} icon={CheckCircle} label="Активировать" />
+            )}
+            {user.status === 'ACTIVE' && (
+              <RowActionItem onClick={() => handleBlock(user.id)} icon={Prohibit} label="Заблокировать" />
+            )}
+            <RowActionItem
+              onClick={() => toast.info('Увольнение будет добавлено позже')}
+              icon={UserMinus}
+              label="Уволить"
+              variant="destructive"
+            />
+          </RowActions>
         );
       },
       size: 50,
