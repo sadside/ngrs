@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
@@ -17,13 +18,17 @@ export function DriversPage() {
   const { data: drivers, isLoading } = useUsers({ role: 'DRIVER' });
   const { data: vehicles } = useVehicles();
 
-  const vehicleByDriver = new Map(
-    vehicles
-      ?.filter((v) => v.assignedDriver)
-      .map((v) => [v.assignedDriver!.id, `${v.brand} ${v.model} (${v.licensePlate})`]),
+  const vehicleByDriver = useMemo(
+    () =>
+      new Map(
+        vehicles
+          ?.filter((v) => v.assignedDriver)
+          .map((v) => [v.assignedDriver!.id, `${v.brand} ${v.model} (${v.licensePlate})`]),
+      ),
+    [vehicles],
   );
 
-  const columns: ColumnDef<User, any>[] = [
+  const columns = useMemo<ColumnDef<User, any>[]>(() => [
     getSelectColumn<User>(),
     {
       accessorKey: 'fullName',
@@ -48,7 +53,7 @@ export function DriversPage() {
         </Badge>
       ),
     },
-  ];
+  ], [vehicleByDriver]);
 
   return (
     <div className="flex flex-col flex-1">

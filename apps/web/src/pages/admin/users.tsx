@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -80,7 +80,7 @@ export function UsersPage() {
     );
   };
 
-  const columns: ColumnDef<User, any>[] = [
+  const columns = useMemo<ColumnDef<User, any>[]>(() => [
     getSelectColumn<User>(),
     {
       accessorKey: 'login',
@@ -140,7 +140,7 @@ export function UsersPage() {
       },
       size: 50,
     },
-  ];
+  ], []);
 
   const {
     register,
