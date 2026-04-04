@@ -9,6 +9,7 @@ import {
   type RowSelectionState,
 } from '@tanstack/react-table';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -18,6 +19,7 @@ import {
   TableRow,
 } from '@/shared/ui/table';
 import { Checkbox } from '@/shared/ui/checkbox';
+import { Button } from '@/shared/ui/button';
 import { DataTableToolbar } from './toolbar';
 import { DataTablePagination } from './pagination';
 
@@ -117,6 +119,24 @@ export function DataTable<TData>({
       </div>
 
       <DataTablePagination table={table} />
+
+      {Object.keys(rowSelection).length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-card border border-border rounded-xl px-5 py-3 shadow-2xl animate-in fade-in-0 slide-in-from-bottom-2">
+          <span className="text-sm text-foreground font-medium">
+            Выбрано: {table.getFilteredSelectedRowModel().rows.length}
+          </span>
+          <div className="h-5 w-px bg-border" />
+          <Button variant="outline" size="sm" onClick={() => toast.info('Экспорт в CSV будет добавлен позже')}>
+            Экспорт CSV
+          </Button>
+          <Button variant="danger" size="sm" onClick={() => toast.info('Множественное удаление будет добавлено позже')}>
+            Удалить
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => table.toggleAllRowsSelected(false)}>
+            Отменить
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

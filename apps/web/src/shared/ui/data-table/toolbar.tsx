@@ -38,7 +38,7 @@ export function DataTableToolbar<TData>({
         placeholder={searchPlaceholder}
         value={globalFilter}
         onChange={(e) => onGlobalFilterChange(e.target.value)}
-        className="max-w-sm"
+        className="max-w-md"
       />
 
       {filterOptions?.map((filter) => (
@@ -49,7 +49,7 @@ export function DataTableToolbar<TData>({
             table.getColumn(filter.key)?.setFilterValue(value === '__all__' ? undefined : value)
           }
         >
-          <SelectTrigger className="w-[180px]" size="sm">
+          <SelectTrigger className="w-[180px] h-10">
             <SelectValue placeholder={filter.label} />
           </SelectTrigger>
           <SelectContent>
