@@ -50,7 +50,7 @@ export function LoginForm() {
   });
 
   return (
-    <Card className="w-[520px] border-0 bg-white shadow-xl rounded-2xl">
+    <Card className="w-[520px] bg-card border border-border rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Вход</CardTitle>
       </CardHeader>
@@ -69,10 +69,10 @@ export function LoginForm() {
                 minLength: { value: 3, message: 'Минимум 3 символа' },
               })}
               placeholder="Введите логин"
-              className={errors.login ? 'border-danger' : ''}
+              className={errors.login ? 'border-destructive' : ''}
             />
             {errors.login && (
-              <p className="text-sm text-danger">{errors.login.message}</p>
+              <p className="text-sm text-destructive">{errors.login.message}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -85,10 +85,10 @@ export function LoginForm() {
                 minLength: { value: 6, message: 'Минимум 6 символов' },
               })}
               placeholder="Введите пароль"
-              className={errors.password ? 'border-danger' : ''}
+              className={errors.password ? 'border-destructive' : ''}
             />
             {errors.password && (
-              <p className="text-sm text-danger">{errors.password.message}</p>
+              <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
           </div>
           <Button

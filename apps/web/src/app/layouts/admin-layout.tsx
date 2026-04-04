@@ -1,9 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-
 import { AdminSidebar } from '@/widgets/admin-sidebar/ui';
-import { AdminHeader } from '@/widgets/admin-header/ui';
 import { getMeFn } from '@/entities/session/api';
 import { sessionSet } from '@/entities/session/model';
 
@@ -20,12 +18,9 @@ export function AdminLayout() {
   return (
     <div className="flex h-screen bg-background">
       <AdminSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader />
-        <main className="flex-1 flex flex-col overflow-auto p-6 bg-secondary-50">
-          <Outlet />
-        </main>
-      </div>
+      <main className="flex-1 flex flex-col overflow-auto p-6">
+        <Outlet />
+      </main>
     </div>
   );
 }

@@ -46,32 +46,32 @@ export function StatCard({ label, value, icon: Icon, trend, trendUp, dark }: Sta
     <div
       className={cn(
         'rounded-xl border p-4 flex flex-col justify-between',
-        dark ? 'bg-secondary-900 border-secondary-800 text-white' : 'bg-white border-border',
+        dark ? 'bg-primary border-primary/80 text-white' : 'bg-card border-border',
       )}
     >
       <div className="flex items-center justify-between mb-3">
-        <span className={cn('text-sm', dark ? 'text-secondary-300' : 'text-secondary-500')}>
+        <span className={cn('text-sm', dark ? 'text-white/70' : 'text-muted-foreground')}>
           {label}
         </span>
-        <div className={cn('p-1.5 rounded-lg', dark ? 'bg-secondary-700' : 'bg-secondary-50')}>
+        <div className={cn('p-1.5 rounded-lg', dark ? 'bg-white/10' : 'bg-muted')}>
           <Icon
             size={18}
             weight="duotone"
-            className={dark ? 'text-white' : 'text-secondary-400'}
+            className={dark ? 'text-white' : 'text-muted-foreground'}
           />
         </div>
       </div>
-      <p className={cn('text-2xl font-bold tabular-nums', dark ? 'text-white' : 'text-secondary-900')}>
+      <p className={cn('text-2xl font-bold tabular-nums', dark ? 'text-white' : 'text-foreground')}>
         <AnimatedNumber value={value} />
       </p>
       {trend && (
         <div className="flex items-center gap-1 mt-1">
           <span
-            className={cn('text-xs font-medium', trendUp ? 'text-green-400' : 'text-red-400')}
+            className={cn('text-xs font-medium', trendUp ? 'text-accent' : 'text-destructive')}
           >
             {trendUp ? '↑' : '↓'} {trend}
           </span>
-          <span className={cn('text-xs', dark ? 'text-secondary-400' : 'text-secondary-400')}>
+          <span className={cn('text-xs', dark ? 'text-white/50' : 'text-muted-foreground')}>
             vs вчера
           </span>
         </div>

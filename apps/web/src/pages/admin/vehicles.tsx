@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Plus } from '@phosphor-icons/react';
 
+import { PageHeader } from '@/widgets/page-header/ui';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -100,6 +101,7 @@ export function VehiclesPage() {
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      <PageHeader title="Транспорт" />
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -116,17 +118,17 @@ export function VehiclesPage() {
               <div className="space-y-2">
                 <Label>Марка</Label>
                 <Input {...register('brand')} placeholder="КАМАЗ" />
-                {errors.brand && <p className="text-sm text-danger">{errors.brand.message}</p>}
+                {errors.brand && <p className="text-sm text-destructive">{errors.brand.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Модель</Label>
                 <Input {...register('model')} placeholder="65115" />
-                {errors.model && <p className="text-sm text-danger">{errors.model.message}</p>}
+                {errors.model && <p className="text-sm text-destructive">{errors.model.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Госномер</Label>
                 <Input {...register('licensePlate')} placeholder="А123БВ777" />
-                {errors.licensePlate && <p className="text-sm text-danger">{errors.licensePlate.message}</p>}
+                {errors.licensePlate && <p className="text-sm text-destructive">{errors.licensePlate.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Прицеп (необязательно)</Label>
@@ -150,7 +152,7 @@ export function VehiclesPage() {
                     </Select>
                   )}
                 />
-                {errors.ownershipType && <p className="text-sm text-danger">{errors.ownershipType.message}</p>}
+                {errors.ownershipType && <p className="text-sm text-destructive">{errors.ownershipType.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Водитель (необязательно)</Label>

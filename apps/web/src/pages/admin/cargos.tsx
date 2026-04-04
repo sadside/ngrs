@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Plus } from '@phosphor-icons/react';
 
+import { PageHeader } from '@/widgets/page-header/ui';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -71,6 +72,7 @@ export function CargosPage() {
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      <PageHeader title="Грузы" />
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -87,7 +89,7 @@ export function CargosPage() {
               <div className="space-y-2">
                 <Label>Название</Label>
                 <Input {...register('name')} placeholder="Бензин АИ-92" />
-                {errors.name && <p className="text-sm text-danger">{errors.name.message}</p>}
+                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ТУ (необязательно)</Label>

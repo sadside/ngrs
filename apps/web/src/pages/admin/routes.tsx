@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Plus } from '@phosphor-icons/react';
 
+import { PageHeader } from '@/widgets/page-header/ui';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -79,6 +80,7 @@ export function RoutesPage() {
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      <PageHeader title="Маршруты" />
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -111,7 +113,7 @@ export function RoutesPage() {
                   )}
                 />
                 {errors.senderContractorId && (
-                  <p className="text-sm text-danger">{errors.senderContractorId.message}</p>
+                  <p className="text-sm text-destructive">{errors.senderContractorId.message}</p>
                 )}
               </div>
               <div className="space-y-2">
@@ -133,21 +135,21 @@ export function RoutesPage() {
                   )}
                 />
                 {errors.receiverContractorId && (
-                  <p className="text-sm text-danger">{errors.receiverContractorId.message}</p>
+                  <p className="text-sm text-destructive">{errors.receiverContractorId.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Адрес погрузки</Label>
                 <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." />
                 {errors.loadingAddress && (
-                  <p className="text-sm text-danger">{errors.loadingAddress.message}</p>
+                  <p className="text-sm text-destructive">{errors.loadingAddress.message}</p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label>Адрес выгрузки</Label>
                 <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." />
                 {errors.unloadingAddress && (
-                  <p className="text-sm text-danger">{errors.unloadingAddress.message}</p>
+                  <p className="text-sm text-destructive">{errors.unloadingAddress.message}</p>
                 )}
               </div>
               <div className="space-y-2">

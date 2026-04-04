@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Plus } from '@phosphor-icons/react';
 
+import { PageHeader } from '@/widgets/page-header/ui';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -99,6 +100,7 @@ export function UsersPage() {
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      <PageHeader title="Пользователи" />
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -115,17 +117,17 @@ export function UsersPage() {
               <div className="space-y-2">
                 <Label>Логин</Label>
                 <Input {...register('login')} placeholder="ivanov" />
-                {errors.login && <p className="text-sm text-danger">{errors.login.message}</p>}
+                {errors.login && <p className="text-sm text-destructive">{errors.login.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Пароль</Label>
                 <Input type="password" {...register('password')} placeholder="Минимум 6 символов" />
-                {errors.password && <p className="text-sm text-danger">{errors.password.message}</p>}
+                {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ФИО</Label>
                 <Input {...register('fullName')} placeholder="Иванов Иван Иванович" />
-                {errors.fullName && <p className="text-sm text-danger">{errors.fullName.message}</p>}
+                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Телефон (необязательно)</Label>
@@ -149,7 +151,7 @@ export function UsersPage() {
                     </Select>
                   )}
                 />
-                {errors.role && <p className="text-sm text-danger">{errors.role.message}</p>}
+                {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
               </div>
               <Button type="submit" className="w-full" disabled={createUser.isPending}>
                 {createUser.isPending ? 'Создание...' : 'Создать'}

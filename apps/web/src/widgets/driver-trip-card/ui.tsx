@@ -43,9 +43,9 @@ function getMainAction(trip: Trip) {
         <Button size="sm" variant="outline">Завершить</Button>
       );
     case 'COMPLETED':
-      return <span className="text-xs text-green-600">Завершён</span>;
+      return <span className="text-xs text-accent">Завершён</span>;
     case 'CANCELLED':
-      return <span className="text-xs text-red-500">Отменён</span>;
+      return <span className="text-xs text-destructive">Отменён</span>;
     default:
       return null;
   }
@@ -57,7 +57,7 @@ export function DriverTripCard({ trip, className }: DriverTripCardProps) {
   return (
     <div
       className={cn(
-        'bg-white rounded-xl border border-border shadow-sm cursor-pointer active:scale-[0.98] transition-all hover:shadow-md overflow-hidden',
+        'bg-card rounded-xl border border-border shadow-sm cursor-pointer active:scale-[0.98] transition-all hover:shadow-md overflow-hidden',
         className,
       )}
       onClick={() =>
@@ -71,16 +71,16 @@ export function DriverTripCard({ trip, className }: DriverTripCardProps) {
       <div className="px-4 py-3 border-b border-border">
         <div className="flex items-start justify-between gap-3 mb-1">
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-secondary-400">Откуда</p>
-            <p className="font-semibold text-secondary-900">{trip.route.senderContractor.name}</p>
+            <p className="text-sm text-muted-foreground">Откуда</p>
+            <p className="font-semibold text-foreground">{trip.route.senderContractor.name}</p>
           </div>
           <TripStatusBadge status={trip.status} />
         </div>
         <div>
-          <p className="text-sm text-secondary-400">Куда</p>
-          <p className="font-semibold text-secondary-900">{trip.route.receiverContractor.name}</p>
+          <p className="text-sm text-muted-foreground">Куда</p>
+          <p className="font-semibold text-foreground">{trip.route.receiverContractor.name}</p>
         </div>
-        <p className="text-xs text-secondary-400 mt-1.5">
+        <p className="text-xs text-muted-foreground mt-1.5">
           {trip.cargo.name} &middot; {trip.vehicle.licensePlate}
         </p>
       </div>
@@ -91,9 +91,9 @@ export function DriverTripCard({ trip, className }: DriverTripCardProps) {
           <MapPin
             size={18}
             weight="fill"
-            className="mt-0.5 shrink-0 text-green-500"
+            className="mt-0.5 shrink-0 text-accent"
           />
-          <p className="text-sm text-secondary-700 leading-snug">
+          <p className="text-sm text-foreground leading-snug">
             {trip.route.loadingAddress}
           </p>
         </div>
@@ -101,17 +101,17 @@ export function DriverTripCard({ trip, className }: DriverTripCardProps) {
           <MapPin
             size={18}
             weight="fill"
-            className="mt-0.5 shrink-0 text-red-400"
+            className="mt-0.5 shrink-0 text-destructive"
           />
-          <p className="text-sm text-secondary-700 leading-snug">
+          <p className="text-sm text-foreground leading-snug">
             {trip.route.unloadingAddress}
           </p>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2.5 bg-secondary-50 flex items-center justify-between">
-        <span className="text-xs text-secondary-400">
+      <div className="px-4 py-2.5 bg-muted flex items-center justify-between">
+        <span className="text-xs text-muted-foreground">
           {new Date(trip.assignedAt).toLocaleDateString('ru-RU')}
         </span>
         {getMainAction(trip)}

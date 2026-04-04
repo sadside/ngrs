@@ -40,7 +40,7 @@ export function RegisterForm() {
   });
 
   return (
-    <Card className="w-[520px] border-0 bg-white shadow-xl rounded-2xl">
+    <Card className="w-[520px] bg-card border border-border rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Регистрация</CardTitle>
       </CardHeader>
@@ -59,10 +59,10 @@ export function RegisterForm() {
                 minLength: { value: 2, message: 'Минимум 2 символа' },
               })}
               placeholder="Иванов Иван Иванович"
-              className={errors.fullName ? 'border-danger' : ''}
+              className={errors.fullName ? 'border-destructive' : ''}
             />
             {errors.fullName && (
-              <p className="text-sm text-danger">{errors.fullName.message}</p>
+              <p className="text-sm text-destructive">{errors.fullName.message}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -74,10 +74,10 @@ export function RegisterForm() {
                 minLength: { value: 3, message: 'Минимум 3 символа' },
               })}
               placeholder="Придумайте логин"
-              className={errors.login ? 'border-danger' : ''}
+              className={errors.login ? 'border-destructive' : ''}
             />
             {errors.login && (
-              <p className="text-sm text-danger">{errors.login.message}</p>
+              <p className="text-sm text-destructive">{errors.login.message}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -90,10 +90,10 @@ export function RegisterForm() {
                 minLength: { value: 6, message: 'Минимум 6 символов' },
               })}
               placeholder="Минимум 6 символов"
-              className={errors.password ? 'border-danger' : ''}
+              className={errors.password ? 'border-destructive' : ''}
             />
             {errors.password && (
-              <p className="text-sm text-danger">{errors.password.message}</p>
+              <p className="text-sm text-destructive">{errors.password.message}</p>
             )}
           </div>
           <div className="space-y-2">

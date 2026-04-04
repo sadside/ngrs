@@ -21,7 +21,7 @@ export function StatusButtons({ tripId, status }: StatusButtonsProps) {
 
   if (status === 'COMPLETED') {
     return (
-      <div className="flex items-center justify-center gap-2 rounded-xl bg-green-50 p-4 text-green-700">
+      <div className="flex items-center justify-center gap-2 rounded-xl bg-accent/10 p-4 text-accent">
         <CheckCircle size={28} weight="fill" />
         <span className="text-lg font-semibold">Рейс завершён</span>
       </div>

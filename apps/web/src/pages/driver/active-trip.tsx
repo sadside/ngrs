@@ -21,7 +21,7 @@ export function ActiveTripPage() {
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 bg-white"
+          className="gap-2 bg-card"
           onClick={() => navigate({ to: '/driver' })}
         >
           <ArrowLeft size={16} />
@@ -42,7 +42,7 @@ export function ActiveTripPage() {
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 bg-white"
+          className="gap-2 bg-card"
           onClick={() => navigate({ to: '/driver' })}
         >
           <ArrowLeft size={16} />
@@ -52,28 +52,28 @@ export function ActiveTripPage() {
       </div>
 
       {/* Route card */}
-      <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <p className="font-semibold text-secondary-900">
+          <p className="font-semibold text-foreground">
             {trip.route.senderContractor.name} &rarr; {trip.route.receiverContractor.name}
           </p>
-          <p className="text-sm text-secondary-400 mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             {trip.cargo.name} &middot; {trip.vehicle.licensePlate}
           </p>
         </div>
         <div className="px-4 py-3 space-y-2.5">
           <div className="flex items-start gap-2.5">
-            <MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-green-500" />
+            <MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-accent" />
             <div>
-              <p className="text-xs text-secondary-400">Погрузка</p>
-              <p className="text-sm text-secondary-700">{trip.route.loadingAddress}</p>
+              <p className="text-xs text-muted-foreground">Погрузка</p>
+              <p className="text-sm text-foreground">{trip.route.loadingAddress}</p>
             </div>
           </div>
           <div className="flex items-start gap-2.5">
-            <MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-red-400" />
+            <MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-destructive" />
             <div>
-              <p className="text-xs text-secondary-400">Выгрузка</p>
-              <p className="text-sm text-secondary-700">{trip.route.unloadingAddress}</p>
+              <p className="text-xs text-muted-foreground">Выгрузка</p>
+              <p className="text-sm text-foreground">{trip.route.unloadingAddress}</p>
             </div>
           </div>
         </div>
@@ -86,10 +86,10 @@ export function ActiveTripPage() {
 
       {/* Waybill form */}
       {showWaybillForm && (
-        <div className="bg-white rounded-xl border border-border shadow-sm p-4">
+        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
           <div className="flex items-center gap-2 mb-4">
-            <FileText size={20} className="text-primary-500" weight="duotone" />
-            <h3 className="font-semibold text-secondary-900">Данные накладной</h3>
+            <FileText size={20} className="text-primary" weight="duotone" />
+            <h3 className="font-semibold text-foreground">Данные накладной</h3>
           </div>
           <SubmitWaybillForm
             tripId={trip.id}
@@ -100,27 +100,27 @@ export function ActiveTripPage() {
 
       {/* Waybill summary */}
       {trip.waybill && (
-        <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-            <CheckCircle size={20} className="text-green-500" weight="duotone" />
-            <h3 className="font-semibold text-secondary-900">Накладная отправлена</h3>
+            <CheckCircle size={20} className="text-accent" weight="duotone" />
+            <h3 className="font-semibold text-foreground">Накладная отправлена</h3>
           </div>
           <div className="px-4 py-3 grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs text-secondary-400">ТТН</p>
-              <p className="font-medium text-secondary-900">{trip.waybill.ttnNumber}</p>
+              <p className="text-xs text-muted-foreground">ТТН</p>
+              <p className="font-medium text-foreground">{trip.waybill.ttnNumber}</p>
             </div>
             <div>
-              <p className="text-xs text-secondary-400">ФИО</p>
-              <p className="font-medium text-secondary-900">{trip.waybill.driverFullName}</p>
+              <p className="text-xs text-muted-foreground">ФИО</p>
+              <p className="font-medium text-foreground">{trip.waybill.driverFullName}</p>
             </div>
             <div>
-              <p className="text-xs text-secondary-400">Вес</p>
-              <p className="font-medium text-secondary-900">{trip.waybill.weight} тн</p>
+              <p className="text-xs text-muted-foreground">Вес</p>
+              <p className="font-medium text-foreground">{trip.waybill.weight} тн</p>
             </div>
             <div>
-              <p className="text-xs text-secondary-400">Вес налива</p>
-              <p className="font-medium text-secondary-900">{trip.waybill.loadWeight} тн</p>
+              <p className="text-xs text-muted-foreground">Вес налива</p>
+              <p className="font-medium text-foreground">{trip.waybill.loadWeight} тн</p>
             </div>
           </div>
         </div>

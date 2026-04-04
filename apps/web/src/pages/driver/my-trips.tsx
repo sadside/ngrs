@@ -36,7 +36,7 @@ export function MyTripsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-secondary-900">Мои рейсы</h1>
+        <h1 className="text-xl font-bold text-foreground">Мои рейсы</h1>
         <Button
           variant="outline"
           size="sm"
@@ -75,13 +75,13 @@ export function MyTripsPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-4 py-12 bg-white rounded-xl border border-border min-h-[400px]">
-                <div className="p-4 rounded-2xl bg-secondary-50">
-                  <Truck size={40} weight="light" className="text-secondary-300" />
+              <div className="flex flex-col items-center justify-center gap-4 py-12 bg-card rounded-xl border border-border min-h-[400px]">
+                <div className="p-4 rounded-2xl bg-muted">
+                  <Truck size={40} weight="light" className="text-muted-foreground" />
                 </div>
                 <div className="text-center">
-                  <p className="text-base font-medium text-secondary-900">Нет активных рейсов</p>
-                  <p className="text-sm text-secondary-400 mt-1">Ожидайте назначения от логиста<br />или свяжитесь с диспетчером</p>
+                  <p className="text-base font-medium text-foreground">Нет активных рейсов</p>
+                  <p className="text-sm text-muted-foreground mt-1">Ожидайте назначения от логиста<br />или свяжитесь с диспетчером</p>
                 </div>
               </div>
             )}
@@ -99,13 +99,13 @@ export function MyTripsPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-4 py-12 bg-white rounded-xl border border-border min-h-[400px]">
-                <div className="p-4 rounded-2xl bg-secondary-50">
-                  <Truck size={40} weight="light" className="text-secondary-300" />
+              <div className="flex flex-col items-center justify-center gap-4 py-12 bg-card rounded-xl border border-border min-h-[400px]">
+                <div className="p-4 rounded-2xl bg-muted">
+                  <Truck size={40} weight="light" className="text-muted-foreground" />
                 </div>
                 <div className="text-center">
-                  <p className="text-base font-medium text-secondary-900">Нет завершённых рейсов</p>
-                  <p className="text-sm text-secondary-400 mt-1">Здесь будет история ваших рейсов</p>
+                  <p className="text-base font-medium text-foreground">Нет завершённых рейсов</p>
+                  <p className="text-sm text-muted-foreground mt-1">Здесь будет история ваших рейсов</p>
                 </div>
               </div>
             )}

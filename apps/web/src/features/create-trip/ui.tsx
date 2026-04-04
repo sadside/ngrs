@@ -90,7 +90,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
-            {errors.routeId && <p className="text-sm text-danger">{errors.routeId.message}</p>}
+            {errors.routeId && <p className="text-sm text-destructive">{errors.routeId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -114,7 +114,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
-            {errors.driverId && <p className="text-sm text-danger">{errors.driverId.message}</p>}
+            {errors.driverId && <p className="text-sm text-destructive">{errors.driverId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -138,7 +138,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
-            {errors.vehicleId && <p className="text-sm text-danger">{errors.vehicleId.message}</p>}
+            {errors.vehicleId && <p className="text-sm text-destructive">{errors.vehicleId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -162,7 +162,7 @@ export function CreateTripDialog() {
                 </Select>
               )}
             />
-            {errors.cargoId && <p className="text-sm text-danger">{errors.cargoId.message}</p>}
+            {errors.cargoId && <p className="text-sm text-destructive">{errors.cargoId.message}</p>}
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

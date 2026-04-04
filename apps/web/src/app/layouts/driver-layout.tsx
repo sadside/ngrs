@@ -38,15 +38,15 @@ export function DriverLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-secondary-50">
-      <header className="bg-white border-b border-border px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-primary-500">Iridium</h1>
+    <div className="min-h-screen bg-background">
+      <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+        <h1 className="text-xl font-bold text-primary">Iridium</h1>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-secondary-700">{user?.fullName}</span>
+          <span className="text-sm font-medium text-foreground">{user?.fullName}</span>
           <Button
             variant="ghost"
             size="sm"
-            className="text-secondary-400 hover:text-secondary-700"
+            className="text-muted-foreground hover:text-foreground"
             onClick={() => {
               sessionCleared();
               navigate({ to: '/login' });

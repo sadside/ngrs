@@ -62,7 +62,7 @@ export function SubmitWaybillForm({ tripId, driverFullName }: SubmitWaybillFormP
           placeholder="Иванов Иван Иванович"
         />
         {errors.driverFullName && (
-          <p className="text-sm text-danger">{errors.driverFullName.message}</p>
+          <p className="text-sm text-destructive">{errors.driverFullName.message}</p>
         )}
       </div>
 
@@ -78,12 +78,12 @@ export function SubmitWaybillForm({ tripId, driverFullName }: SubmitWaybillFormP
               value={field.value}
               onAccept={(value: string) => field.onChange(value)}
               placeholder="___-_______"
-              className="flex h-12 w-full rounded-md border border-input bg-white px-3 py-2 text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="flex h-12 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
             />
           )}
         />
         {errors.ttnNumber && (
-          <p className="text-sm text-danger">{errors.ttnNumber.message}</p>
+          <p className="text-sm text-destructive">{errors.ttnNumber.message}</p>
         )}
       </div>
 
@@ -102,7 +102,7 @@ export function SubmitWaybillForm({ tripId, driverFullName }: SubmitWaybillFormP
             inputMode="decimal"
           />
           {errors.weight && (
-            <p className="text-sm text-danger">{errors.weight.message}</p>
+            <p className="text-sm text-destructive">{errors.weight.message}</p>
           )}
         </div>
 
@@ -120,7 +120,7 @@ export function SubmitWaybillForm({ tripId, driverFullName }: SubmitWaybillFormP
             inputMode="decimal"
           />
           {errors.loadWeight && (
-            <p className="text-sm text-danger">{errors.loadWeight.message}</p>
+            <p className="text-sm text-destructive">{errors.loadWeight.message}</p>
           )}
         </div>
       </div>

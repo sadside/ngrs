@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Plus } from '@phosphor-icons/react';
 
+import { PageHeader } from '@/widgets/page-header/ui';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -84,6 +85,7 @@ export function ContractorsPage() {
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      <PageHeader title="Контрагенты" />
       <div className="flex items-center gap-3">
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -100,7 +102,7 @@ export function ContractorsPage() {
               <div className="space-y-2">
                 <Label>Название</Label>
                 <Input {...register('name')} placeholder="ООО Компания" />
-                {errors.name && <p className="text-sm text-danger">{errors.name.message}</p>}
+                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ИНН (необязательно)</Label>
@@ -124,7 +126,7 @@ export function ContractorsPage() {
                     </Select>
                   )}
                 />
-                {errors.type && <p className="text-sm text-danger">{errors.type.message}</p>}
+                {errors.type && <p className="text-sm text-destructive">{errors.type.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Юридический адрес (необязательно)</Label>

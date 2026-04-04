@@ -1,3 +1,4 @@
+import { PageHeader } from '@/widgets/page-header/ui';
 import { Badge } from '@/shared/ui/badge';
 
 import {
@@ -30,6 +31,7 @@ export function DriversPage() {
 
   return (
     <div className="flex flex-col flex-1 gap-4">
+      <PageHeader title="Водители" />
       {isLoading ? (
         <p className="text-muted-foreground">Загрузка...</p>
       ) : (
