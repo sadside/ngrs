@@ -7,11 +7,18 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
-import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/shared/ui/dropdown-menu';
+import { DotsThreeVertical, CheckCircle, Prohibit, UserMinus } from '@phosphor-icons/react';
 
 import {
   Dialog,
@@ -117,23 +124,42 @@ export function UsersPage() {
     },
     {
       id: 'actions',
+      header: '',
       cell: ({ row }) => {
         const user = row.original;
         return (
-          <div className="flex gap-2">
-            {user.status !== 'ACTIVE' && (
-              <Button size="sm" variant="outline" onClick={() => handleApprove(user.id)}>
-                Активировать
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm">
+                <DotsThreeVertical size={18} />
               </Button>
-            )}
-            {user.status !== 'BLOCKED' && (
-              <Button size="sm" variant="danger" onClick={() => handleBlock(user.id)}>
-                Заблокировать
-              </Button>
-            )}
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {user.status === 'PENDING' && (
+                <DropdownMenuItem onClick={() => handleApprove(user.id)}>
+                  <CheckCircle size={16} className="mr-2 text-accent" />
+                  Активировать
+                </DropdownMenuItem>
+              )}
+              {user.status === 'ACTIVE' && (
+                <DropdownMenuItem onClick={() => handleBlock(user.id)}>
+                  <Prohibit size={16} className="mr-2 text-warning" />
+                  Заблокировать
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => toast.info('Увольнение будет добавлено позже')}
+                className="text-destructive focus:text-destructive"
+              >
+                <UserMinus size={16} className="mr-2" />
+                Уволить
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         );
       },
+      size: 50,
     },
   ];
 
