@@ -61,7 +61,7 @@ export function CreateTripDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-primary-500 hover:bg-primary-600 text-white">Создать рейс</Button>
+        <Button>Создать рейс</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -169,7 +169,7 @@ export function CreateTripDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Отмена
             </Button>
-            <Button type="submit" className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Создание...' : 'Создать'}
             </Button>
           </div>

@@ -21,7 +21,7 @@ export function ActiveTripPage() {
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 cursor-pointer bg-white"
+          className="gap-2 bg-white"
           onClick={() => navigate({ to: '/driver' })}
         >
           <ArrowLeft size={16} />
@@ -42,7 +42,7 @@ export function ActiveTripPage() {
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 cursor-pointer bg-white"
+          className="gap-2 bg-white"
           onClick={() => navigate({ to: '/driver' })}
         >
           <ArrowLeft size={16} />

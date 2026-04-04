@@ -22,16 +22,6 @@ export const TRIP_STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'Отменён',
 };
 
-export const TRIP_STATUS_COLORS: Record<string, string> = {
-  ASSIGNED: 'bg-secondary-100 text-secondary-800',
-  EN_ROUTE_TO_LOADING: 'bg-accent-100 text-accent-800',
-  LOADING: 'bg-primary-100 text-primary-800',
-  EN_ROUTE_TO_UNLOADING: 'bg-accent-100 text-accent-800',
-  UNLOADING: 'bg-primary-100 text-primary-800',
-  COMPLETED: 'bg-green-100 text-green-800',
-  CANCELLED: 'bg-red-100 text-red-800',
-};
-
 export const VEHICLE_STATUS_LABELS: Record<string, string> = {
   ACTIVE: 'Активен',
   INACTIVE: 'Неактивен',

@@ -22,10 +22,10 @@ export function DriversPage() {
       .map((v) => [v.assignedDriver!.id, `${v.brand} ${v.model} (${v.licensePlate})`])
   );
 
-  const statusColors: Record<string, string> = {
-    ACTIVE: 'bg-green-100 text-green-800',
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    BLOCKED: 'bg-red-100 text-red-800',
+  const statusVariant: Record<string, 'success' | 'warning' | 'danger'> = {
+    ACTIVE: 'success',
+    PENDING: 'warning',
+    BLOCKED: 'danger',
   };
 
   return (
@@ -49,7 +49,7 @@ export function DriversPage() {
                 <TableCell>{d.phone ?? '—'}</TableCell>
                 <TableCell>{vehicleByDriver.get(d.id) ?? '—'}</TableCell>
                 <TableCell>
-                  <Badge className={statusColors[d.status] ?? ''}>
+                  <Badge variant={statusVariant[d.status] ?? 'neutral'}>
                     {USER_STATUS_LABELS[d.status] ?? d.status}
                   </Badge>
                 </TableCell>

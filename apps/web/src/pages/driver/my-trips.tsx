@@ -42,7 +42,7 @@ export function MyTripsPage() {
           size="sm"
           onClick={() => refetch()}
           disabled={isRefetching}
-          className="cursor-pointer gap-2"
+          className="gap-2"
         >
           <ArrowsClockwise
             size={16}

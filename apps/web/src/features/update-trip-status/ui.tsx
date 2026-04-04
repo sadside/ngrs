@@ -43,7 +43,8 @@ export function StatusButtons({ tripId, status }: StatusButtonsProps) {
 
   return (
     <Button
-      className="h-14 w-full rounded-xl bg-primary-500 text-lg font-semibold text-white hover:bg-primary-600"
+      size="lg"
+      className="h-14 w-full rounded-xl text-lg font-semibold"
       onClick={handleClick}
       disabled={updateStatus.isPending}
     >

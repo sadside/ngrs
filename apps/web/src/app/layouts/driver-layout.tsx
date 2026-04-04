@@ -46,7 +46,7 @@ export function DriverLayout() {
           <Button
             variant="ghost"
             size="sm"
-            className="cursor-pointer text-secondary-400 hover:text-secondary-700"
+            className="text-secondary-400 hover:text-secondary-700"
             onClick={() => {
               sessionCleared();
               navigate({ to: '/login' });

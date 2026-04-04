@@ -127,7 +127,8 @@ export function SubmitWaybillForm({ tripId, driverFullName }: SubmitWaybillFormP
 
       <Button
         type="submit"
-        className="h-12 w-full rounded-xl bg-primary-500 text-base font-semibold text-white hover:bg-primary-600 cursor-pointer"
+        size="lg"
+        className="w-full rounded-xl font-semibold"
         disabled={createWaybill.isPending}
       >
         {createWaybill.isPending ? 'Отправка...' : 'Отправить накладную'}

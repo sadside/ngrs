@@ -91,10 +91,10 @@ export function UsersPage() {
     );
   };
 
-  const statusColors: Record<string, string> = {
-    ACTIVE: 'bg-green-100 text-green-800',
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    BLOCKED: 'bg-red-100 text-red-800',
+  const statusVariant: Record<string, 'success' | 'warning' | 'danger'> = {
+    ACTIVE: 'success',
+    PENDING: 'warning',
+    BLOCKED: 'danger',
   };
 
   return (
@@ -103,7 +103,7 @@ export function UsersPage() {
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer">
+            <Button>
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -151,7 +151,7 @@ export function UsersPage() {
                 />
                 {errors.role && <p className="text-sm text-danger">{errors.role.message}</p>}
               </div>
-              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createUser.isPending}>
+              <Button type="submit" className="w-full" disabled={createUser.isPending}>
                 {createUser.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>
@@ -183,7 +183,7 @@ export function UsersPage() {
                   <RoleBadge role={u.role} />
                 </TableCell>
                 <TableCell>
-                  <Badge className={statusColors[u.status] ?? ''}>
+                  <Badge variant={statusVariant[u.status] ?? 'neutral'}>
                     {USER_STATUS_LABELS[u.status] ?? u.status}
                   </Badge>
                 </TableCell>
@@ -195,7 +195,6 @@ export function UsersPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="cursor-pointer"
                         onClick={() => handleApprove(u.id)}
                       >
                         Активировать
@@ -204,8 +203,7 @@ export function UsersPage() {
                     {u.status !== 'BLOCKED' && (
                       <Button
                         size="sm"
-                        variant="destructive"
-                        className="cursor-pointer"
+                        variant="danger"
                         onClick={() => handleBlock(u.id)}
                       >
                         Заблокировать

@@ -104,7 +104,7 @@ export function VehiclesPage() {
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer">
+            <Button>
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -188,7 +188,7 @@ export function VehiclesPage() {
                   ))}
                 </div>
               </div>
-              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createVehicle.isPending}>
+              <Button type="submit" className="w-full" disabled={createVehicle.isPending}>
                 {createVehicle.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>
@@ -220,13 +220,12 @@ export function VehiclesPage() {
                 <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
                 <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{VEHICLE_STATUS_LABELS[v.status] ?? v.status}</Badge>
+                  <Badge variant="neutral">{VEHICLE_STATUS_LABELS[v.status] ?? v.status}</Badge>
                 </TableCell>
                 <TableCell>
                   <Button
                     size="sm"
-                    variant="destructive"
-                    className="cursor-pointer"
+                    variant="danger"
                     onClick={() => setDeleteTarget({ id: v.id, name: `${v.brand} ${v.model} (${v.licensePlate})` })}
                   >
                     Удалить
@@ -254,12 +253,11 @@ export function VehiclesPage() {
             Вы действительно хотите удалить <span className="font-medium text-foreground">{deleteTarget?.name}</span>?
           </p>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="cursor-pointer">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
               Отмена
             </Button>
             <Button
-              variant="destructive"
-              className="cursor-pointer"
+              variant="danger"
               onClick={() => {
                 toast.info('Функция удаления будет добавлена позже');
                 setDeleteTarget(null);

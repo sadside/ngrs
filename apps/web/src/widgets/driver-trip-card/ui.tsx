@@ -27,20 +27,20 @@ const STATUS_ICON: Record<string, typeof Truck> = {
 function getMainAction(trip: Trip) {
   switch (trip.status) {
     case 'ASSIGNED':
-      return <Button size="sm" className="cursor-pointer">Начать рейс</Button>;
+      return <Button size="sm">Начать рейс</Button>;
     case 'EN_ROUTE_TO_LOADING':
     case 'LOADING':
       return trip.waybill ? (
-        <Button size="sm" variant="outline" className="cursor-pointer">Подробнее</Button>
+        <Button size="sm" variant="outline">Подробнее</Button>
       ) : (
-        <Button size="sm" className="cursor-pointer">Отправить накладную</Button>
+        <Button size="sm">Отправить накладную</Button>
       );
     case 'EN_ROUTE_TO_UNLOADING':
     case 'UNLOADING':
       return trip.waybill ? (
-        <Button size="sm" variant="outline" className="cursor-pointer">Подробнее</Button>
+        <Button size="sm" variant="outline">Подробнее</Button>
       ) : (
-        <Button size="sm" variant="outline" className="cursor-pointer">Завершить</Button>
+        <Button size="sm" variant="outline">Завершить</Button>
       );
     case 'COMPLETED':
       return <span className="text-xs text-green-600">Завершён</span>;

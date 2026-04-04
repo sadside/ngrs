@@ -93,7 +93,7 @@ export function LoginForm() {
           </div>
           <Button
             type="submit"
-            className="w-full h-11 bg-primary-500 hover:bg-primary-600 text-white cursor-pointer"
+            className="w-full h-11"
             disabled={mutation.isPending}
           >
             {mutation.isPending ? 'Вход...' : 'Войти'}

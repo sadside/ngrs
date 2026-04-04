@@ -83,7 +83,7 @@ export function RoutesPage() {
         <div className="flex-1" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary-500 hover:bg-primary-600 text-white cursor-pointer">
+            <Button>
               <Plus size={18} className="mr-2" /> Добавить
             </Button>
           </DialogTrigger>
@@ -154,7 +154,7 @@ export function RoutesPage() {
                 <Label>Описание (необязательно)</Label>
                 <Textarea {...register('description')} placeholder="Дополнительная информация..." />
               </div>
-              <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-600 text-white cursor-pointer" disabled={createRoute.isPending}>
+              <Button type="submit" className="w-full" disabled={createRoute.isPending}>
                 {createRoute.isPending ? 'Создание...' : 'Создать'}
               </Button>
             </form>
@@ -187,8 +187,7 @@ export function RoutesPage() {
                 <TableCell>
                   <Button
                     size="sm"
-                    variant="destructive"
-                    className="cursor-pointer"
+                    variant="danger"
                     onClick={() => setDeleteTarget({ id: r.id, name: `${r.senderContractor.name} → ${r.receiverContractor.name}` })}
                   >
                     Удалить
@@ -216,12 +215,11 @@ export function RoutesPage() {
             Вы действительно хотите удалить <span className="font-medium text-foreground">{deleteTarget?.name}</span>?
           </p>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)} className="cursor-pointer">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
               Отмена
             </Button>
             <Button
-              variant="destructive"
-              className="cursor-pointer"
+              variant="danger"
               onClick={() => {
                 toast.info('Функция удаления будет добавлена позже');
                 setDeleteTarget(null);
