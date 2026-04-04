@@ -1,17 +1,17 @@
-import { PageHeader } from '@/widgets/page-header/ui';
-import { Badge } from '@/shared/ui/badge';
+import type { ColumnDef } from '@tanstack/react-table';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui/table';
+import { PageHeader } from '@/widgets/page-header/ui';
+import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { Badge } from '@/shared/ui/badge';
 import { USER_STATUS_LABELS } from '@/shared/config/constants';
-import { useUsers } from '@/entities/user/api';
+import { useUsers, type User } from '@/entities/user/api';
 import { useVehicles } from '@/entities/vehicle/api';
+
+const statusVariant: Record<string, 'success' | 'warning' | 'danger'> = {
+  ACTIVE: 'success',
+  PENDING: 'warning',
+  BLOCKED: 'danger',
+};
 
 export function DriversPage() {
   const { data: drivers, isLoading } = useUsers({ role: 'DRIVER' });
@@ -20,53 +20,46 @@ export function DriversPage() {
   const vehicleByDriver = new Map(
     vehicles
       ?.filter((v) => v.assignedDriver)
-      .map((v) => [v.assignedDriver!.id, `${v.brand} ${v.model} (${v.licensePlate})`])
+      .map((v) => [v.assignedDriver!.id, `${v.brand} ${v.model} (${v.licensePlate})`]),
   );
 
-  const statusVariant: Record<string, 'success' | 'warning' | 'danger'> = {
-    ACTIVE: 'success',
-    PENDING: 'warning',
-    BLOCKED: 'danger',
-  };
+  const columns: ColumnDef<User, any>[] = [
+    getSelectColumn<User>(),
+    {
+      accessorKey: 'fullName',
+      header: 'ФИО',
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Телефон',
+      cell: ({ row }) => row.original.phone ?? '—',
+    },
+    {
+      id: 'vehicle',
+      header: 'Привязанное ТС',
+      cell: ({ row }) => vehicleByDriver.get(row.original.id) ?? '—',
+    },
+    {
+      accessorKey: 'status',
+      header: 'Статус',
+      cell: ({ row }) => (
+        <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
+          {USER_STATUS_LABELS[row.original.status] ?? row.original.status}
+        </Badge>
+      ),
+    },
+  ];
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1">
       <PageHeader title="Водители" />
-      {isLoading ? (
-        <p className="text-muted-foreground">Загрузка...</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ФИО</TableHead>
-              <TableHead>Телефон</TableHead>
-              <TableHead>Привязанное ТС</TableHead>
-              <TableHead>Статус</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {drivers?.map((d) => (
-              <TableRow key={d.id}>
-                <TableCell>{d.fullName}</TableCell>
-                <TableCell>{d.phone ?? '—'}</TableCell>
-                <TableCell>{vehicleByDriver.get(d.id) ?? '—'}</TableCell>
-                <TableCell>
-                  <Badge variant={statusVariant[d.status] ?? 'neutral'}>
-                    {USER_STATUS_LABELS[d.status] ?? d.status}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-            {drivers?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      )}
+
+      <DataTable
+        columns={columns}
+        data={drivers ?? []}
+        isLoading={isLoading}
+        searchPlaceholder="Поиск водителей..."
+      />
     </div>
   );
 }

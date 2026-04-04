@@ -3,29 +3,22 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Plus } from '@phosphor-icons/react';
+import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
+import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { RowActions } from '@/shared/ui/data-table/row-actions';
+import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Badge } from '@/shared/ui/badge';
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/shared/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui/table';
 import {
   Select,
   SelectContent,
@@ -34,8 +27,27 @@ import {
   SelectValue,
 } from '@/shared/ui/select';
 import { ROLE_LABELS, USER_STATUS_LABELS } from '@/shared/config/constants';
-import { useUsers, useCreateUser, useUpdateUser } from '@/entities/user/api';
+import { useUsers, useCreateUser, useUpdateUser, type User } from '@/entities/user/api';
 import { RoleBadge } from '@/entities/session/ui';
+
+const statusVariant: Record<string, 'success' | 'warning' | 'danger'> = {
+  ACTIVE: 'success',
+  PENDING: 'warning',
+  BLOCKED: 'danger',
+};
+
+const filterOptions = [
+  {
+    key: 'role',
+    label: 'Роль',
+    options: Object.entries(ROLE_LABELS).map(([value, label]) => ({ value, label })),
+  },
+  {
+    key: 'status',
+    label: 'Статус',
+    options: Object.entries(USER_STATUS_LABELS).map(([value, label]) => ({ value, label })),
+  },
+];
 
 const userSchema = z.object({
   login: z.string().min(3, 'Минимум 3 символа'),
@@ -52,6 +64,78 @@ export function UsersPage() {
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleApprove = (id: string) => {
+    updateUser.mutate(
+      { id, status: 'ACTIVE' },
+      { onSuccess: () => toast.success('Пользователь активирован') },
+    );
+  };
+
+  const handleBlock = (id: string) => {
+    updateUser.mutate(
+      { id, status: 'BLOCKED' },
+      { onSuccess: () => toast.success('Пользователь заблокирован') },
+    );
+  };
+
+  const columns: ColumnDef<User, any>[] = [
+    getSelectColumn<User>(),
+    {
+      accessorKey: 'login',
+      header: 'Логин',
+    },
+    {
+      accessorKey: 'fullName',
+      header: 'ФИО',
+    },
+    {
+      accessorKey: 'role',
+      header: 'Роль',
+      cell: ({ row }) => <RoleBadge role={row.original.role} />,
+      filterFn: 'equals',
+    },
+    {
+      accessorKey: 'status',
+      header: 'Статус',
+      cell: ({ row }) => (
+        <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
+          {USER_STATUS_LABELS[row.original.status] ?? row.original.status}
+        </Badge>
+      ),
+      filterFn: 'equals',
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Телефон',
+      cell: ({ row }) => row.original.phone ?? '—',
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'Дата создания',
+      cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString('ru-RU'),
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="flex gap-2">
+            {user.status !== 'ACTIVE' && (
+              <Button size="sm" variant="outline" onClick={() => handleApprove(user.id)}>
+                Активировать
+              </Button>
+            )}
+            {user.status !== 'BLOCKED' && (
+              <Button size="sm" variant="danger" onClick={() => handleBlock(user.id)}>
+                Заблокировать
+              </Button>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
 
   const {
     register,
@@ -78,153 +162,71 @@ export function UsersPage() {
     });
   };
 
-  const handleApprove = (id: string) => {
-    updateUser.mutate(
-      { id, status: 'ACTIVE' },
-      { onSuccess: () => toast.success('Пользователь активирован') }
-    );
-  };
-
-  const handleBlock = (id: string) => {
-    updateUser.mutate(
-      { id, status: 'BLOCKED' },
-      { onSuccess: () => toast.success('Пользователь заблокирован') }
-    );
-  };
-
-  const statusVariant: Record<string, 'success' | 'warning' | 'danger'> = {
-    ACTIVE: 'success',
-    PENDING: 'warning',
-    BLOCKED: 'danger',
-  };
-
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1">
       <PageHeader title="Пользователи" />
-      <div className="flex items-center gap-3">
-        <div className="flex-1" />
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus size={18} className="mr-2" /> Добавить
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Новый пользователь</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-              <div className="space-y-2">
-                <Label>Логин</Label>
-                <Input {...register('login')} placeholder="ivanov" />
-                {errors.login && <p className="text-sm text-destructive">{errors.login.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>Пароль</Label>
-                <Input type="password" {...register('password')} placeholder="Минимум 6 символов" />
-                {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>ФИО</Label>
-                <Input {...register('fullName')} placeholder="Иванов Иван Иванович" />
-                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>Телефон (необязательно)</Label>
-                <Input {...register('phone')} placeholder="+7..." />
-              </div>
-              <div className="space-y-2">
-                <Label>Роль</Label>
-                <Controller
-                  name="role"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Выберите..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(ROLE_LABELS).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>{label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
-              </div>
-              <Button type="submit" className="w-full" disabled={createUser.isPending}>
-                {createUser.isPending ? 'Создание...' : 'Создать'}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Загрузка...</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Логин</TableHead>
-              <TableHead>ФИО</TableHead>
-              <TableHead>Роль</TableHead>
-              <TableHead>Статус</TableHead>
-              <TableHead>Телефон</TableHead>
-              <TableHead>Дата создания</TableHead>
-              <TableHead>Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users?.map((u) => (
-              <TableRow key={u.id}>
-                <TableCell>{u.login}</TableCell>
-                <TableCell>{u.fullName}</TableCell>
-                <TableCell>
-                  <RoleBadge role={u.role} />
-                </TableCell>
-                <TableCell>
-                  <Badge variant={statusVariant[u.status] ?? 'neutral'}>
-                    {USER_STATUS_LABELS[u.status] ?? u.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>{u.phone ?? '—'}</TableCell>
-                <TableCell>{new Date(u.createdAt).toLocaleDateString('ru-RU')}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    {u.status !== 'ACTIVE' && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleApprove(u.id)}
-                      >
-                        Активировать
-                      </Button>
-                    )}
-                    {u.status !== 'BLOCKED' && (
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        onClick={() => handleBlock(u.id)}
-                      >
-                        Заблокировать
-                      </Button>
-                    )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-            {users?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      )}
+      <DataTable
+        columns={columns}
+        data={users ?? []}
+        isLoading={isLoading}
+        searchPlaceholder="Поиск пользователей..."
+        filterOptions={filterOptions}
+        onCreateClick={() => setDialogOpen(true)}
+        createLabel="Добавить"
+      />
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Новый пользователь</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+            <div className="space-y-2">
+              <Label>Логин</Label>
+              <Input {...register('login')} placeholder="ivanov" />
+              {errors.login && <p className="text-sm text-destructive">{errors.login.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>Пароль</Label>
+              <Input type="password" {...register('password')} placeholder="Минимум 6 символов" />
+              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>ФИО</Label>
+              <Input {...register('fullName')} placeholder="Иванов Иван Иванович" />
+              {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>Телефон (необязательно)</Label>
+              <Input {...register('phone')} placeholder="+7..." />
+            </div>
+            <div className="space-y-2">
+              <Label>Роль</Label>
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(ROLE_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
+            </div>
+            <Button type="submit" className="w-full" disabled={createUser.isPending}>
+              {createUser.isPending ? 'Создание...' : 'Создать'}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

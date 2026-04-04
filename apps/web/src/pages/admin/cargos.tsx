@@ -3,9 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Plus } from '@phosphor-icons/react';
+import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
+import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -15,17 +17,45 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/shared/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui/table';
-import { useCargos, useCreateCargo } from '@/entities/cargo/api';
+import { useCargos, useCreateCargo, type Cargo } from '@/entities/cargo/api';
+
+const columns: ColumnDef<Cargo, any>[] = [
+  getSelectColumn<Cargo>(),
+  {
+    accessorKey: 'name',
+    header: 'Название',
+  },
+  {
+    accessorKey: 'technicalSpec',
+    header: 'ТУ',
+    cell: ({ row }) => row.original.technicalSpec ?? '—',
+  },
+  {
+    accessorKey: 'unCode',
+    header: 'UN код',
+    cell: ({ row }) => row.original.unCode ?? '—',
+  },
+  {
+    accessorKey: 'hazardClass',
+    header: 'Класс опасности',
+    cell: ({ row }) => row.original.hazardClass ?? '—',
+  },
+  {
+    accessorKey: 'packagingMethod',
+    header: 'Упаковка',
+    cell: ({ row }) => row.original.packagingMethod ?? '—',
+  },
+  {
+    id: 'actions',
+    cell: () => (
+      <RowActions
+        onDelete={() => toast.info('Функция удаления будет добавлена позже')}
+      />
+    ),
+    size: 50,
+  },
+];
 
 const cargoSchema = z.object({
   name: z.string().min(1, 'Обязательное поле'),
@@ -41,7 +71,6 @@ export function CargosPage() {
   const { data: cargos, isLoading } = useCargos();
   const createCargo = useCreateCargo();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{id: string; name: string} | null>(null);
 
   const {
     register,
@@ -71,116 +100,49 @@ export function CargosPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1">
       <PageHeader title="Грузы" />
-      <div className="flex items-center gap-3">
-        <div className="flex-1" />
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus size={18} className="mr-2" /> Добавить
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Новый груз</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-              <div className="space-y-2">
-                <Label>Название</Label>
-                <Input {...register('name')} placeholder="Бензин АИ-92" />
-                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>ТУ (необязательно)</Label>
-                <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" />
-              </div>
-              <div className="space-y-2">
-                <Label>UN код (необязательно)</Label>
-                <Input {...register('unCode')} placeholder="1203" />
-              </div>
-              <div className="space-y-2">
-                <Label>Класс опасности (необязательно)</Label>
-                <Input {...register('hazardClass')} placeholder="3" />
-              </div>
-              <div className="space-y-2">
-                <Label>Упаковка (необязательно)</Label>
-                <Input {...register('packagingMethod')} placeholder="Цистерна" />
-              </div>
-              <Button type="submit" className="w-full" disabled={createCargo.isPending}>
-                {createCargo.isPending ? 'Создание...' : 'Создать'}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Загрузка...</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Название</TableHead>
-              <TableHead>ТУ</TableHead>
-              <TableHead>UN код</TableHead>
-              <TableHead>Класс опасности</TableHead>
-              <TableHead>Упаковка</TableHead>
-              <TableHead>Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {cargos?.map((c) => (
-              <TableRow key={c.id}>
-                <TableCell>{c.name}</TableCell>
-                <TableCell>{c.technicalSpec ?? '—'}</TableCell>
-                <TableCell>{c.unCode ?? '—'}</TableCell>
-                <TableCell>{c.hazardClass ?? '—'}</TableCell>
-                <TableCell>{c.packagingMethod ?? '—'}</TableCell>
-                <TableCell>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => setDeleteTarget({ id: c.id, name: c.name })}
-                  >
-                    Удалить
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            {cargos?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      )}
+      <DataTable
+        columns={columns}
+        data={cargos ?? []}
+        isLoading={isLoading}
+        searchPlaceholder="Поиск грузов..."
+        onCreateClick={() => setDialogOpen(true)}
+        createLabel="Добавить"
+      />
 
-      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Подтверждение удаления</DialogTitle>
+            <DialogTitle>Новый груз</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground py-4">
-            Вы действительно хотите удалить <span className="font-medium text-foreground">{deleteTarget?.name}</span>?
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
-              Отмена
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+            <div className="space-y-2">
+              <Label>Название</Label>
+              <Input {...register('name')} placeholder="Бензин АИ-92" />
+              {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>ТУ (необязательно)</Label>
+              <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" />
+            </div>
+            <div className="space-y-2">
+              <Label>UN код (необязательно)</Label>
+              <Input {...register('unCode')} placeholder="1203" />
+            </div>
+            <div className="space-y-2">
+              <Label>Класс опасности (необязательно)</Label>
+              <Input {...register('hazardClass')} placeholder="3" />
+            </div>
+            <div className="space-y-2">
+              <Label>Упаковка (необязательно)</Label>
+              <Input {...register('packagingMethod')} placeholder="Цистерна" />
+            </div>
+            <Button type="submit" className="w-full" disabled={createCargo.isPending}>
+              {createCargo.isPending ? 'Создание...' : 'Создать'}
             </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                toast.info('Функция удаления будет добавлена позже');
-                setDeleteTarget(null);
-              }}
-            >
-              Удалить
-            </Button>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

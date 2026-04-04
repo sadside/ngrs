@@ -3,9 +3,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Plus } from '@phosphor-icons/react';
+import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
+import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { RowActions } from '@/shared/ui/data-table/row-actions';
+import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -15,16 +18,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/shared/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/ui/table';
 import {
   Select,
   SelectContent,
@@ -32,11 +26,70 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select';
-import { Badge } from '@/shared/ui/badge';
 import { OWNERSHIP_LABELS, VEHICLE_STATUS_LABELS } from '@/shared/config/constants';
-import { useVehicles, useCreateVehicle } from '@/entities/vehicle/api';
+import { useVehicles, useCreateVehicle, type Vehicle } from '@/entities/vehicle/api';
 import { useUsers } from '@/entities/user/api';
 import { useCargos } from '@/entities/cargo/api';
+
+const statusVariant: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
+  ACTIVE: 'success',
+  INACTIVE: 'neutral',
+};
+
+const columns: ColumnDef<Vehicle, any>[] = [
+  getSelectColumn<Vehicle>(),
+  {
+    accessorKey: 'brand',
+    header: 'Марка/Модель',
+    cell: ({ row }) => `${row.original.brand} ${row.original.model}`,
+  },
+  {
+    accessorKey: 'licensePlate',
+    header: 'Госномер',
+  },
+  {
+    accessorKey: 'trailerPlate',
+    header: 'Прицеп',
+    cell: ({ row }) => row.original.trailerPlate ?? '—',
+  },
+  {
+    id: 'driver',
+    header: 'Водитель',
+    cell: ({ row }) => row.original.assignedDriver?.fullName ?? '—',
+  },
+  {
+    accessorKey: 'ownershipType',
+    header: 'Тип владения',
+    cell: ({ row }) => OWNERSHIP_LABELS[row.original.ownershipType] ?? row.original.ownershipType,
+  },
+  {
+    accessorKey: 'status',
+    header: 'Статус',
+    cell: ({ row }) => (
+      <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
+        {VEHICLE_STATUS_LABELS[row.original.status] ?? row.original.status}
+      </Badge>
+    ),
+    filterFn: 'equals',
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => (
+      <RowActions
+        onDelete={() => toast.info('Функция удаления будет добавлена позже')}
+      />
+    ),
+    size: 50,
+  },
+];
+
+const filterOptions = [
+  {
+    key: 'status',
+    label: 'Статус',
+    options: Object.entries(VEHICLE_STATUS_LABELS).map(([value, label]) => ({ value, label })),
+  },
+];
 
 const vehicleSchema = z.object({
   brand: z.string().min(1, 'Обязательное поле'),
@@ -56,7 +109,6 @@ export function VehiclesPage() {
   const { data: cargos } = useCargos();
   const createVehicle = useCreateVehicle();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{id: string; name: string} | null>(null);
 
   const {
     register,
@@ -100,174 +152,104 @@ export function VehiclesPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1">
       <PageHeader title="Транспорт" />
-      <div className="flex items-center gap-3">
-        <div className="flex-1" />
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus size={18} className="mr-2" /> Добавить
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Новое транспортное средство</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-              <div className="space-y-2">
-                <Label>Марка</Label>
-                <Input {...register('brand')} placeholder="КАМАЗ" />
-                {errors.brand && <p className="text-sm text-destructive">{errors.brand.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>Модель</Label>
-                <Input {...register('model')} placeholder="65115" />
-                {errors.model && <p className="text-sm text-destructive">{errors.model.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>Госномер</Label>
-                <Input {...register('licensePlate')} placeholder="А123БВ777" />
-                {errors.licensePlate && <p className="text-sm text-destructive">{errors.licensePlate.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>Прицеп (необязательно)</Label>
-                <Input {...register('trailerPlate')} placeholder="АА1234 77" />
-              </div>
-              <div className="space-y-2">
-                <Label>Тип владения</Label>
-                <Controller
-                  name="ownershipType"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Выберите..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(OWNERSHIP_LABELS).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>{label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.ownershipType && <p className="text-sm text-destructive">{errors.ownershipType.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>Водитель (необязательно)</Label>
-                <Controller
-                  name="assignedDriverId"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value ?? ''} onValueChange={(val) => field.onChange(val === '__none__' ? '' : val)}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Не назначен" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="__none__">Не назначен</SelectItem>
-                        {drivers?.map((d) => (
-                          <SelectItem key={d.id} value={d.id}>{d.fullName}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Разрешённые грузы</Label>
-                <div className="flex flex-wrap gap-2">
-                  {cargos?.map((cargo) => (
-                    <label key={cargo.id} className="flex items-center gap-1.5 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={selectedCargos.includes(cargo.id)}
-                        onChange={() => toggleCargo(cargo.id)}
-                        className="rounded border-input"
-                      />
-                      {cargo.name}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <Button type="submit" className="w-full" disabled={createVehicle.isPending}>
-                {createVehicle.isPending ? 'Создание...' : 'Создать'}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Загрузка...</p>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Марка/Модель</TableHead>
-              <TableHead>Госномер</TableHead>
-              <TableHead>Прицеп</TableHead>
-              <TableHead>Водитель</TableHead>
-              <TableHead>Тип владения</TableHead>
-              <TableHead>Статус</TableHead>
-              <TableHead>Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {vehicles?.map((v) => (
-              <TableRow key={v.id}>
-                <TableCell>{v.brand} {v.model}</TableCell>
-                <TableCell>{v.licensePlate}</TableCell>
-                <TableCell>{v.trailerPlate ?? '—'}</TableCell>
-                <TableCell>{v.assignedDriver?.fullName ?? '—'}</TableCell>
-                <TableCell>{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</TableCell>
-                <TableCell>
-                  <Badge variant="neutral">{VEHICLE_STATUS_LABELS[v.status] ?? v.status}</Badge>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => setDeleteTarget({ id: v.id, name: `${v.brand} ${v.model} (${v.licensePlate})` })}
-                  >
-                    Удалить
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            {vehicles?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  Нет данных
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      )}
+      <DataTable
+        columns={columns}
+        data={vehicles ?? []}
+        isLoading={isLoading}
+        searchPlaceholder="Поиск транспорта..."
+        filterOptions={filterOptions}
+        onCreateClick={() => setDialogOpen(true)}
+        createLabel="Добавить"
+      />
 
-      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Подтверждение удаления</DialogTitle>
+            <DialogTitle>Новое транспортное средство</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground py-4">
-            Вы действительно хотите удалить <span className="font-medium text-foreground">{deleteTarget?.name}</span>?
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
-              Отмена
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+            <div className="space-y-2">
+              <Label>Марка</Label>
+              <Input {...register('brand')} placeholder="КАМАЗ" />
+              {errors.brand && <p className="text-sm text-destructive">{errors.brand.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>Модель</Label>
+              <Input {...register('model')} placeholder="65115" />
+              {errors.model && <p className="text-sm text-destructive">{errors.model.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>Госномер</Label>
+              <Input {...register('licensePlate')} placeholder="А123БВ777" />
+              {errors.licensePlate && <p className="text-sm text-destructive">{errors.licensePlate.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>Прицеп (необязательно)</Label>
+              <Input {...register('trailerPlate')} placeholder="АА1234 77" />
+            </div>
+            <div className="space-y-2">
+              <Label>Тип владения</Label>
+              <Controller
+                name="ownershipType"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(OWNERSHIP_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.ownershipType && <p className="text-sm text-destructive">{errors.ownershipType.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label>Водитель (необязательно)</Label>
+              <Controller
+                name="assignedDriverId"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value ?? ''} onValueChange={(val) => field.onChange(val === '__none__' ? '' : val)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Не назначен" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none__">Не назначен</SelectItem>
+                      {drivers?.map((d) => (
+                        <SelectItem key={d.id} value={d.id}>{d.fullName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Разрешённые грузы</Label>
+              <div className="flex flex-wrap gap-2">
+                {cargos?.map((cargo) => (
+                  <label key={cargo.id} className="flex items-center gap-1.5 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selectedCargos.includes(cargo.id)}
+                      onChange={() => toggleCargo(cargo.id)}
+                      className="rounded border-input"
+                    />
+                    {cargo.name}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={createVehicle.isPending}>
+              {createVehicle.isPending ? 'Создание...' : 'Создать'}
             </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                toast.info('Функция удаления будет добавлена позже');
-                setDeleteTarget(null);
-              }}
-            >
-              Удалить
-            </Button>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
