@@ -7,6 +7,8 @@ export interface User {
   phone: string | null;
   role: 'ADMIN' | 'LOGIST' | 'DRIVER';
   status: 'PENDING' | 'ACTIVE' | 'BLOCKED';
+  telegramChatId: string | null;
+  telegramLinkedAt: string | null;
 }
 
 interface LoginResponse {

@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { CaretDown, SignOut } from "@phosphor-icons/react";
+import { CaretDown, SignOut, TelegramLogo } from "@phosphor-icons/react";
 import { useUnit } from "effector-react";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from 'sonner';
 import { $user, sessionCleared } from "@/entities/session/model";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import { ROLE_LABELS } from "@/shared/config/constants";
+import { LinkTelegramDialog, useUnlinkTelegram } from '@/features/link-telegram';
 
 const ROLE_VARIANT: Record<string, 'danger' | 'info' | 'neutral'> = {
   ADMIN: 'danger',
@@ -17,6 +19,18 @@ export function UserPopover() {
   const user = useUnit($user);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const unlink = useUnlinkTelegram();
+
+  const handleUnlink = () => {
+    unlink.mutate(undefined, {
+      onSuccess: () => {
+        toast.success('Telegram отвязан');
+        setOpen(false);
+      },
+      onError: () => toast.error('Не удалось отвязать'),
+    });
+  };
 
   if (!user) return null;
 
@@ -48,6 +62,28 @@ export function UserPopover() {
                 {ROLE_LABELS[user.role]}
               </Badge>
             </div>
+            {user.role === 'ADMIN' && !user.telegramChatId && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start gap-2"
+                onClick={() => { setLinkDialogOpen(true); setOpen(false); }}
+              >
+                <TelegramLogo size={16} weight="fill" />
+                Привязать Telegram
+              </Button>
+            )}
+            {user.role === 'ADMIN' && user.telegramChatId && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start gap-2"
+                onClick={handleUnlink}
+              >
+                <TelegramLogo size={16} weight="fill" />
+                Отвязать Telegram
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
@@ -60,6 +96,7 @@ export function UserPopover() {
           </div>
         </>
       )}
+      <LinkTelegramDialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen} />
     </div>
   );
 }
