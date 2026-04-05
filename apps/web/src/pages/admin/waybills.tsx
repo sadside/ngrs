@@ -64,7 +64,7 @@ export function WaybillsPage() {
   const { data: waybills, isLoading } = useWaybills();
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-w-0">
       <PageHeader title="Накладные" />
       <DataTable
         columns={columns}

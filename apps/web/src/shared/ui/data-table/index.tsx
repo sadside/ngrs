@@ -67,7 +67,7 @@ export function DataTable<TData>({
   });
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1 gap-4 min-w-0">
       <DataTableToolbar
         table={table}
         globalFilter={globalFilter}
@@ -78,7 +78,7 @@ export function DataTable<TData>({
         createLabel={createLabel}
       />
 
-      <div className="rounded-xl border border-border bg-card flex-1">
+      <div className="rounded-xl border border-border bg-card flex-1 grid">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

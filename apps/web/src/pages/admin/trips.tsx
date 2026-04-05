@@ -75,7 +75,7 @@ export function TripsPage() {
   }));
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-w-0">
       <PageHeader title="Рейсы" />
       <CreateTripDialog open={createOpen} onOpenChange={setCreateOpen} />
       <DataTable

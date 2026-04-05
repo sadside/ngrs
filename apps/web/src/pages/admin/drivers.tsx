@@ -58,7 +58,7 @@ export function DriversPage() {
   ], [vehicleByDriver]);
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-w-0">
       <PageHeader title="Водители" />
 
       <DataTable

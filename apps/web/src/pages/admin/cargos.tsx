@@ -102,7 +102,7 @@ export function CargosPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-w-0">
       <PageHeader title="Грузы" />
 
       <DataTable
