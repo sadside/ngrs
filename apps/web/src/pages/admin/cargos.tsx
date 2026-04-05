@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -24,30 +25,31 @@ const columns: ColumnDef<Cargo, any>[] = [
   getSelectColumn<Cargo>(),
   {
     accessorKey: 'name',
-    header: 'Название',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Название" />,
   },
   {
     accessorKey: 'technicalSpec',
-    header: 'ТУ',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="ТУ" />,
     cell: ({ row }) => row.original.technicalSpec ?? '—',
   },
   {
     accessorKey: 'unCode',
-    header: 'UN код',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="UN код" />,
     cell: ({ row }) => row.original.unCode ?? '—',
   },
   {
     accessorKey: 'hazardClass',
-    header: 'Класс опасности',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Класс опасности" />,
     cell: ({ row }) => row.original.hazardClass ?? '—',
   },
   {
     accessorKey: 'packagingMethod',
-    header: 'Упаковка',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Упаковка" />,
     cell: ({ row }) => row.original.packagingMethod ?? '—',
   },
   {
     id: 'actions',
+    enableSorting: false,
     cell: () => (
       <RowActions
         onDelete={() => toast.info('Функция удаления будет добавлена позже')}

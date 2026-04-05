@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
@@ -39,16 +40,16 @@ const columns: ColumnDef<Contractor, any>[] = [
   getSelectColumn<Contractor>(),
   {
     accessorKey: 'name',
-    header: 'Название',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Название" />,
   },
   {
     accessorKey: 'inn',
-    header: 'ИНН',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="ИНН" />,
     cell: ({ row }) => row.original.inn ?? '—',
   },
   {
     accessorKey: 'type',
-    header: 'Тип',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Тип" />,
     cell: ({ row }) => (
       <Badge variant={typeVariant[row.original.type] ?? 'neutral'}>
         {CONTRACTOR_TYPE_LABELS[row.original.type] ?? row.original.type}
@@ -58,16 +59,17 @@ const columns: ColumnDef<Contractor, any>[] = [
   },
   {
     accessorKey: 'contactPhone',
-    header: 'Телефон',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Телефон" />,
     cell: ({ row }) => row.original.contactPhone ?? '—',
   },
   {
     accessorKey: 'contactPerson',
-    header: 'Контактное лицо',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Контактное лицо" />,
     cell: ({ row }) => row.original.contactPerson ?? '—',
   },
   {
     id: 'actions',
+    enableSorting: false,
     cell: () => (
       <RowActions
         onDelete={() => toast.info('Функция удаления будет добавлена позже')}

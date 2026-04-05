@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -37,31 +38,34 @@ const columns: ColumnDef<Route, any>[] = [
   getSelectColumn<Route>(),
   {
     id: 'sender',
-    header: 'Отправитель',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Отправитель" />,
+    accessorFn: (row) => row.senderContractor.name,
     cell: ({ row }) => row.original.senderContractor.name,
   },
   {
     id: 'receiver',
-    header: 'Получатель',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Получатель" />,
+    accessorFn: (row) => row.receiverContractor.name,
     cell: ({ row }) => row.original.receiverContractor.name,
   },
   {
     accessorKey: 'loadingAddress',
-    header: 'Адрес погрузки',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Адрес погрузки" />,
     cell: ({ row }) => truncate(row.original.loadingAddress),
   },
   {
     accessorKey: 'unloadingAddress',
-    header: 'Адрес выгрузки',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Адрес выгрузки" />,
     cell: ({ row }) => truncate(row.original.unloadingAddress),
   },
   {
     accessorKey: 'description',
-    header: 'Описание',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Описание" />,
     cell: ({ row }) => row.original.description ?? '—',
   },
   {
     id: 'actions',
+    enableSorting: false,
     cell: () => (
       <RowActions
         onDelete={() => toast.info('Функция удаления будет добавлена позже')}
