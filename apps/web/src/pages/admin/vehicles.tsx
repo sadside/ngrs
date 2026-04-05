@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import type { ColumnDef } from '@tanstack/react-table';
+import { CheckCircle, Wrench, Prohibit } from '@phosphor-icons/react';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
-import { RowActions } from '@/shared/ui/data-table/row-actions';
+import { RowActions, RowActionItem } from '@/shared/ui/data-table/row-actions';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -28,63 +29,15 @@ import {
   SelectValue,
 } from '@/shared/ui/select';
 import { OWNERSHIP_LABELS, VEHICLE_STATUS_LABELS } from '@/shared/config/constants';
-import { useVehicles, useCreateVehicle, type Vehicle } from '@/entities/vehicle/api';
+import { useVehicles, useCreateVehicle, useUpdateVehicle, type Vehicle } from '@/entities/vehicle/api';
 import { useUsers } from '@/entities/user/api';
 import { useCargos } from '@/entities/cargo/api';
 
 const statusVariant: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   ACTIVE: 'success',
+  IN_REPAIR: 'warning',
   INACTIVE: 'neutral',
 };
-
-const columns: ColumnDef<Vehicle, any>[] = [
-  getSelectColumn<Vehicle>(),
-  {
-    accessorKey: 'brand',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Марка/Модель" />,
-    cell: ({ row }) => `${row.original.brand} ${row.original.model}`,
-  },
-  {
-    accessorKey: 'licensePlate',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Госномер" />,
-  },
-  {
-    accessorKey: 'trailerPlate',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Прицеп" />,
-    cell: ({ row }) => row.original.trailerPlate ?? '—',
-  },
-  {
-    id: 'driver',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Водитель" />,
-    accessorFn: (row) => row.assignedDriver?.fullName ?? '',
-    cell: ({ row }) => row.original.assignedDriver?.fullName ?? '—',
-  },
-  {
-    accessorKey: 'ownershipType',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Тип владения" />,
-    cell: ({ row }) => OWNERSHIP_LABELS[row.original.ownershipType] ?? row.original.ownershipType,
-  },
-  {
-    accessorKey: 'status',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Статус" />,
-    cell: ({ row }) => (
-      <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
-        {VEHICLE_STATUS_LABELS[row.original.status] ?? row.original.status}
-      </Badge>
-    ),
-    filterFn: 'equals',
-  },
-  {
-    id: 'actions',
-    enableSorting: false,
-    cell: ({ row }) => (
-      <RowActions
-        onDelete={() => toast.info('Функция удаления будет добавлена позже')}
-      />
-    ),
-    size: 50,
-  },
-];
 
 const filterOptions = [
   {
@@ -111,7 +64,96 @@ export function VehiclesPage() {
   const { data: drivers } = useUsers({ role: 'DRIVER' });
   const { data: cargos } = useCargos();
   const createVehicle = useCreateVehicle();
+  const updateVehicle = useUpdateVehicle();
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleSetStatus = (id: string, status: 'ACTIVE' | 'IN_REPAIR' | 'INACTIVE') => {
+    const labels: Record<'ACTIVE' | 'IN_REPAIR' | 'INACTIVE', string> = {
+      ACTIVE: 'Машина активирована',
+      IN_REPAIR: 'Машина отправлена на ремонт',
+      INACTIVE: 'Машина деактивирована',
+    };
+    updateVehicle.mutate(
+      { id, status },
+      {
+        onSuccess: () => toast.success(labels[status]),
+        onError: () => toast.error('Не удалось обновить статус'),
+      },
+    );
+  };
+
+  const columns = useMemo<ColumnDef<Vehicle, any>[]>(() => [
+    getSelectColumn<Vehicle>(),
+    {
+      accessorKey: 'brand',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Марка/Модель" />,
+      cell: ({ row }) => `${row.original.brand} ${row.original.model}`,
+    },
+    {
+      accessorKey: 'licensePlate',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Госномер" />,
+    },
+    {
+      accessorKey: 'trailerPlate',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Прицеп" />,
+      cell: ({ row }) => row.original.trailerPlate ?? '—',
+    },
+    {
+      id: 'driver',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Водитель" />,
+      accessorFn: (row) => row.assignedDriver?.fullName ?? '',
+      cell: ({ row }) => row.original.assignedDriver?.fullName ?? '—',
+    },
+    {
+      accessorKey: 'ownershipType',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Тип владения" />,
+      cell: ({ row }) => OWNERSHIP_LABELS[row.original.ownershipType] ?? row.original.ownershipType,
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Статус" />,
+      cell: ({ row }) => (
+        <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
+          {VEHICLE_STATUS_LABELS[row.original.status] ?? row.original.status}
+        </Badge>
+      ),
+      filterFn: 'equals',
+    },
+    {
+      id: 'actions',
+      enableSorting: false,
+      cell: ({ row }) => {
+        const v = row.original;
+        return (
+          <RowActions>
+            {v.status !== 'ACTIVE' && (
+              <RowActionItem
+                onClick={() => handleSetStatus(v.id, 'ACTIVE')}
+                icon={CheckCircle}
+                label="Активировать"
+              />
+            )}
+            {v.status !== 'IN_REPAIR' && (
+              <RowActionItem
+                onClick={() => handleSetStatus(v.id, 'IN_REPAIR')}
+                icon={Wrench}
+                label="Отправить на ремонт"
+              />
+            )}
+            {v.status !== 'INACTIVE' && (
+              <RowActionItem
+                onClick={() => handleSetStatus(v.id, 'INACTIVE')}
+                icon={Prohibit}
+                label="Деактивировать"
+                variant="destructive"
+              />
+            )}
+          </RowActions>
+        );
+      },
+      size: 50,
+    },
+  ], []);
 
   const {
     register,
