@@ -1,6 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { useWaybills, type Waybill } from '@/entities/waybill/api';
 import { toast } from 'sonner';
@@ -9,26 +10,27 @@ const columns: ColumnDef<Waybill>[] = [
   getSelectColumn<Waybill>(),
   {
     accessorKey: 'ttnNumber',
-    header: 'Номер ТТН',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Номер ТТН" />,
     cell: ({ row }) => <span className="font-medium">{row.original.ttnNumber}</span>,
   },
   {
     accessorKey: 'driverFullName',
-    header: 'Водитель',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Водитель" />,
   },
   {
     accessorKey: 'weight',
-    header: 'Вес (тн)',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Вес (тн)" />,
     cell: ({ row }) => Number(row.original.weight).toFixed(2),
   },
   {
     accessorKey: 'loadWeight',
-    header: 'Вес налива (тн)',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Вес налива (тн)" />,
     cell: ({ row }) => Number(row.original.loadWeight).toFixed(2),
   },
   {
     id: 'route',
-    header: 'Маршрут',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Маршрут" />,
+    accessorFn: (row) => `${row.trip.route.senderContractor.name} → ${row.trip.route.receiverContractor.name}`,
     cell: ({ row }) => (
       <span className="truncate max-w-[200px] block">
         {row.original.trip.route.senderContractor.name} → {row.original.trip.route.receiverContractor.name}
@@ -37,7 +39,7 @@ const columns: ColumnDef<Waybill>[] = [
   },
   {
     accessorKey: 'submittedAt',
-    header: 'Дата',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Дата" />,
     cell: ({ row }) =>
       new Date(row.original.submittedAt).toLocaleString('ru-RU', {
         day: '2-digit',
@@ -50,6 +52,7 @@ const columns: ColumnDef<Waybill>[] = [
   {
     id: 'actions',
     header: '',
+    enableSorting: false,
     cell: () => (
       <RowActions onView={() => toast.info('Просмотр накладной будет добавлен позже')} />
     ),

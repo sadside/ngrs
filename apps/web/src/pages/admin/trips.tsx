@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { TripStatusBadge } from '@/entities/trip/ui';
 import { useTrips, type Trip } from '@/entities/trip/api';
@@ -13,18 +14,19 @@ const columns: ColumnDef<Trip>[] = [
   getSelectColumn<Trip>(),
   {
     accessorKey: 'status',
-    header: 'Статус',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Статус" />,
     cell: ({ row }) => <TripStatusBadge status={row.original.status} />,
     filterFn: (row, id, value) => value === undefined || row.getValue(id) === value,
   },
   {
     id: 'driver',
-    header: 'Водитель',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Водитель" />,
     accessorFn: (row) => row.driver.fullName,
   },
   {
     id: 'route',
-    header: 'Маршрут',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Маршрут" />,
+    accessorFn: (row) => `${row.route.senderContractor.name} → ${row.route.receiverContractor.name}`,
     cell: ({ row }) => (
       <span className="truncate max-w-[250px] block">
         {row.original.route.senderContractor.name} → {row.original.route.receiverContractor.name}
@@ -33,31 +35,31 @@ const columns: ColumnDef<Trip>[] = [
   },
   {
     id: 'vehicle',
-    header: 'ТС',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="ТС" />,
     accessorFn: (row) => row.vehicle.licensePlate,
   },
   {
     id: 'cargo',
-    header: 'Груз',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Груз" />,
     accessorFn: (row) => row.cargo.name,
   },
   {
     id: 'ttn',
-    header: 'ТТН',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="ТТН" />,
+    accessorFn: (row) => row.waybill?.ttnNumber ?? '',
     cell: ({ row }) => row.original.waybill?.ttnNumber ?? '—',
   },
   {
     accessorKey: 'assignedAt',
-    header: 'Дата',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Дата" />,
     cell: ({ row }) => new Date(row.original.assignedAt).toLocaleDateString('ru-RU'),
   },
   {
     id: 'actions',
     header: '',
+    enableSorting: false,
     cell: () => (
-      <RowActions
-        onDelete={() => toast.info('Удаление рейсов будет добавлено позже')}
-      />
+      <RowActions onDelete={() => toast.info('Удаление рейсов будет добавлено позже')} />
     ),
     size: 50,
   },
