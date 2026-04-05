@@ -339,7 +339,7 @@ export function DashboardPage() {
 
       {/* Row 2: Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TripsPerWeek chartData={tripsPerWeekChartData} />
+        <TripsPerWeek />
 
         <div className="bg-card rounded-xl border border-border p-5">
           <h3 className="font-semibold text-foreground mb-4">
