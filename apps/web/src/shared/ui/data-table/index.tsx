@@ -82,7 +82,7 @@ export function DataTable<TData>({
         createLabel={createLabel}
       />
 
-      <div className="hidden md:grid rounded-xl border border-border bg-card flex-1">
+      <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)] rounded-xl border border-border bg-card flex-1">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

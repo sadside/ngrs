@@ -154,7 +154,7 @@ export function AdminSidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col bg-card rounded-2xl m-3 border border-border transition-all duration-300 ease-in-out overflow-hidden shrink-0',
+        'hidden md:flex flex-col bg-card rounded-2xl m-3 border border-border transition-all duration-300 ease-in-out overflow-hidden shrink-0 sticky top-3 self-start h-[calc(100vh-1.5rem)]',
         collapsed ? 'w-[72px]' : 'w-64',
       )}
     >

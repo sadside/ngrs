@@ -41,7 +41,7 @@ export function RowActions({ onView, onEdit, onDelete, children }: RowActionsPro
             )}
             {onDelete && (
               <>
-                <DropdownMenuSeparator />
+                {(onView || onEdit) && <DropdownMenuSeparator />}
                 <DropdownMenuItem variant="destructive" onClick={onDelete}>
                   <Trash size={16} className="mr-2" />
                   Удалить

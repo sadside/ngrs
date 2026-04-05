@@ -19,10 +19,10 @@ export function AdminLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex bg-background min-h-screen">
       <AdminSidebar />
       <AdminSidebarDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
-      <main className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden p-4 md:p-6 min-w-0">
+      <main className="flex-1 flex flex-col p-4 md:p-6 min-w-0 w-0">
         {/* Mobile header: hamburger + brand */}
         <header className="md:hidden flex items-center gap-3 mb-4 pb-3 border-b border-border">
           <button
