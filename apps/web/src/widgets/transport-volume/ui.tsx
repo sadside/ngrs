@@ -35,17 +35,39 @@ function getLast7Days(): string[] {
   return days;
 }
 
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function formatTooltipTitle(iso: string) {
+  const d = new Date(iso);
+  const weekday = capitalize(d.toLocaleDateString('ru-RU', { weekday: 'long' }));
+  const date = d.toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+  return `${weekday} ${date}`;
+}
+
+interface ChartPoint {
+  day: string;
+  fullDate: string;
+  weight: number;
+}
+
 export function TransportVolume() {
   const { data: waybills, isLoading } = useWaybills();
   const [xAxis, setXAxis] = React.useState<number | null>(null);
 
-  const chartData = useMemo(() => {
+  const chartData = useMemo<ChartPoint[]>(() => {
     const last7 = getLast7Days();
     return last7.map((day) => {
       const dayWaybills = waybills?.filter((w) => w.submittedAt.startsWith(day)) ?? [];
       const weight = dayWaybills.reduce((sum, w) => sum + Number(w.weight), 0);
       return {
         day: new Date(day).toLocaleDateString('ru-RU', { weekday: 'short' }),
+        fullDate: formatTooltipTitle(day),
         weight: Number(weight.toFixed(2)),
       };
     });
@@ -68,7 +90,15 @@ export function TransportVolume() {
             <AreaChart
               accessibilityLayer
               data={chartData}
-              onMouseMove={(e) => setXAxis((e as unknown as { chartX?: number }).chartX ?? null)}
+              margin={{ left: 16, right: 16, top: 8, bottom: 0 }}
+              onMouseMove={(e) => {
+                const x =
+                  (e as unknown as { activeCoordinate?: { x?: number }; chartX?: number })
+                    .activeCoordinate?.x ??
+                  (e as unknown as { chartX?: number }).chartX ??
+                  null;
+                setXAxis(x);
+              }}
               onMouseLeave={() => setXAxis(null)}
             >
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
@@ -77,9 +107,21 @@ export function TransportVolume() {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
+                interval={0}
+                padding={{ left: 12, right: 12 }}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
-              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    className="min-w-[14rem]"
+                    labelFormatter={(_, payload) =>
+                      (payload?.[0]?.payload as ChartPoint | undefined)?.fullDate ?? ''
+                    }
+                  />
+                }
+              />
               <defs>
                 <linearGradient
                   id="transport-volume-mask-grad"
@@ -101,12 +143,12 @@ export function TransportVolume() {
                 >
                   <stop
                     offset="5%"
-                    stopColor="var(--color-weight)"
+                    stopColor="var(--color-primary)"
                     stopOpacity={0.4}
                   />
                   <stop
                     offset="95%"
-                    stopColor="var(--color-weight)"
+                    stopColor="var(--color-primary)"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -127,7 +169,7 @@ export function TransportVolume() {
                 type="natural"
                 fill="url(#transport-volume-grad-weight)"
                 fillOpacity={0.4}
-                stroke="var(--color-weight)"
+                stroke="var(--color-primary)"
                 strokeWidth={0.8}
                 mask="url(#transport-volume-mask)"
               />
