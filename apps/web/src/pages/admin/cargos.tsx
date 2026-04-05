@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 
@@ -58,6 +59,47 @@ const columns: ColumnDef<Cargo, any>[] = [
     size: 50,
   },
 ];
+
+function renderCargoCard(row: Row<Cargo>) {
+  const c = row.original;
+  return (
+    <Card className="p-4 gap-2">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={row.getIsSelected()}
+          onChange={(e) => row.toggleSelected(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-input"
+          aria-label="Выбрать"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-foreground truncate">{c.name}</div>
+          <div className="text-sm text-muted-foreground truncate">{c.technicalSpec ?? '—'}</div>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-2 text-xs">
+        {c.unCode && (
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">UN код</div>
+            <div className="text-foreground">{c.unCode}</div>
+          </div>
+        )}
+        {c.hazardClass && (
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Класс</div>
+            <div className="text-foreground">{c.hazardClass}</div>
+          </div>
+        )}
+        {c.packagingMethod && (
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Упаковка</div>
+            <div className="text-foreground truncate">{c.packagingMethod}</div>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+}
 
 const cargoSchema = z.object({
   name: z.string().min(1, 'Обязательное поле'),
@@ -112,6 +154,7 @@ export function CargosPage() {
         searchPlaceholder="Поиск грузов..."
         onCreateClick={() => setDialogOpen(true)}
         createLabel="Добавить"
+        mobileCardRenderer={renderCargoCard}
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

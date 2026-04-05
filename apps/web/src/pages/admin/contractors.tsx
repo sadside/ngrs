@@ -3,13 +3,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Badge } from '@/shared/ui/badge';
+import { Card } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -87,6 +88,44 @@ const filterOptions = [
   },
 ];
 
+function renderContractorCard(row: Row<Contractor>) {
+  const c = row.original;
+  return (
+    <Card className="p-4 gap-2">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={row.getIsSelected()}
+          onChange={(e) => row.toggleSelected(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-input"
+          aria-label="Выбрать"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-foreground truncate">{c.name}</div>
+          <div className="text-sm text-muted-foreground truncate">{c.inn ?? '—'}</div>
+        </div>
+        <Badge variant={typeVariant[c.type] ?? 'neutral'}>
+          {CONTRACTOR_TYPE_LABELS[c.type] ?? c.type}
+        </Badge>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        {c.contactPhone && (
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Телефон</div>
+            <div className="text-foreground truncate">{c.contactPhone}</div>
+          </div>
+        )}
+        {c.contactPerson && (
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Контактное лицо</div>
+            <div className="text-foreground truncate">{c.contactPerson}</div>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
 const contractorSchema = z.object({
   name: z.string().min(1, 'Обязательное поле'),
   inn: z.string().optional(),
@@ -145,6 +184,7 @@ export function ContractorsPage() {
         filterOptions={filterOptions}
         onCreateClick={() => setDialogOpen(true)}
         createLabel="Добавить"
+        mobileCardRenderer={renderContractorCard}
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
