@@ -40,7 +40,7 @@ export function RegisterForm() {
   });
 
   return (
-    <Card className="w-[520px] bg-card border border-border rounded-2xl">
+    <Card className="w-full max-w-[520px] bg-card border border-border rounded-2xl">
       <CardHeader>
         <CardTitle className="text-2xl text-center">Регистрация</CardTitle>
       </CardHeader>
