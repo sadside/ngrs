@@ -24,6 +24,7 @@ import {
   LegendComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import {TripsPerWeek} from "@/widgets/trips-per-week/ui";
 
 echarts.use([
   BarChart,
@@ -135,6 +136,15 @@ export function DashboardPage() {
       ),
     [trips, last7],
   );
+
+
+  const tripsPerWeekChartData = useMemo(
+    () => dayLabels.map((day, index) => ({day, trips: tripsPerDay[index]})),
+    [trips, last7],
+  );
+
+  console.log(tripsPerWeekChartData);
+
   const weightPerDay = useMemo(
     () =>
       last7.map((day) => {
@@ -329,16 +339,7 @@ export function DashboardPage() {
 
       {/* Row 2: Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-xl border border-border p-5">
-          <h3 className="font-semibold text-foreground mb-4">
-            Рейсы за неделю
-          </h3>
-          <ReactEChartsCore
-            echarts={echarts}
-            option={tripsChartOption}
-            style={{ height: 280 }}
-          />
-        </div>
+        <TripsPerWeek chartData={tripsPerWeekChartData} />
 
         <div className="bg-card rounded-xl border border-border p-5">
           <h3 className="font-semibold text-foreground mb-4">
@@ -435,17 +436,18 @@ export function DashboardPage() {
         <div className="bg-card rounded-xl border border-border">
           <div className="px-5 py-3 border-b border-border flex items-center gap-2">
             <Warning size={18} className="text-warning" weight="duotone" />
+
             <h3 className="font-semibold text-foreground">Внимание</h3>
             {alertTrips.length > 0 && (
               <Badge variant="warning" size="sm">{alertTrips.length}</Badge>
             )}
           </div>
           {alertTrips.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-8">
+            <div className="flex flex-col h-[calc(100%-49px)] items-center justify-center gap-3 py-8">
               <div className="p-3 rounded-2xl bg-accent/10">
                 <CheckCircle size={28} weight="light" className="text-accent" />
               </div>
-              <p className="text-sm text-muted-foreground">Все накладные отправлены вовремя</p>
+              <p className="text-sm text-muted-foreground text-center">Все накладные отправлены вовремя</p>
             </div>
           ) : (
             <div className="divide-y divide-border max-h-[300px] overflow-y-auto">
