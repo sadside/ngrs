@@ -22,7 +22,7 @@ export function AdminLayout() {
     <div className="flex bg-background min-h-screen">
       <AdminSidebar />
       <AdminSidebarDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
-      <main className="flex-1 flex flex-col min-w-0 w-0">
+      <main className="flex-1 flex flex-col min-w-0 w-0 overflow-x-clip">
         {/* Mobile header: hamburger + brand — sticky at top of viewport */}
         <header className="md:hidden sticky top-0 z-20 bg-background/95 backdrop-blur flex items-center gap-3 px-4 py-3 border-b border-border">
           <button
