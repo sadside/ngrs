@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { type ColumnDef } from '@tanstack/react-table';
+import { type ColumnDef, type Row } from '@tanstack/react-table';
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
+import { Card } from '@/shared/ui/card';
 import { TripStatusBadge } from '@/entities/trip/ui';
 import { useTrips, type Trip } from '@/entities/trip/api';
 import { TRIP_STATUS_LABELS } from '@/shared/config/constants';
@@ -65,6 +66,48 @@ const columns: ColumnDef<Trip>[] = [
   },
 ];
 
+function renderTripCard(row: Row<Trip>) {
+  const trip = row.original;
+  return (
+    <Card className="p-4 gap-2">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={row.getIsSelected()}
+          onChange={(e) => row.toggleSelected(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-input"
+          aria-label="Выбрать"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-foreground truncate">{trip.driver.fullName}</div>
+          <div className="text-sm text-muted-foreground truncate">
+            {trip.route.senderContractor.name} → {trip.route.receiverContractor.name}
+          </div>
+        </div>
+        <TripStatusBadge status={trip.status} />
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">ТС</div>
+          <div className="text-foreground">{trip.vehicle.licensePlate}</div>
+        </div>
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Груз</div>
+          <div className="text-foreground truncate">{trip.cargo.name}</div>
+        </div>
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">ТТН</div>
+          <div className="text-foreground">{trip.waybill?.ttnNumber ?? '—'}</div>
+        </div>
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Дата</div>
+          <div className="text-foreground">{new Date(trip.assignedAt).toLocaleDateString('ru-RU')}</div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 export function TripsPage() {
   const { data: trips, isLoading } = useTrips();
   const [createOpen, setCreateOpen] = useState(false);
@@ -86,6 +129,7 @@ export function TripsPage() {
         filterOptions={[{ key: 'status', label: 'Статус', options: statusFilterOptions }]}
         onCreateClick={() => setCreateOpen(true)}
         createLabel="Создать рейс"
+        mobileCardRenderer={renderTripCard}
       />
     </div>
   );

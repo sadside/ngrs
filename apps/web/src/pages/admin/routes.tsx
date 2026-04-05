@@ -3,13 +3,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
@@ -75,6 +76,41 @@ const columns: ColumnDef<Route, any>[] = [
   },
 ];
 
+function renderRouteCard(row: Row<Route>) {
+  const r = row.original;
+  return (
+    <Card className="p-4 gap-2">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={row.getIsSelected()}
+          onChange={(e) => row.toggleSelected(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-input"
+          aria-label="Выбрать"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-foreground truncate">
+            {r.senderContractor.name} → {r.receiverContractor.name}
+          </div>
+          <div className="text-sm text-muted-foreground truncate">{truncate(r.loadingAddress)}</div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-2 text-xs">
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Адрес выгрузки</div>
+          <div className="text-foreground">{truncate(r.unloadingAddress)}</div>
+        </div>
+        {r.description && (
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Описание</div>
+            <div className="text-foreground">{r.description}</div>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
 const routeSchema = z.object({
   senderContractorId: z.string().min(1, 'Выберите отправителя'),
   receiverContractorId: z.string().min(1, 'Выберите получателя'),
@@ -127,6 +163,7 @@ export function RoutesPage() {
         searchPlaceholder="Поиск маршрутов..."
         onCreateClick={() => setDialogOpen(true)}
         createLabel="Добавить"
+        mobileCardRenderer={renderRouteCard}
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

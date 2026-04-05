@@ -1,8 +1,9 @@
-import { type ColumnDef } from '@tanstack/react-table';
+import { type ColumnDef, type Row } from '@tanstack/react-table';
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
+import { Card } from '@/shared/ui/card';
 import { useWaybills, type Waybill } from '@/entities/waybill/api';
 import { toast } from 'sonner';
 
@@ -60,6 +61,51 @@ const columns: ColumnDef<Waybill>[] = [
   },
 ];
 
+function renderWaybillCard(row: Row<Waybill>) {
+  const wb = row.original;
+  return (
+    <Card className="p-4 gap-2">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={row.getIsSelected()}
+          onChange={(e) => row.toggleSelected(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-input"
+          aria-label="Выбрать"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="font-semibold text-foreground truncate">ТТН {wb.ttnNumber}</div>
+          <div className="text-sm text-muted-foreground truncate">{wb.driverFullName}</div>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Вес (т)</div>
+          <div className="text-foreground">{Number(wb.weight).toFixed(2)}</div>
+        </div>
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Вес налива (т)</div>
+          <div className="text-foreground">{Number(wb.loadWeight).toFixed(2)}</div>
+        </div>
+        <div className="col-span-2">
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Маршрут</div>
+          <div className="text-foreground truncate">
+            {wb.trip.route.senderContractor.name} → {wb.trip.route.receiverContractor.name}
+          </div>
+        </div>
+        <div className="col-span-2">
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Дата</div>
+          <div className="text-foreground">
+            {new Date(wb.submittedAt).toLocaleString('ru-RU', {
+              day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+            })}
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 export function WaybillsPage() {
   const { data: waybills, isLoading } = useWaybills();
 
@@ -71,6 +117,7 @@ export function WaybillsPage() {
         data={waybills ?? []}
         isLoading={isLoading}
         searchPlaceholder="Поиск по ТТН, водителю..."
+        mobileCardRenderer={renderWaybillCard}
       />
     </div>
   );
