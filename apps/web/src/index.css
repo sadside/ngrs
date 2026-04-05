@@ -71,3 +71,7 @@ body {
   color: var(--color-foreground);
   background-color: var(--color-background);
 }
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
