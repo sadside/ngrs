@@ -2,13 +2,72 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Iridium TMS</title>
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#ffa600" />
+    <meta name="theme-color" content="#3765F6" />
+    <style>
+      .iridium-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #181D25 0%, #1E2530 50%, #3765F6 200%);
+        color: #F2F3F6;
+        font-family: -apple-system, system-ui, sans-serif;
+        z-index: 9999;
+      }
+      .iridium-splash__logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        animation: iridium-pulse 2s ease-in-out infinite;
+      }
+      .iridium-splash__brand {
+        font-size: 48px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #3765F6 0%, #70FC8E 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .iridium-splash__subtitle {
+        font-size: 14px;
+        color: #606E80;
+        font-weight: 500;
+      }
+      .iridium-splash__spinner {
+        margin-top: 32px;
+        width: 32px;
+        height: 32px;
+        border: 2px solid rgba(55, 101, 246, 0.2);
+        border-top-color: #3765F6;
+        border-radius: 50%;
+        animation: iridium-spin 0.8s linear infinite;
+      }
+      @keyframes iridium-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+      @keyframes iridium-spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="iridium-splash">
+        <div class="iridium-splash__logo">
+          <span class="iridium-splash__brand">Iridium</span>
+          <span class="iridium-splash__subtitle">Система управления перевозками</span>
+        </div>
+        <div class="iridium-splash__spinner" aria-hidden="true"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
