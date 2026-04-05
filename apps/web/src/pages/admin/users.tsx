@@ -3,9 +3,11 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
+import { Card } from '@/shared/ui/card';
+import { cn } from '@/shared/lib/utils';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { Badge } from '@/shared/ui/badge';
@@ -144,6 +146,59 @@ export function UsersPage() {
     },
   ], []);
 
+  const mobileCardRenderer = (row: Row<User>) => {
+    const user = row.original;
+    return (
+      <Card className={cn('p-4 gap-2', row.getIsSelected() && 'ring-2 ring-primary')}>
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={(e) => row.toggleSelected(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-input"
+            aria-label="Выбрать"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-foreground truncate">{user.fullName}</div>
+            <div className="text-sm text-muted-foreground truncate">{user.login}</div>
+          </div>
+          <RowActions>
+            {user.status === 'PENDING' && (
+              <RowActionItem onClick={() => handleApprove(user.id)} icon={CheckCircle} label="Активировать" />
+            )}
+            {user.status === 'ACTIVE' && (
+              <RowActionItem onClick={() => handleBlock(user.id)} icon={Prohibit} label="Заблокировать" />
+            )}
+            <RowActionItem
+              onClick={() => toast.info('Увольнение будет добавлено позже')}
+              icon={UserMinus}
+              label="Уволить"
+              variant="destructive"
+            />
+          </RowActions>
+        </div>
+        <div className="grid grid-cols-2 gap-2 text-xs mt-1">
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Роль</div>
+            <div className="text-foreground"><RoleBadge role={user.role} /></div>
+          </div>
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Статус</div>
+            <Badge variant={statusVariant[user.status] ?? 'neutral'}>
+              {USER_STATUS_LABELS[user.status] ?? user.status}
+            </Badge>
+          </div>
+          {user.phone && (
+            <div className="col-span-2">
+              <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Телефон</div>
+              <div className="text-foreground">{user.phone}</div>
+            </div>
+          )}
+        </div>
+      </Card>
+    );
+  };
+
   const {
     register,
     handleSubmit,
@@ -181,6 +236,7 @@ export function UsersPage() {
         filterOptions={filterOptions}
         onCreateClick={() => setDialogOpen(true)}
         createLabel="Добавить"
+        mobileCardRenderer={mobileCardRenderer}
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

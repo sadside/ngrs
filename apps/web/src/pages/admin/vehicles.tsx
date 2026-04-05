@@ -3,10 +3,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 import { CheckCircle, Wrench, Prohibit } from '@phosphor-icons/react';
 
 import { PageHeader } from '@/widgets/page-header/ui';
+import { Card } from '@/shared/ui/card';
+import { cn } from '@/shared/lib/utils';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions, RowActionItem } from '@/shared/ui/data-table/row-actions';
@@ -155,6 +157,62 @@ export function VehiclesPage() {
     },
   ], []);
 
+  const mobileCardRenderer = (row: Row<Vehicle>) => {
+    const v = row.original;
+    return (
+      <Card className={cn('p-4 gap-2', row.getIsSelected() && 'ring-2 ring-primary')}>
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={(e) => row.toggleSelected(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-input"
+            aria-label="Выбрать"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-foreground truncate">{v.brand} {v.model}</div>
+            <div className="text-sm text-muted-foreground truncate">{v.licensePlate}</div>
+          </div>
+          <RowActions>
+            {v.status !== 'ACTIVE' && (
+              <RowActionItem onClick={() => handleSetStatus(v.id, 'ACTIVE')} icon={CheckCircle} label="Активировать" />
+            )}
+            {v.status !== 'IN_REPAIR' && (
+              <RowActionItem onClick={() => handleSetStatus(v.id, 'IN_REPAIR')} icon={Wrench} label="Отправить на ремонт" />
+            )}
+            {v.status !== 'INACTIVE' && (
+              <RowActionItem onClick={() => handleSetStatus(v.id, 'INACTIVE')} icon={Prohibit} label="Деактивировать" variant="destructive" />
+            )}
+          </RowActions>
+        </div>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Тип владения</div>
+            <div className="text-foreground">{OWNERSHIP_LABELS[v.ownershipType] ?? v.ownershipType}</div>
+          </div>
+          <div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Статус</div>
+            <Badge variant={statusVariant[v.status] ?? 'neutral'}>
+              {VEHICLE_STATUS_LABELS[v.status] ?? v.status}
+            </Badge>
+          </div>
+          {v.trailerPlate && (
+            <div>
+              <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Прицеп</div>
+              <div className="text-foreground">{v.trailerPlate}</div>
+            </div>
+          )}
+          {v.assignedDriver && (
+            <div>
+              <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Водитель</div>
+              <div className="text-foreground truncate">{v.assignedDriver.fullName}</div>
+            </div>
+          )}
+        </div>
+      </Card>
+    );
+  };
+
   const {
     register,
     handleSubmit,
@@ -208,6 +266,7 @@ export function VehiclesPage() {
         filterOptions={filterOptions}
         onCreateClick={() => setDialogOpen(true)}
         createLabel="Добавить"
+        mobileCardRenderer={mobileCardRenderer}
       />
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
+import { Card } from '@/shared/ui/card';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
 import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { Badge } from '@/shared/ui/badge';
@@ -57,6 +58,30 @@ export function DriversPage() {
     },
   ], [vehicleByDriver]);
 
+  const mobileCardRenderer = (row: Row<User>) => {
+    const driver = row.original;
+    const vehicle = vehicleByDriver.get(driver.id);
+    return (
+      <Card className="p-4 gap-2">
+        <div className="flex items-start gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-foreground truncate">{driver.fullName}</div>
+            <div className="text-sm text-muted-foreground truncate">{driver.phone ?? '—'}</div>
+          </div>
+          <Badge variant={statusVariant[driver.status] ?? 'neutral'}>
+            {USER_STATUS_LABELS[driver.status] ?? driver.status}
+          </Badge>
+        </div>
+        {vehicle && (
+          <div className="text-xs">
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Привязанное ТС</div>
+            <div className="text-foreground">{vehicle}</div>
+          </div>
+        )}
+      </Card>
+    );
+  };
+
   return (
     <div className="flex flex-col flex-1 min-w-0">
       <PageHeader title="Водители" />
@@ -66,6 +91,7 @@ export function DriversPage() {
         data={drivers ?? []}
         isLoading={isLoading}
         searchPlaceholder="Поиск водителей..."
+        mobileCardRenderer={mobileCardRenderer}
       />
     </div>
   );
