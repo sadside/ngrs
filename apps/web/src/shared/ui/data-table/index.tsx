@@ -7,11 +7,13 @@ import {
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
+  type Row,
   type RowSelectionState,
   type SortingState,
 } from '@tanstack/react-table';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { DefaultMobileCard } from './default-card';
 import {
   Table,
   TableBody,
@@ -34,6 +36,7 @@ interface DataTableProps<TData> {
   onCreateClick?: () => void;
   createLabel?: string;
   isLoading?: boolean;
+  mobileCardRenderer?: (row: Row<TData>) => React.ReactNode;
 }
 
 export function DataTable<TData>({
@@ -45,6 +48,7 @@ export function DataTable<TData>({
   onCreateClick,
   createLabel = 'Добавить',
   isLoading,
+  mobileCardRenderer,
 }: DataTableProps<TData>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -78,7 +82,7 @@ export function DataTable<TData>({
         createLabel={createLabel}
       />
 
-      <div className="rounded-xl border border-border bg-card flex-1 grid">
+      <div className="hidden md:grid rounded-xl border border-border bg-card flex-1">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -121,6 +125,23 @@ export function DataTable<TData>({
             </TableBody>
           </Table>
         </div>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3 flex-1">
+        {isLoading ? (
+          <div className="text-center text-muted-foreground py-8">Загрузка...</div>
+        ) : table.getRowModel().rows.length === 0 ? (
+          <div className="text-center text-muted-foreground py-8">Нет данных</div>
+        ) : (
+          table.getRowModel().rows.map((row) => (
+            <div key={row.id}>
+              {mobileCardRenderer
+                ? mobileCardRenderer(row)
+                : <DefaultMobileCard row={row} />}
+            </div>
+          ))
+        )}
       </div>
 
       <DataTablePagination table={table} />
