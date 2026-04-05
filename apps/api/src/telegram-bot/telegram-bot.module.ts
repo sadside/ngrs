@@ -5,6 +5,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { LinkTokenService } from './link-token.service';
 import { TelegramBotController } from './telegram-bot.controller';
+import { TelegramBotUpdate } from './telegram-bot.update';
 
 const logger = new Logger('TelegramBotModule');
 
@@ -31,7 +32,7 @@ const logger = new Logger('TelegramBotModule');
     NotificationsModule,
   ],
   controllers: [TelegramBotController],
-  providers: [LinkTokenService],
+  providers: [LinkTokenService, TelegramBotUpdate],
   exports: [LinkTokenService],
 })
 export class TelegramBotModule {}
