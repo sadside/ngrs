@@ -11,7 +11,7 @@ import {
 } from "@/shared/ui/card";
 
 import React from "react";
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "../../../@/shared/ui/chart";
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/shared/ui/chart";
 
 const chartConfig = {
     desktop: {
