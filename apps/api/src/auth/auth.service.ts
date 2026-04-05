@@ -89,6 +89,8 @@ export class AuthService {
         phone: true,
         role: true,
         status: true,
+        telegramChatId: true,
+        telegramLinkedAt: true,
       },
     });
     return user;

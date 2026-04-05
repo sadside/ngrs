@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { PrismaModule } from '../prisma/prisma.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { LinkTokenService } from './link-token.service';
+import { TelegramBotController } from './telegram-bot.controller';
 
 const logger = new Logger('TelegramBotModule');
 
@@ -28,7 +30,8 @@ const logger = new Logger('TelegramBotModule');
     PrismaModule,
     NotificationsModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [TelegramBotController],
+  providers: [LinkTokenService],
+  exports: [LinkTokenService],
 })
 export class TelegramBotModule {}
