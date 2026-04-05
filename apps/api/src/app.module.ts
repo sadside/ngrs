@@ -10,6 +10,7 @@ import { CargosModule } from './cargos/cargos.module';
 import { RoutesModule } from './routes/routes.module';
 import { TripsModule } from './trips/trips.module';
 import { WaybillsModule } from './waybills/waybills.module';
+import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WaybillsModule } from './waybills/waybills.module';
     RoutesModule,
     TripsModule,
     WaybillsModule,
+    TelegramBotModule,
   ],
 })
 export class AppModule {}
