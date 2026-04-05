@@ -63,6 +63,10 @@ model User {
   assignedVehicle Vehicle? @relation("AssignedDriver")
   trips           Trip[]
 
+  telegramChatId     String?             @unique
+  telegramLinkedAt   DateTime?
+  telegramLinkTokens TelegramLinkToken[]
+
   @@map("users")
 }
 
@@ -190,4 +194,16 @@ model Waybill {
   trip   Trip   @relation(fields: [tripId], references: [id])
 
   @@map("waybills")
+}
+
+model TelegramLinkToken {
+  token     String    @id
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  @@index([expiresAt])
+  @@map("telegram_link_tokens")
 }
