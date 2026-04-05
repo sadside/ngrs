@@ -24,6 +24,7 @@ export const TRIP_STATUS_LABELS: Record<string, string> = {
 
 export const VEHICLE_STATUS_LABELS: Record<string, string> = {
   ACTIVE: 'Активен',
+  IN_REPAIR: 'На ремонте',
   INACTIVE: 'Неактивен',
 };
 

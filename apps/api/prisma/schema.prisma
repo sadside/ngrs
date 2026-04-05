@@ -45,6 +45,7 @@ enum ContractorType {
 
 enum VehicleStatus {
   ACTIVE
+  IN_REPAIR
   INACTIVE
 }
 
