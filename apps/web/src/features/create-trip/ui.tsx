@@ -7,12 +7,14 @@ import { useUsers } from '@/entities/user/api';
 import { useVehicles } from '@/entities/vehicle/api';
 import { useCargos } from '@/entities/cargo/api';
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from '@/shared/ui/responsive-dialog';
+import { DialogTrigger } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { Label } from '@/shared/ui/label';
 import {
@@ -66,18 +68,18 @@ export function CreateTripDialog({ open: controlledOpen, onOpenChange }: CreateT
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <ResponsiveDialog open={open} onOpenChange={setOpen}>
       {controlledOpen === undefined && (
         <DialogTrigger asChild>
           <Button>Создать рейс</Button>
         </DialogTrigger>
       )}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Новый рейс</DialogTitle>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+      <ResponsiveDialogContent>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col flex-1 min-h-0">
+          <ResponsiveDialogHeader>
+            <ResponsiveDialogTitle>Новый рейс</ResponsiveDialogTitle>
+          </ResponsiveDialogHeader>
+          <ResponsiveDialogBody className="space-y-4">
           <div className="space-y-2">
             <Label>Маршрут</Label>
             <Controller
@@ -173,17 +175,17 @@ export function CreateTripDialog({ open: controlledOpen, onOpenChange }: CreateT
             />
             {errors.cargoId && <p className="text-sm text-destructive">{errors.cargoId.message}</p>}
           </div>
-
-          <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+          </ResponsiveDialogBody>
+          <ResponsiveDialogFooter className="flex-row gap-2">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
               Отмена
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
               {isSubmitting ? 'Создание...' : 'Создать'}
             </Button>
-          </div>
+          </ResponsiveDialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

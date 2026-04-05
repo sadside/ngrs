@@ -18,11 +18,13 @@ import { RowActions, RowActionItem } from '@/shared/ui/data-table/row-actions';
 import { CheckCircle, Prohibit, UserMinus } from '@phosphor-icons/react';
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from '@/shared/ui/responsive-dialog';
 import {
   Select,
   SelectContent,
@@ -239,12 +241,13 @@ export function UsersPage() {
         mobileCardRenderer={mobileCardRenderer}
       />
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Новый пользователь</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+      <ResponsiveDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <ResponsiveDialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col flex-1 min-h-0">
+            <ResponsiveDialogHeader>
+              <ResponsiveDialogTitle>Новый пользователь</ResponsiveDialogTitle>
+            </ResponsiveDialogHeader>
+            <ResponsiveDialogBody className="space-y-4">
             <div className="space-y-2">
               <Label>Логин</Label>
               <Input {...register('login')} placeholder="ivanov" />
@@ -284,12 +287,15 @@ export function UsersPage() {
               />
               {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
             </div>
-            <Button type="submit" className="w-full" disabled={createUser.isPending}>
-              {createUser.isPending ? 'Создание...' : 'Создать'}
-            </Button>
+            </ResponsiveDialogBody>
+            <ResponsiveDialogFooter>
+              <Button type="submit" className="w-full" disabled={createUser.isPending}>
+                {createUser.isPending ? 'Создание...' : 'Создать'}
+              </Button>
+            </ResponsiveDialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </div>
   );
 }
