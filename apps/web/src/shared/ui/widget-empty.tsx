@@ -1,17 +1,17 @@
-import type { ComponentType } from 'react';
+import type { Icon } from '@phosphor-icons/react';
 import { cn } from '@/shared/lib/utils';
 
 interface WidgetEmptyProps {
-  icon: ComponentType<{ size?: number; weight?: string; className?: string }>;
+  icon: Icon;
   message: string;
   className?: string;
 }
 
-export function WidgetEmpty({ icon: Icon, message, className }: WidgetEmptyProps) {
+export function WidgetEmpty({ icon: IconComponent, message, className }: WidgetEmptyProps) {
   return (
     <div className={cn('flex flex-col items-center justify-center gap-3 py-10', className)}>
       <div className="p-3 rounded-2xl bg-muted">
-        <Icon size={32} weight="light" className="text-muted-foreground" />
+        <IconComponent size={32} weight="light" className="text-muted-foreground" />
       </div>
       <p className="text-sm text-muted-foreground text-center">{message}</p>
     </div>

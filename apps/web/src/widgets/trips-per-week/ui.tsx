@@ -59,10 +59,7 @@ export function TripsPerWeek() {
         {isLoading ? (
           <WidgetSkeleton variant="chart" />
         ) : !hasData ? (
-          <WidgetEmpty
-            icon={(props) => <ChartLineUp {...(props as React.ComponentProps<typeof ChartLineUp>)} />}
-            message="Нет рейсов за последние 7 дней"
-          />
+          <WidgetEmpty icon={ChartLineUp} message="Нет рейсов за последние 7 дней" />
         ) : (
           <ChartContainer config={chartConfig}>
             <BarChart
