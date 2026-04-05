@@ -73,7 +73,7 @@ function TripsTooltip({
   if (!point) return null;
 
   return (
-    <div className="grid min-w-[12rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+    <div className="grid min-w-[12rem] max-w-[90vw] max-h-[50vh] overflow-y-auto items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
       <div className="font-medium">{point.fullDate}</div>
       <div className="flex items-center justify-between gap-4 leading-none">
         <span className="text-muted-foreground">Рейсы</span>
