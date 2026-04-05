@@ -81,7 +81,7 @@ const columns: ColumnDef<Route, any>[] = [
 function renderRouteCard(row: Row<Route>) {
   const r = row.original;
   return (
-    <Card className="p-4 gap-2">
+    <Card className="p-4 gap-3">
       <div className="flex items-start gap-3">
         <input
           type="checkbox"
@@ -91,21 +91,24 @@ function renderRouteCard(row: Row<Route>) {
           aria-label="Выбрать"
         />
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-foreground truncate">
+          <div className="font-semibold text-foreground break-words">
             {r.senderContractor.name} → {r.receiverContractor.name}
           </div>
-          <div className="text-sm text-muted-foreground truncate">{truncate(r.loadingAddress)}</div>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-2 text-xs">
+      <div className="flex flex-col gap-3 text-xs">
         <div>
-          <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Адрес выгрузки</div>
-          <div className="text-foreground">{truncate(r.unloadingAddress)}</div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px] mb-1">Адрес погрузки</div>
+          <div className="text-foreground text-sm break-words leading-snug">{r.loadingAddress}</div>
+        </div>
+        <div>
+          <div className="text-muted-foreground uppercase tracking-wider text-[10px] mb-1">Адрес выгрузки</div>
+          <div className="text-foreground text-sm break-words leading-snug">{r.unloadingAddress}</div>
         </div>
         {r.description && (
           <div>
-            <div className="text-muted-foreground uppercase tracking-wider text-[10px]">Описание</div>
-            <div className="text-foreground">{r.description}</div>
+            <div className="text-muted-foreground uppercase tracking-wider text-[10px] mb-1">Описание</div>
+            <div className="text-foreground text-sm break-words leading-snug">{r.description}</div>
           </div>
         )}
       </div>

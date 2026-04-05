@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from '@tanstack/react-router';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import {
   Gauge, Truck, FileText, Users, Car, Buildings, MapPin, Package, UserGear,
-  CaretLeft, CaretRight,
+  CaretLeft, CaretRight, SignOut,
 } from '@phosphor-icons/react';
 import { useUnit } from 'effector-react';
 import { cn } from '@/shared/lib/utils';
-import { $isAdmin } from '@/entities/session/model';
+import { $isAdmin, sessionCleared } from '@/entities/session/model';
 import { ThemeToggle } from '@/shared/ui/theme-toggle';
 import {
   Sheet,
@@ -49,6 +49,13 @@ export function AdminSidebarContent({
 }: AdminSidebarContentProps) {
   const isAdmin = useUnit($isAdmin);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionCleared();
+    onNavigate?.();
+    navigate({ to: '/login' });
+  };
 
   const items = isAdmin ? [...MAIN_NAV, ...ADMIN_NAV] : MAIN_NAV;
 
@@ -118,8 +125,20 @@ export function AdminSidebarContent({
         })}
       </nav>
 
-      <div className={cn('p-3 border-t border-border', !expanded && 'flex justify-center')}>
+      <div className={cn('p-3 border-t border-border flex flex-col gap-2', !expanded && 'items-center')}>
         <ThemeToggle collapsed={!expanded} />
+        <button
+          type="button"
+          onClick={handleLogout}
+          className={cn(
+            'flex items-center gap-3 rounded-xl transition-colors text-destructive hover:bg-destructive/10',
+            expanded ? 'px-3 py-3 text-base md:text-sm w-full' : 'justify-center p-2',
+          )}
+          title={!expanded ? 'Выйти' : undefined}
+        >
+          <SignOut size={20} className="shrink-0" />
+          {expanded && <span className="font-medium">Выйти</span>}
+        </button>
       </div>
     </>
   );
