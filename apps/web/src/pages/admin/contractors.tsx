@@ -16,11 +16,13 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from '@/shared/ui/responsive-dialog';
 import {
   Select,
   SelectContent,
@@ -187,63 +189,67 @@ export function ContractorsPage() {
         mobileCardRenderer={renderContractorCard}
       />
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Новый контрагент</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-            <div className="space-y-2">
-              <Label>Название</Label>
-              <Input {...register('name')} placeholder="ООО Компания" />
-              {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>ИНН (необязательно)</Label>
-              <Input {...register('inn')} placeholder="1234567890" />
-            </div>
-            <div className="space-y-2">
-              <Label>Тип</Label>
-              <Controller
-                name="type"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(CONTRACTOR_TYPE_LABELS).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.type && <p className="text-sm text-destructive">{errors.type.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>Юридический адрес (необязательно)</Label>
-              <Input {...register('legalAddress')} />
-            </div>
-            <div className="space-y-2">
-              <Label>Фактический адрес (необязательно)</Label>
-              <Input {...register('actualAddress')} />
-            </div>
-            <div className="space-y-2">
-              <Label>Телефон (необязательно)</Label>
-              <Input {...register('contactPhone')} placeholder="+7..." />
-            </div>
-            <div className="space-y-2">
-              <Label>Контактное лицо (необязательно)</Label>
-              <Input {...register('contactPerson')} />
-            </div>
-            <Button type="submit" className="w-full" disabled={createContractor.isPending}>
-              {createContractor.isPending ? 'Создание...' : 'Создать'}
-            </Button>
+      <ResponsiveDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <ResponsiveDialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col flex-1 min-h-0">
+            <ResponsiveDialogHeader>
+              <ResponsiveDialogTitle>Новый контрагент</ResponsiveDialogTitle>
+            </ResponsiveDialogHeader>
+            <ResponsiveDialogBody className="space-y-4">
+              <div className="space-y-2">
+                <Label>Название</Label>
+                <Input {...register('name')} placeholder="ООО Компания" />
+                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>ИНН (необязательно)</Label>
+                <Input {...register('inn')} placeholder="1234567890" />
+              </div>
+              <div className="space-y-2">
+                <Label>Тип</Label>
+                <Controller
+                  name="type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(CONTRACTOR_TYPE_LABELS).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.type && <p className="text-sm text-destructive">{errors.type.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>Юридический адрес (необязательно)</Label>
+                <Input {...register('legalAddress')} />
+              </div>
+              <div className="space-y-2">
+                <Label>Фактический адрес (необязательно)</Label>
+                <Input {...register('actualAddress')} />
+              </div>
+              <div className="space-y-2">
+                <Label>Телефон (необязательно)</Label>
+                <Input {...register('contactPhone')} placeholder="+7..." />
+              </div>
+              <div className="space-y-2">
+                <Label>Контактное лицо (необязательно)</Label>
+                <Input {...register('contactPerson')} />
+              </div>
+            </ResponsiveDialogBody>
+            <ResponsiveDialogFooter>
+              <Button type="submit" className="w-full" disabled={createContractor.isPending}>
+                {createContractor.isPending ? 'Создание...' : 'Создать'}
+              </Button>
+            </ResponsiveDialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </div>
   );
 }

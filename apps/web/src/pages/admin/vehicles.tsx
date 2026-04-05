@@ -18,11 +18,13 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from '@/shared/ui/responsive-dialog';
 import {
   Select,
   SelectContent,
@@ -269,93 +271,97 @@ export function VehiclesPage() {
         mobileCardRenderer={mobileCardRenderer}
       />
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Новое транспортное средство</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-            <div className="space-y-2">
-              <Label>Марка</Label>
-              <Input {...register('brand')} placeholder="КАМАЗ" />
-              {errors.brand && <p className="text-sm text-destructive">{errors.brand.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>Модель</Label>
-              <Input {...register('model')} placeholder="65115" />
-              {errors.model && <p className="text-sm text-destructive">{errors.model.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>Госномер</Label>
-              <Input {...register('licensePlate')} placeholder="А123БВ777" />
-              {errors.licensePlate && <p className="text-sm text-destructive">{errors.licensePlate.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>Прицеп (необязательно)</Label>
-              <Input {...register('trailerPlate')} placeholder="АА1234 77" />
-            </div>
-            <div className="space-y-2">
-              <Label>Тип владения</Label>
-              <Controller
-                name="ownershipType"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(OWNERSHIP_LABELS).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.ownershipType && <p className="text-sm text-destructive">{errors.ownershipType.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>Водитель (необязательно)</Label>
-              <Controller
-                name="assignedDriverId"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value ?? ''} onValueChange={(val) => field.onChange(val === '__none__' ? '' : val)}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Не назначен" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__none__">Не назначен</SelectItem>
-                      {drivers?.map((d) => (
-                        <SelectItem key={d.id} value={d.id}>{d.fullName}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Разрешённые грузы</Label>
-              <div className="flex flex-wrap gap-2">
-                {cargos?.map((cargo) => (
-                  <label key={cargo.id} className="flex items-center gap-1.5 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={selectedCargos.includes(cargo.id)}
-                      onChange={() => toggleCargo(cargo.id)}
-                      className="rounded border-input"
-                    />
-                    {cargo.name}
-                  </label>
-                ))}
+      <ResponsiveDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <ResponsiveDialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col flex-1 min-h-0">
+            <ResponsiveDialogHeader>
+              <ResponsiveDialogTitle>Новое транспортное средство</ResponsiveDialogTitle>
+            </ResponsiveDialogHeader>
+            <ResponsiveDialogBody className="space-y-4">
+              <div className="space-y-2">
+                <Label>Марка</Label>
+                <Input {...register('brand')} placeholder="КАМАЗ" />
+                {errors.brand && <p className="text-sm text-destructive">{errors.brand.message}</p>}
               </div>
-            </div>
-            <Button type="submit" className="w-full" disabled={createVehicle.isPending}>
-              {createVehicle.isPending ? 'Создание...' : 'Создать'}
-            </Button>
+              <div className="space-y-2">
+                <Label>Модель</Label>
+                <Input {...register('model')} placeholder="65115" />
+                {errors.model && <p className="text-sm text-destructive">{errors.model.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>Госномер</Label>
+                <Input {...register('licensePlate')} placeholder="А123БВ777" />
+                {errors.licensePlate && <p className="text-sm text-destructive">{errors.licensePlate.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>Прицеп (необязательно)</Label>
+                <Input {...register('trailerPlate')} placeholder="АА1234 77" />
+              </div>
+              <div className="space-y-2">
+                <Label>Тип владения</Label>
+                <Controller
+                  name="ownershipType"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(OWNERSHIP_LABELS).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.ownershipType && <p className="text-sm text-destructive">{errors.ownershipType.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>Водитель (необязательно)</Label>
+                <Controller
+                  name="assignedDriverId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value ?? ''} onValueChange={(val) => field.onChange(val === '__none__' ? '' : val)}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Не назначен" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__none__">Не назначен</SelectItem>
+                        {drivers?.map((d) => (
+                          <SelectItem key={d.id} value={d.id}>{d.fullName}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Разрешённые грузы</Label>
+                <div className="flex flex-wrap gap-2">
+                  {cargos?.map((cargo) => (
+                    <label key={cargo.id} className="flex items-center gap-1.5 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={selectedCargos.includes(cargo.id)}
+                        onChange={() => toggleCargo(cargo.id)}
+                        className="rounded border-input"
+                      />
+                      {cargo.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </ResponsiveDialogBody>
+            <ResponsiveDialogFooter>
+              <Button type="submit" className="w-full" disabled={createVehicle.isPending}>
+                {createVehicle.isPending ? 'Создание...' : 'Создать'}
+              </Button>
+            </ResponsiveDialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </div>
   );
 }

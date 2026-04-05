@@ -15,11 +15,13 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from '@/shared/ui/responsive-dialog';
 import { useCargos, useCreateCargo, type Cargo } from '@/entities/cargo/api';
 
 const columns: ColumnDef<Cargo, any>[] = [
@@ -157,39 +159,43 @@ export function CargosPage() {
         mobileCardRenderer={renderCargoCard}
       />
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Новый груз</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-            <div className="space-y-2">
-              <Label>Название</Label>
-              <Input {...register('name')} placeholder="Бензин АИ-92" />
-              {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>ТУ (необязательно)</Label>
-              <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" />
-            </div>
-            <div className="space-y-2">
-              <Label>UN код (необязательно)</Label>
-              <Input {...register('unCode')} placeholder="1203" />
-            </div>
-            <div className="space-y-2">
-              <Label>Класс опасности (необязательно)</Label>
-              <Input {...register('hazardClass')} placeholder="3" />
-            </div>
-            <div className="space-y-2">
-              <Label>Упаковка (необязательно)</Label>
-              <Input {...register('packagingMethod')} placeholder="Цистерна" />
-            </div>
-            <Button type="submit" className="w-full" disabled={createCargo.isPending}>
-              {createCargo.isPending ? 'Создание...' : 'Создать'}
-            </Button>
+      <ResponsiveDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <ResponsiveDialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col flex-1 min-h-0">
+            <ResponsiveDialogHeader>
+              <ResponsiveDialogTitle>Новый груз</ResponsiveDialogTitle>
+            </ResponsiveDialogHeader>
+            <ResponsiveDialogBody className="space-y-4">
+              <div className="space-y-2">
+                <Label>Название</Label>
+                <Input {...register('name')} placeholder="Бензин АИ-92" />
+                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>ТУ (необязательно)</Label>
+                <Input {...register('technicalSpec')} placeholder="ГОСТ 32513-2013" />
+              </div>
+              <div className="space-y-2">
+                <Label>UN код (необязательно)</Label>
+                <Input {...register('unCode')} placeholder="1203" />
+              </div>
+              <div className="space-y-2">
+                <Label>Класс опасности (необязательно)</Label>
+                <Input {...register('hazardClass')} placeholder="3" />
+              </div>
+              <div className="space-y-2">
+                <Label>Упаковка (необязательно)</Label>
+                <Input {...register('packagingMethod')} placeholder="Цистерна" />
+              </div>
+            </ResponsiveDialogBody>
+            <ResponsiveDialogFooter>
+              <Button type="submit" className="w-full" disabled={createCargo.isPending}>
+                {createCargo.isPending ? 'Создание...' : 'Создать'}
+              </Button>
+            </ResponsiveDialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </div>
   );
 }

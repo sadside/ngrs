@@ -16,11 +16,13 @@ import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogBody,
+  ResponsiveDialogFooter,
+} from '@/shared/ui/responsive-dialog';
 import {
   Select,
   SelectContent,
@@ -166,80 +168,84 @@ export function RoutesPage() {
         mobileCardRenderer={renderRouteCard}
       />
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Новый маршрут</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-            <div className="space-y-2">
-              <Label>Отправитель</Label>
-              <Controller
-                name="senderContractorId"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {contractors?.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+      <ResponsiveDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <ResponsiveDialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col flex-1 min-h-0">
+            <ResponsiveDialogHeader>
+              <ResponsiveDialogTitle>Новый маршрут</ResponsiveDialogTitle>
+            </ResponsiveDialogHeader>
+            <ResponsiveDialogBody className="space-y-4">
+              <div className="space-y-2">
+                <Label>Отправитель</Label>
+                <Controller
+                  name="senderContractorId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {contractors?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.senderContractorId && (
+                  <p className="text-sm text-destructive">{errors.senderContractorId.message}</p>
                 )}
-              />
-              {errors.senderContractorId && (
-                <p className="text-sm text-destructive">{errors.senderContractorId.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Получатель</Label>
-              <Controller
-                name="receiverContractorId"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {contractors?.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Получатель</Label>
+                <Controller
+                  name="receiverContractorId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Выберите..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {contractors?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.receiverContractorId && (
+                  <p className="text-sm text-destructive">{errors.receiverContractorId.message}</p>
                 )}
-              />
-              {errors.receiverContractorId && (
-                <p className="text-sm text-destructive">{errors.receiverContractorId.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Адрес погрузки</Label>
-              <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." />
-              {errors.loadingAddress && (
-                <p className="text-sm text-destructive">{errors.loadingAddress.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Адрес выгрузки</Label>
-              <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." />
-              {errors.unloadingAddress && (
-                <p className="text-sm text-destructive">{errors.unloadingAddress.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Описание (необязательно)</Label>
-              <Textarea {...register('description')} placeholder="Дополнительная информация..." />
-            </div>
-            <Button type="submit" className="w-full" disabled={createRoute.isPending}>
-              {createRoute.isPending ? 'Создание...' : 'Создать'}
-            </Button>
+              </div>
+              <div className="space-y-2">
+                <Label>Адрес погрузки</Label>
+                <Input {...register('loadingAddress')} placeholder="г. Москва, ул. ..." />
+                {errors.loadingAddress && (
+                  <p className="text-sm text-destructive">{errors.loadingAddress.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>Адрес выгрузки</Label>
+                <Input {...register('unloadingAddress')} placeholder="г. Казань, ул. ..." />
+                {errors.unloadingAddress && (
+                  <p className="text-sm text-destructive">{errors.unloadingAddress.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>Описание (необязательно)</Label>
+                <Textarea {...register('description')} placeholder="Дополнительная информация..." />
+              </div>
+            </ResponsiveDialogBody>
+            <ResponsiveDialogFooter>
+              <Button type="submit" className="w-full" disabled={createRoute.isPending}>
+                {createRoute.isPending ? 'Создание...' : 'Создать'}
+              </Button>
+            </ResponsiveDialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </ResponsiveDialogContent>
+      </ResponsiveDialog>
     </div>
   );
 }
