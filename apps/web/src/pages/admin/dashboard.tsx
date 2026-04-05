@@ -3,7 +3,7 @@ import { $user } from '@/entities/session/model';
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DashboardStats } from '@/widgets/dashboard-stats';
 import { TripsPerWeek } from '@/widgets/trips-per-week';
-import { TripsByStatus } from '@/widgets/trips-by-status';
+import { TransportVolume } from '@/widgets/transport-volume';
 import { TopDrivers } from '@/widgets/top-drivers';
 import { RecentTrips } from '@/widgets/trips-table';
 import { RecentWaybills } from '@/widgets/waybills-table';
@@ -29,7 +29,7 @@ export function DashboardPage() {
       <DashboardStats />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TripsPerWeek />
-        <TripsByStatus />
+        <TransportVolume />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TopDrivers />
