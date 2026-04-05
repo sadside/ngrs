@@ -82,8 +82,8 @@ export function DataTable<TData>({
         createLabel={createLabel}
       />
 
-      <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)] rounded-xl border border-border bg-card flex-1">
-        <div className="overflow-x-auto">
+      <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)] rounded-xl border border-border bg-card flex-1 min-w-0">
+        <div className="w-full min-w-0 overflow-x-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

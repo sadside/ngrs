@@ -135,6 +135,9 @@ export function UsersPage() {
             {user.status === 'ACTIVE' && (
               <RowActionItem onClick={() => handleBlock(user.id)} icon={Prohibit} label="Заблокировать" />
             )}
+            {user.status === 'BLOCKED' && (
+              <RowActionItem onClick={() => handleApprove(user.id)} icon={CheckCircle} label="Разблокировать" />
+            )}
             <RowActionItem
               onClick={() => toast.info('Увольнение будет добавлено позже')}
               icon={UserMinus}
@@ -170,6 +173,9 @@ export function UsersPage() {
             )}
             {user.status === 'ACTIVE' && (
               <RowActionItem onClick={() => handleBlock(user.id)} icon={Prohibit} label="Заблокировать" />
+            )}
+            {user.status === 'BLOCKED' && (
+              <RowActionItem onClick={() => handleApprove(user.id)} icon={CheckCircle} label="Разблокировать" />
             )}
             <RowActionItem
               onClick={() => toast.info('Увольнение будет добавлено позже')}

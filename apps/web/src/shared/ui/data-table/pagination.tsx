@@ -18,8 +18,8 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
   const selectedRows = table.getFilteredSelectedRowModel().rows.length;
 
   return (
-    <div className="flex items-center justify-between">
-      <p className="text-sm text-muted-foreground">
+    <div className="flex items-center justify-between gap-4 flex-wrap min-w-0">
+      <p className="text-sm text-muted-foreground min-w-0 truncate">
         {selectedRows > 0
           ? `Выбрано ${selectedRows} из ${totalRows}`
           : `Всего: ${totalRows}`}

@@ -22,9 +22,9 @@ export function AdminLayout() {
     <div className="flex bg-background min-h-screen">
       <AdminSidebar />
       <AdminSidebarDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
-      <main className="flex-1 flex flex-col p-4 md:p-6 min-w-0 w-0">
-        {/* Mobile header: hamburger + brand */}
-        <header className="md:hidden flex items-center gap-3 mb-4 pb-3 border-b border-border">
+      <main className="flex-1 flex flex-col min-w-0 w-0">
+        {/* Mobile header: hamburger + brand — sticky at top of viewport */}
+        <header className="md:hidden sticky top-0 z-20 bg-background/95 backdrop-blur flex items-center gap-3 px-4 py-3 border-b border-border">
           <button
             onClick={() => setDrawerOpen(true)}
             className="p-2 -ml-2 rounded-lg hover:bg-muted text-foreground transition-colors"
@@ -40,7 +40,9 @@ export function AdminLayout() {
           </div>
         </header>
 
-        <Outlet />
+        <div className="flex-1 flex flex-col p-4 md:p-6 min-w-0">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
