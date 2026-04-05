@@ -3,6 +3,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { Badge } from '@/shared/ui/badge';
 import { USER_STATUS_LABELS } from '@/shared/config/constants';
 import { useUsers, type User } from '@/entities/user/api';
@@ -32,21 +33,22 @@ export function DriversPage() {
     getSelectColumn<User>(),
     {
       accessorKey: 'fullName',
-      header: 'ФИО',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="ФИО" />,
     },
     {
       accessorKey: 'phone',
-      header: 'Телефон',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Телефон" />,
       cell: ({ row }) => row.original.phone ?? '—',
     },
     {
       id: 'vehicle',
-      header: 'Привязанное ТС',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Привязанное ТС" />,
+      accessorFn: (row) => vehicleByDriver.get(row.id) ?? '',
       cell: ({ row }) => vehicleByDriver.get(row.original.id) ?? '—',
     },
     {
       accessorKey: 'status',
-      header: 'Статус',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Статус" />,
       cell: ({ row }) => (
         <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
           {USER_STATUS_LABELS[row.original.status] ?? row.original.status}

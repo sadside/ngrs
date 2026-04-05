@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -84,21 +85,21 @@ export function UsersPage() {
     getSelectColumn<User>(),
     {
       accessorKey: 'login',
-      header: 'Логин',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Логин" />,
     },
     {
       accessorKey: 'fullName',
-      header: 'ФИО',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="ФИО" />,
     },
     {
       accessorKey: 'role',
-      header: 'Роль',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Роль" />,
       cell: ({ row }) => <RoleBadge role={row.original.role} />,
       filterFn: 'equals',
     },
     {
       accessorKey: 'status',
-      header: 'Статус',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Статус" />,
       cell: ({ row }) => (
         <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
           {USER_STATUS_LABELS[row.original.status] ?? row.original.status}
@@ -108,17 +109,18 @@ export function UsersPage() {
     },
     {
       accessorKey: 'phone',
-      header: 'Телефон',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Телефон" />,
       cell: ({ row }) => row.original.phone ?? '—',
     },
     {
       accessorKey: 'createdAt',
-      header: 'Дата создания',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Дата создания" />,
       cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString('ru-RU'),
     },
     {
       id: 'actions',
       header: '',
+      enableSorting: false,
       cell: ({ row }) => {
         const user = row.original;
         return (

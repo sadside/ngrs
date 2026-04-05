@@ -7,6 +7,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { PageHeader } from '@/widgets/page-header/ui';
 import { DataTable, getSelectColumn } from '@/shared/ui/data-table';
+import { DataTableColumnHeader } from '@/shared/ui/data-table/column-header';
 import { RowActions } from '@/shared/ui/data-table/row-actions';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
@@ -40,31 +41,32 @@ const columns: ColumnDef<Vehicle, any>[] = [
   getSelectColumn<Vehicle>(),
   {
     accessorKey: 'brand',
-    header: 'Марка/Модель',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Марка/Модель" />,
     cell: ({ row }) => `${row.original.brand} ${row.original.model}`,
   },
   {
     accessorKey: 'licensePlate',
-    header: 'Госномер',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Госномер" />,
   },
   {
     accessorKey: 'trailerPlate',
-    header: 'Прицеп',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Прицеп" />,
     cell: ({ row }) => row.original.trailerPlate ?? '—',
   },
   {
     id: 'driver',
-    header: 'Водитель',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Водитель" />,
+    accessorFn: (row) => row.assignedDriver?.fullName ?? '',
     cell: ({ row }) => row.original.assignedDriver?.fullName ?? '—',
   },
   {
     accessorKey: 'ownershipType',
-    header: 'Тип владения',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Тип владения" />,
     cell: ({ row }) => OWNERSHIP_LABELS[row.original.ownershipType] ?? row.original.ownershipType,
   },
   {
     accessorKey: 'status',
-    header: 'Статус',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Статус" />,
     cell: ({ row }) => (
       <Badge variant={statusVariant[row.original.status] ?? 'neutral'}>
         {VEHICLE_STATUS_LABELS[row.original.status] ?? row.original.status}
@@ -74,6 +76,7 @@ const columns: ColumnDef<Vehicle, any>[] = [
   },
   {
     id: 'actions',
+    enableSorting: false,
     cell: ({ row }) => (
       <RowActions
         onDelete={() => toast.info('Функция удаления будет добавлена позже')}
