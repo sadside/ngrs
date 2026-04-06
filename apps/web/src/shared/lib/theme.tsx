@@ -10,7 +10,7 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = 'iridium-theme';
+const STORAGE_KEY = 'ngrs-theme';
 
 export function ThemeProvider({ children, forcedTheme }: { children: ReactNode; forcedTheme?: Theme }) {
   const [theme, setThemeState] = useState<Theme>(() => {

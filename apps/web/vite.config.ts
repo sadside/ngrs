@@ -11,9 +11,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Iridium — Система управления перевозками',
-        short_name: 'Iridium',
-        description: 'Транспортная система для управления рейсами и накладными',
+        name: 'НГРС — Система управления перевозками',
+        short_name: 'НГРС',
+        description: 'Транспортная система ООО "Нефтегазремстрой" для управления рейсами и накладными',
         theme_color: '#3765F6',
         background_color: '#181D25',
         display: 'standalone',

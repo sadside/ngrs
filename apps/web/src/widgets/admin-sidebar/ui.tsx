@@ -14,7 +14,7 @@ import {
   SheetTitle,
 } from '@/shared/ui/sheet';
 
-const STORAGE_KEY = 'iridium-sidebar-collapsed';
+const STORAGE_KEY = 'ngrs-sidebar-collapsed';
 
 const MAIN_NAV = [
   { to: '/', label: 'Дашборд', icon: Gauge },
@@ -70,9 +70,9 @@ export function AdminSidebarContent({
       <div className={cn('flex items-center p-4', expanded ? 'justify-between' : 'justify-center')}>
         <Link to="/" className="flex items-center gap-2" onClick={onNavigate}>
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shrink-0">
-            I
+            Н
           </div>
-          {expanded && <span className="font-bold text-foreground text-lg">Iridium</span>}
+          {expanded && <span className="font-bold text-foreground text-lg">НГРС</span>}
         </Link>
         {expanded && showCollapseToggle && onToggleCollapse && (
           <button

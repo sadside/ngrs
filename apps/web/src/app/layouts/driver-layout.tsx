@@ -16,7 +16,7 @@ export function DriverLayout() {
   useEffect(() => {
     document.documentElement.classList.add('light');
     return () => {
-      const stored = localStorage.getItem('iridium-theme');
+      const stored = localStorage.getItem('ngrs-theme');
       if (stored !== 'light') {
         document.documentElement.classList.remove('light');
       }
@@ -40,7 +40,7 @@ export function DriverLayout() {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-primary">Iridium</h1>
+        <h1 className="text-xl font-bold text-primary">НГРС</h1>
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-foreground">{user?.fullName}</span>
           <Button

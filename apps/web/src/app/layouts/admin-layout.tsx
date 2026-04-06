@@ -34,9 +34,9 @@ export function AdminLayout() {
           </button>
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-              I
+              Н
             </div>
-            <span className="font-bold text-foreground">Iridium</span>
+            <span className="font-bold text-foreground">НГРС</span>
           </div>
         </header>
 
