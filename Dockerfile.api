@@ -1,0 +1,29 @@
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+
+# Install deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/shared/package.json packages/shared/
+COPY apps/api/package.json apps/api/
+RUN pnpm install --frozen-lockfile
+
+# Build shared
+COPY packages/shared packages/shared
+RUN pnpm --filter @ngrs/shared run build
+
+# Generate Prisma client
+COPY apps/api/prisma apps/api/prisma
+RUN pnpm --filter @ngrs/api run db:generate
+
+# Build API
+COPY apps/api apps/api
+RUN pnpm --filter @ngrs/api run build
+
+# Production
+FROM node:20-alpine
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+COPY --from=base /app .
+EXPOSE 3000
+CMD ["sh", "-c", "cd apps/api && npx prisma migrate deploy && cd ../.. && node apps/api/dist/main.js"]
