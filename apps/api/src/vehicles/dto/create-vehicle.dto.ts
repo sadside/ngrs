@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEnum, IsNumber, IsArray } from 'class-validator';
-import { VehicleOwnershipType } from '@iridium/shared';
+import { VehicleOwnershipType } from '@ngrs/shared';
 
 export class CreateVehicleDto {
   @ApiProperty({ example: 'СКАНИЯ' })

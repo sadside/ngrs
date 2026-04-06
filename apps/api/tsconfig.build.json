@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@iridium/shared": ["../../packages/shared/dist"]
+      "@ngrs/shared": ["../../packages/shared/dist"]
     }
   },
   "include": ["src"],

@@ -6,7 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@iridium/shared": ["../../packages/shared/src"]
+      "@ngrs/shared": ["../../packages/shared/src"]
     }
   },
   "include": ["src", "prisma"]

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsEnum, IsOptional } from 'class-validator';
-import { ContractorType } from '@iridium/shared';
+import { ContractorType } from '@ngrs/shared';
 
 export class CreateContractorDto {
   @ApiProperty({ example: 'ООО "Интерком"' })

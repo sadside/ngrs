@@ -10,7 +10,7 @@
     "rootDir": "./src",
     "paths": {
       "@/*": ["./src/*"],
-      "@iridium/shared": ["../../packages/shared/src"]
+      "@ngrs/shared": ["../../packages/shared/src"]
     }
   },
   "include": ["src"],

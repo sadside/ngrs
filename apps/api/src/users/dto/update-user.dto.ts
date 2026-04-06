@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsEnum, IsOptional, MinLength } from 'class-validator';
-import { UserRole, UserStatus } from '@iridium/shared';
+import { UserRole, UserStatus } from '@ngrs/shared';
 
 export class UpdateUserDto {
   @ApiProperty({ required: false })

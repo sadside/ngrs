@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
-import { TripStatus } from '@iridium/shared';
+import { TripStatus } from '@ngrs/shared';
 
 export class TripFilterDto {
   @ApiProperty({ enum: TripStatus, required: false })

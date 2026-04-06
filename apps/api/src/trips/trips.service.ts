@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { TripStatus } from '@iridium/shared';
+import { TripStatus } from '@ngrs/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateTripDto } from './dto/create-trip.dto';
