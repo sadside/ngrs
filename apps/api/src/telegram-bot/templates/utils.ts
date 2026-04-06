@@ -17,7 +17,11 @@ export function formatDateTime(date: Date | string): string {
 }
 
 export function buildInlineKeyboard(path: string) {
-  const webUrl = process.env.WEB_ADMIN_URL ?? 'http://localhost:5173';
+  const webUrl = process.env.WEB_ADMIN_URL ?? '';
+  // Telegram requires HTTPS for inline keyboard URLs — skip button for localhost/http
+  if (!webUrl || !webUrl.startsWith('https://')) {
+    return undefined;
+  }
   return {
     inline_keyboard: [[
       { text: '🔗 Открыть в веб-админке', url: `${webUrl}${path}` },

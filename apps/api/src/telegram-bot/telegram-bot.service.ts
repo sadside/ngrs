@@ -89,7 +89,7 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
         this.bot.telegram
           .sendMessage(chatId, message, {
             parse_mode: 'HTML',
-            reply_markup: keyboard,
+            ...(keyboard && { reply_markup: keyboard }),
           })
           .catch((err) => this.handleSendError(err, chatId)),
       ),
@@ -122,7 +122,7 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
         this.bot.telegram
           .sendMessage(chatId, message, {
             parse_mode: 'HTML',
-            reply_markup: keyboard,
+            ...(keyboard && { reply_markup: keyboard }),
           })
           .catch((err) => this.handleSendError(err, chatId)),
       ),
