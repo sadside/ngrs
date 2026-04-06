@@ -2,17 +2,18 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import {
   Gauge, Truck, FileText, Users, Car, Buildings, MapPin, Package, UserGear,
-  CaretLeft, CaretRight, SignOut,
+  CaretLeft, CaretRight, SignOut, TelegramLogo,
 } from '@phosphor-icons/react';
 import { useUnit } from 'effector-react';
 import { cn } from '@/shared/lib/utils';
-import { $isAdmin, sessionCleared } from '@/entities/session/model';
+import { $isAdmin, $user, sessionCleared } from '@/entities/session/model';
 import { ThemeToggle } from '@/shared/ui/theme-toggle';
 import {
   Sheet,
   SheetContent,
   SheetTitle,
 } from '@/shared/ui/sheet';
+import { LinkTelegramDialog } from '@/features/link-telegram';
 
 const STORAGE_KEY = 'ngrs-sidebar-collapsed';
 
@@ -48,8 +49,10 @@ export function AdminSidebarContent({
   onToggleCollapse,
 }: AdminSidebarContentProps) {
   const isAdmin = useUnit($isAdmin);
+  const user = useUnit($user);
   const location = useLocation();
   const navigate = useNavigate();
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
 
   const handleLogout = () => {
     sessionCleared();
@@ -127,6 +130,24 @@ export function AdminSidebarContent({
 
       <div className={cn('p-3 border-t border-border flex flex-col gap-2', !expanded && 'items-center')}>
         <ThemeToggle collapsed={!expanded} />
+        {isAdmin && expanded && (
+          <button
+            type="button"
+            onClick={() => {
+              onNavigate?.();
+              setLinkDialogOpen(true);
+            }}
+            className={cn(
+              'flex items-center gap-3 rounded-xl transition-colors text-foreground hover:bg-muted',
+              'px-3 py-3 text-base md:text-sm w-full',
+            )}
+          >
+            <TelegramLogo size={20} weight="fill" className="shrink-0 text-[#2AABEE]" />
+            <span className="font-medium">
+              {user?.telegramChatId ? 'Telegram ✓' : 'Привязать Telegram'}
+            </span>
+          </button>
+        )}
         <button
           type="button"
           onClick={handleLogout}
@@ -140,6 +161,10 @@ export function AdminSidebarContent({
           {expanded && <span className="font-medium">Выйти</span>}
         </button>
       </div>
+
+      {linkDialogOpen && (
+        <LinkTelegramDialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen} />
+      )}
     </>
   );
 }
