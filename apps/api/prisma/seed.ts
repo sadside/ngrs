@@ -13,7 +13,7 @@ async function main() {
     create: {
       login: 'admin',
       password,
-      fullName: 'Низамова О.В.',
+      fullName: 'Низамов В.О.',
       phone: '+79001234567',
       role: 'ADMIN',
       status: 'ACTIVE',

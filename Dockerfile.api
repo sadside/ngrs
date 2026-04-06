@@ -21,6 +21,9 @@ RUN pnpm --filter @ngrs/api run db:generate
 COPY apps/api apps/api
 RUN pnpm --filter @ngrs/api run build
 
+# Compile seed.ts to JS so it runs without ts-node in production
+RUN npx -w apps/api tsc --esModuleInterop --resolveJsonModule --outDir apps/api/dist-seed apps/api/prisma/seed.ts --skipLibCheck || true
+
 # Production
 FROM node:20-alpine
 RUN corepack enable && corepack prepare pnpm@latest --activate
