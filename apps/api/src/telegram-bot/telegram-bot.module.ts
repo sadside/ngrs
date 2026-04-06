@@ -25,7 +25,7 @@ const logger = new Logger('TelegramBotModule');
         }
         return {
           token,
-          launchOptions: { allowedUpdates: ['message'] },
+          launchOptions: { allowedUpdates: ['message', 'callback_query'] },
         };
       },
     }),

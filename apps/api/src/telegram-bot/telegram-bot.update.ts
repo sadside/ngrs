@@ -1,4 +1,4 @@
-import { Update, Start, Help, Command, On, Ctx } from 'nestjs-telegraf';
+import { Update, Start, Help, Command, Action, On, Ctx } from 'nestjs-telegraf';
 import { Logger } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { PrismaService } from '../prisma/prisma.service';
@@ -213,6 +213,25 @@ export class TelegramBotUpdate {
     });
 
     await ctx.reply(message, { parse_mode: 'HTML' });
+  }
+
+  // Callback button handlers — triggered by inline keyboard buttons on notifications
+  @Action('cmd_trips')
+  async onCmdTrips(@Ctx() ctx: Context) {
+    await (ctx as any).answerCbQuery();
+    await this.onTrips(ctx);
+  }
+
+  @Action('cmd_waybills')
+  async onCmdWaybills(@Ctx() ctx: Context) {
+    await (ctx as any).answerCbQuery();
+    await this.onWaybills(ctx);
+  }
+
+  @Action('cmd_today')
+  async onCmdToday(@Ctx() ctx: Context) {
+    await (ctx as any).answerCbQuery();
+    await this.onToday(ctx);
   }
 
   @On('text')

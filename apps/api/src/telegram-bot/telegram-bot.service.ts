@@ -64,6 +64,12 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  private buildCallbackKeyboard(buttons: Array<{ text: string; data: string }>) {
+    return {
+      inline_keyboard: [buttons.map((b) => ({ text: b.text, callback_data: b.data }))],
+    };
+  }
+
   private async sendTripStatusChanged(data: { tripId: string }) {
     const trip = await this.prisma.trip.findUnique({
       where: { id: data.tripId },
@@ -71,6 +77,7 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
         driver: true,
         vehicle: true,
         cargo: true,
+        waybill: true,
         route: {
           include: { senderContractor: true, receiverContractor: true },
         },
@@ -82,14 +89,19 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
     if (recipients.length === 0) return;
 
     const message = renderTripStatusMessage(trip as unknown as TripForTemplate);
-    const keyboard = buildInlineKeyboard('/trips');
+    const urlKeyboard = buildInlineKeyboard('/trips');
+    const callbackKeyboard = this.buildCallbackKeyboard([
+      { text: '🚚 Все рейсы', data: 'cmd_trips' },
+      { text: '📊 Сводка', data: 'cmd_today' },
+    ]);
+    const keyboard = urlKeyboard ?? callbackKeyboard;
 
     await Promise.allSettled(
       recipients.map((chatId) =>
         this.bot.telegram
           .sendMessage(chatId, message, {
             parse_mode: 'HTML',
-            ...(keyboard && { reply_markup: keyboard }),
+            reply_markup: keyboard,
           })
           .catch((err) => this.handleSendError(err, chatId)),
       ),
@@ -102,6 +114,9 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
       include: {
         trip: {
           include: {
+            driver: true,
+            vehicle: true,
+            cargo: true,
             route: {
               include: { senderContractor: true, receiverContractor: true },
             },
@@ -115,14 +130,19 @@ export class TelegramBotService implements OnModuleInit, OnModuleDestroy {
     if (recipients.length === 0) return;
 
     const message = renderWaybillMessage(waybill as unknown as WaybillForTemplate);
-    const keyboard = buildInlineKeyboard('/waybills');
+    const urlKeyboard = buildInlineKeyboard('/waybills');
+    const callbackKeyboard = this.buildCallbackKeyboard([
+      { text: '📄 Все накладные', data: 'cmd_waybills' },
+      { text: '📊 Сводка', data: 'cmd_today' },
+    ]);
+    const keyboard = urlKeyboard ?? callbackKeyboard;
 
     await Promise.allSettled(
       recipients.map((chatId) =>
         this.bot.telegram
           .sendMessage(chatId, message, {
             parse_mode: 'HTML',
-            ...(keyboard && { reply_markup: keyboard }),
+            reply_markup: keyboard,
           })
           .catch((err) => this.handleSendError(err, chatId)),
       ),
