@@ -10,6 +10,7 @@ COPY apps/api/package.json apps/api/
 RUN pnpm install --frozen-lockfile
 
 # Build shared
+COPY tsconfig.base.json ./
 COPY packages/shared packages/shared
 RUN pnpm --filter @ngrs/shared run build
 
